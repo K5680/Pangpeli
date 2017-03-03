@@ -16,7 +16,6 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 
 
-
 namespace pang
 {
     /// <summary>
