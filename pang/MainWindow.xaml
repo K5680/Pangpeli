@@ -1,0 +1,41 @@
+﻿<Window x:Class="pang.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:pang"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="350" Width="525"
+        KeyDown="Window_KeyDown">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="105*"/>
+            <ColumnDefinition Width="412*"/>
+        </Grid.ColumnDefinitions>
+        <Canvas x:Name="scene" Grid.ColumnSpan="2">
+            <Canvas.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FF0AF0C6" Offset="0"/>
+                    <GradientStop Color="#FF7C4118" Offset="1"/>
+                    <GradientStop Color="#FE68958D" Offset="0.218"/>
+                </LinearGradientBrush>
+            </Canvas.Background>
+
+            <Canvas.Triggers>
+                <EventTrigger RoutedEvent="FrameworkElement.Loaded">
+                    <BeginStoryboard >
+                        <Storyboard Storyboard.TargetName="scene" Storyboard.TargetProperty="(Canvas.Left)">
+                            <DoubleAnimation From="0" To="514" Duration="0:0:20" AccelerationRatio=".2" DecelerationRatio=".8" RepeatBehavior="23:59:59" AutoReverse="True"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+            </Canvas.Triggers>
+            <TextBlock x:Name="txtX" Height="42" Canvas.Left="267" TextWrapping="Wrap" Text=" " Canvas.Top="267" Width="240"/>
+            <Image x:Name="kuva" Height="100" Canvas.Left="-177" Canvas.Top="168" Width="100"/>
+
+        </Canvas>
+
+    </Grid>
+
+
+</Window>
