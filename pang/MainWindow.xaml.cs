@@ -64,15 +64,11 @@ namespace pang
             Canvas.SetTop(kuutio, 250);
             Canvas.SetLeft(kuutio, x);
 
-
-
        
             // Create a Timer with a highest priority
             DispatcherTimer timer = new DispatcherTimer(DispatcherPriority.Send);
-            // Set the Interval to 2 seconds
-            timer.Interval = TimeSpan.FromMilliseconds(10);
-            // Set the callback to invoke every tick time
-            timer.Tick += new EventHandler(timer1_Tick);
+            timer.Interval = TimeSpan.FromMilliseconds(10);// Set the Interval to 2 seconds
+            timer.Tick += new EventHandler(timer1_Tick);// Set the callback to invoke every tick time
             // Start the timer
             timer.Start();
 
