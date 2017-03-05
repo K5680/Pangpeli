@@ -133,7 +133,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\pallo.png.png" />
+    <EmbeddedResource Include="Resources\pallo.png" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Images\pallo.png" />
