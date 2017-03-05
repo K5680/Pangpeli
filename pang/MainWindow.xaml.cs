@@ -43,14 +43,14 @@ namespace pang
             pallo.Width = 50;
             pallo.Height = 50;
             
-                                                    //resourceista kuvien lataus ei onnistu...
+                                                    //resourceista lataus ei toimi !?
             
             // ladataan kuva
             Image kuva = new Image();
             kuva.Source = new BitmapImage(new Uri("C:\\Users\\Vesada\\Source\\Repos\\Pangpeli - Harjoitustyö\\pang\\Images\\pallo.png",  UriKind.Relative)); // new BitmapImage(new Uri("kuvat.otsikko", UriKind.Relative));
 
             ImageBrush tekstuuri = new ImageBrush();
-            tekstuuri.ImageSource = new BitmapImage(new Uri("/pang/Resources/pallo.png", UriKind.Relative));
+            tekstuuri.ImageSource = new BitmapImage(new Uri("C:\\Users\\Vesada\\Source\\Repos\\Pangpeli - Harjoitustyö\\pang\\Images\\pallo.png", UriKind.Relative));
             pallo.Fill = tekstuuri;
             //pallo.Fill = new SolidColorBrush(Colors.Red);
             

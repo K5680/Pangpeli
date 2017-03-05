@@ -33,7 +33,7 @@
             </Canvas.Triggers>
             <TextBlock x:Name="txtX" Height="42" Canvas.Left="267" TextWrapping="Wrap" Text=" " Canvas.Top="267" Width="240"/>
             <Image x:Name="kuva" Height="100" Canvas.Left="-177" Canvas.Top="168" Width="100"/>
-
+            
         </Canvas>
 
     </Grid>
