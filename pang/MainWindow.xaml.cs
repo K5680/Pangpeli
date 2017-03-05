@@ -42,7 +42,9 @@ namespace pang
             pallo.VerticalAlignment = VerticalAlignment.Center;
             pallo.Width = 50;
             pallo.Height = 50;
-
+            
+                                                    //resourceista kuvien lataus ei onnistu...
+            
             // ladataan kuva
             Image kuva = new Image();
             kuva.Source = new BitmapImage(new Uri("C:\\Users\\Vesada\\Source\\Repos\\Pangpeli - Harjoitustyö\\pang\\Images\\pallo.png",  UriKind.Relative)); // new BitmapImage(new Uri("kuvat.otsikko", UriKind.Relative));
