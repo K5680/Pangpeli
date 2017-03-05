@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Resources;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -12,6 +13,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
+using System.Windows.Resources;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 
@@ -43,17 +45,15 @@ namespace pang
             pallo.Width = 50;
             pallo.Height = 50;
             
-                                                    //resourceista lataus ei toimi !?
-            
+              
             // ladataan kuva
-            Image kuva = new Image();
-            kuva.Source = new BitmapImage(new Uri("C:\\Users\\Vesada\\Source\\Repos\\Pangpeli - Harjoitustyö\\pang\\Images\\pallo.png",  UriKind.Relative)); // new BitmapImage(new Uri("kuvat.otsikko", UriKind.Relative));
+            ImageBrush kuva = new ImageBrush();
+            kuva.ImageSource = new BitmapImage(new Uri("pack://application:,,,/Pang;component/Images/otsikko.png",  UriKind.Absolute)); // new BitmapImage(new Uri("kuvat.otsikko", UriKind.Relative));
 
-            ImageBrush tekstuuri = new ImageBrush();
-            tekstuuri.ImageSource = new BitmapImage(new Uri("C:\\Users\\Vesada\\Source\\Repos\\Pangpeli - Harjoitustyö\\pang\\Images\\pallo.png", UriKind.Relative));
+            ImageBrush tekstuuri = new ImageBrush();                // kuva ladataan resursseista
+            tekstuuri.ImageSource = new BitmapImage(new Uri("pack://application:,,,/Pang;component/Resources/pallo.png", UriKind.Absolute));
             pallo.Fill = tekstuuri;
-            //pallo.Fill = new SolidColorBrush(Colors.Red);
-            
+
 
             scene.Children.Add(pallo);
 
@@ -63,6 +63,7 @@ namespace pang
             kuutio.VerticalAlignment = VerticalAlignment.Center;
             kuutio.Width = 50;
             kuutio.Height = 50;
+            kuutio.Fill = kuva;
             scene.Children.Add(kuutio);
             Canvas.SetTop(kuutio, 250);
             Canvas.SetLeft(kuutio, x);

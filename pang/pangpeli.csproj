@@ -110,6 +110,7 @@
     <EmbeddedResource Include="kuvat.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>kuvat.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -133,15 +134,15 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources\pallo.png">
+    <Resource Include="Resources\pallo.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
+    </Resource>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Images\pallo.png" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Images\otsikko.png" />
+    <Resource Include="Images\otsikko.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Images\pangpeli.png" />
