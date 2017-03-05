@@ -42,12 +42,13 @@ namespace pang
             pallo.VerticalAlignment = VerticalAlignment.Center;
             pallo.Width = 50;
             pallo.Height = 50;
+            
             // ladataan kuva
             Image kuva = new Image();
-            kuva.Source = new BitmapImage(new Uri("e:\\otsikko.png", UriKind.Relative));
+            kuva.Source = new BitmapImage(new Uri("kuvat.otsikko.png", UriKind.Relative));
 
             ImageBrush tekstuuri = new ImageBrush();
-            tekstuuri.ImageSource = new BitmapImage(new Uri("e:\\pallo.png", UriKind.Relative));
+            tekstuuri.ImageSource = new BitmapImage(new Uri("C:\\Users\\Vesada\\Source\\Repos\\Pangpeli - Harjoitustyö\\pang\\Images\\pallo.png", UriKind.Relative));
             pallo.Fill = tekstuuri;
             //pallo.Fill = new SolidColorBrush(Colors.Red);
             
