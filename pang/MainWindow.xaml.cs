@@ -25,10 +25,10 @@ namespace pang
     /// </summary>
     public partial class MainWindow : Window
     {
-        public double x = 100;
         public double pallo_x = 200;
-        public double pallo_y = 70;
-        public int y = 10;
+        public double pallo_y = 200;
+        public double pallonKorkeus = 180;
+        
         public string txt;
         public Ellipse pallo = new System.Windows.Shapes.Ellipse();
         public double angle = 40;
@@ -43,8 +43,8 @@ namespace pang
             pallo.Fill = System.Windows.Media.Brushes.SkyBlue;
             pallo.HorizontalAlignment = HorizontalAlignment.Left;
             pallo.VerticalAlignment = VerticalAlignment.Center;
-            pallo.Width = 50;
-            pallo.Height = 50;
+            pallo.Width = 100;
+            pallo.Height = 100;
 
             ImageBrush tekstuuri = new ImageBrush();                // kuva ladataan resursseista
             tekstuuri.ImageSource = new BitmapImage(new Uri(Ukko.Latauskansio + "pallo.png", UriKind.Absolute));
@@ -52,13 +52,8 @@ namespace pang
             scene.Children.Add(pallo);
 
             // ukon lisääminen sceneen
-            
             heebo.LuoUkko();
             scene.Children.Add(heebo.kuutio);
-
-            Ukko hanu = new pang.Ukko();
-            hanu.LuoUkko();
-            scene.Children.Add(hanu.kuutio);
 
        
             // Create a Timer with a highest priority
@@ -81,7 +76,7 @@ namespace pang
         {
             angle = angle + 0.1f;
             if (angle > 360) { angle = 0; }
-            pallo_y = 170 + Math.Cos(angle) * 70;
+            pallo_y = pallonKorkeus + Math.Cos(angle) * 140;
 
         }
 
@@ -96,17 +91,19 @@ namespace pang
 
         }
         
+
+        // näppäinkomennot
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
 
             if (e.Key == Key.Right)
             {
-                this.Title = "right";
+                this.Title = "Go right";
                 heebo.LiikutaUkkoa(15);
             }
             else if (e.Key == Key.Left)
             {
-                this.Title = "left";
+                this.Title = "Go left";
                 heebo.LiikutaUkkoa(-15);
             }
             else if (e.Key == Key.Escape) // esc lopettaa

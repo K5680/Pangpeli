@@ -22,10 +22,10 @@ namespace pang
 {
      class Ukko
     {
-        private const double sijaintiy = 250;
-        private double sijaintix;
+        private const double sijaintiy = 350;   // y:tä ei ehkä tarvitse muuttaa?
+        
 
-        public Rectangle kuutio;
+        public Rectangle kuutio; // laatikko, jonka päälle pelaajahahmo rakentuu
 
         public double SijaintiX { get; set; }
         public double UkonNopeus { get; set; }
@@ -41,7 +41,7 @@ namespace pang
       
         public Ukko()
         {
-            SijaintiX = 100;
+            SijaintiX = 350;
             UkonNopeus = 10;
             Elämät = 3;
             kuutio = new System.Windows.Shapes.Rectangle();
@@ -51,27 +51,27 @@ namespace pang
 
         public void LiikutaUkkoa(double sijaintix)
         {
-            SijaintiX = SijaintiX + sijaintix;
+            SijaintiX = SijaintiX + sijaintix;  // liikutetaan 
             Canvas.SetTop(kuutio, sijaintiy);
             Canvas.SetLeft(kuutio, SijaintiX);
 
             System.Diagnostics.Debug.WriteLine(SijaintiX); // debuggia
         }
-
+        
 
         public void LuoUkko()
         {          
             // luodaan ukon hahmo
-            ImageBrush kuva = new ImageBrush();
+            ImageBrush kuva = new ImageBrush();     // ladataan kuva, joka liimataan liikuteltavan laatikon päälle
             kuva.ImageSource = new BitmapImage(new Uri(latauskansio + "ukko.png", UriKind.Absolute)); // new BitmapImage(new Uri("kuvat.otsikko", UriKind.Relative));
-            kuutio.Fill = System.Windows.Media.Brushes.SkyBlue;
+            //kuutio.Fill = System.Windows.Media.Brushes.SkyBlue;
             kuutio.HorizontalAlignment = HorizontalAlignment.Left;
             kuutio.VerticalAlignment = VerticalAlignment.Center;
-            kuutio.Width = 50;
+            kuutio.Width = 50;  // määritellään laatikon koko
             kuutio.Height = 80;
-            kuutio.Fill = kuva;
-            LiikutaUkkoa(0);            
-            //scene.Children.Add(kuutio);          // tämä tehdään pääkoodissa, koska ei onnistu täällä?
+            kuutio.Fill = kuva; // maalataan laatikko "ukko.png":llä
+            LiikutaUkkoa(0);    // piirtää ukon (laatikon) ruutuun
+            // scene.Children.Add(kuutio);          // tämä tehdään pääkoodissa, koska ei onnistu täällä?
         }
 
         public void Ammu()
