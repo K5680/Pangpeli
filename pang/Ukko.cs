@@ -23,6 +23,7 @@ namespace pang
      class Ukko
     {
         private const double sijaintiy = 250;
+        private double sijaintix;
 
         public Rectangle kuutio;
 
@@ -48,10 +49,12 @@ namespace pang
 
         }
 
-        public void LiikutaUkkoa()
+        public void LiikutaUkkoa(double sijaintix)
         {
+            SijaintiX = SijaintiX + sijaintix;
             Canvas.SetTop(kuutio, sijaintiy);
             Canvas.SetLeft(kuutio, SijaintiX);
+
             System.Diagnostics.Debug.WriteLine(SijaintiX); // debuggia
         }
 
@@ -67,7 +70,7 @@ namespace pang
             kuutio.Width = 50;
             kuutio.Height = 80;
             kuutio.Fill = kuva;
-            LiikutaUkkoa();            
+            LiikutaUkkoa(0);            
             //scene.Children.Add(kuutio);          // tämä tehdään pääkoodissa, koska ei onnistu täällä?
         }
 

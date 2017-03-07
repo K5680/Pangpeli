@@ -102,14 +102,12 @@ namespace pang
             if (e.Key == Key.Right)
             {
                 this.Title = "right";
-                heebo.SijaintiX = heebo.SijaintiX + 15;
-                heebo.LiikutaUkkoa();
+                heebo.LiikutaUkkoa(15);
             }
             else if (e.Key == Key.Left)
             {
                 this.Title = "left";
-                heebo.SijaintiX = heebo.SijaintiX - 15;
-                heebo.LiikutaUkkoa();
+                heebo.LiikutaUkkoa(-15);
             }
             else if (e.Key == Key.Escape) // esc lopettaa
             {
