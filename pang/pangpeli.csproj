@@ -76,6 +76,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>kuvat.resx</DependentUpon>
     </Compile>
+    <Compile Include="Ukko.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -139,7 +140,7 @@
     </Resource>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Images\pallo.png" />
+    <Resource Include="Images\pallo.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\otsikko.png" />
@@ -152,6 +153,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Images\ruutu2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Pallo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\ukko.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
