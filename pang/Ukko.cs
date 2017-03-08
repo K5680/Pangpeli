@@ -24,24 +24,29 @@ namespace pang
     {
         private const double sijaintiy = 350;   // y:tä ei ehkä tarvitse muuttaa?
         
-
         public Rectangle kuutio; // laatikko, jonka päälle pelaajahahmo rakentuu
 
-        public double SijaintiX { get; set; }
+        private double sijaintix;
+        public double SijaintiX
+        {
+            get
+            {
+                return sijaintix;
+            }
+            set
+            {
+                if (value > -10 && value < pang.MainWindow.ruudunLeveys-30) sijaintix = value; // ei anneta ukon x-arvon mennä yli reunojen
+            }
+        }
+
         public double UkonNopeus { get; set; }
         public int Elämät { get; set; }
 
-        private static string latauskansio = "pack://application:,,,/Pang;component/Images/";
 
-        public static string Latauskansio
-        {
-            get { return latauskansio; }
-            set {}
-        }
       
         public Ukko()
         {
-            SijaintiX = 350;
+            sijaintix = 350;
             UkonNopeus = 10;
             Elämät = 3;
             kuutio = new System.Windows.Shapes.Rectangle();
@@ -49,21 +54,21 @@ namespace pang
 
         }
 
-        public void LiikutaUkkoa(double sijaintix)
+        public void LiikutaUkkoa(double sij)
         {
-            SijaintiX = SijaintiX + sijaintix;  // liikutetaan 
+            SijaintiX = SijaintiX + sij;  // liikutetaan 
             Canvas.SetTop(kuutio, sijaintiy);
             Canvas.SetLeft(kuutio, SijaintiX);
 
-            System.Diagnostics.Debug.WriteLine(SijaintiX); // debuggia
+            System.Diagnostics.Debug.WriteLine(sijaintix); // debuggia
         }
-        
 
+        
         public void LuoUkko()
         {          
             // luodaan ukon hahmo
             ImageBrush kuva = new ImageBrush();     // ladataan kuva, joka liimataan liikuteltavan laatikon päälle
-            kuva.ImageSource = new BitmapImage(new Uri(latauskansio + "ukko.png", UriKind.Absolute)); // new BitmapImage(new Uri("kuvat.otsikko", UriKind.Relative));
+            kuva.ImageSource = new BitmapImage(new Uri(pang.MainWindow.Latauskansio + "ukko.png", UriKind.Absolute)); // 
             //kuutio.Fill = System.Windows.Media.Brushes.SkyBlue;
             kuutio.HorizontalAlignment = HorizontalAlignment.Left;
             kuutio.VerticalAlignment = VerticalAlignment.Center;

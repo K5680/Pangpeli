@@ -28,34 +28,44 @@ namespace pang
         public double pallo_x = 200;
         public double pallo_y = 200;
         public double pallonKorkeus = 180;
-        
+        public static double ruudunLeveys;
+
         public string txt;
         public Ellipse pallo = new System.Windows.Shapes.Ellipse();
         public double angle = 40;
+
+        private static string latauskansio = "pack://application:,,,/Pang;component/Images/";  // määritellään kansio, josta kuvat ladataan
+        public static string Latauskansio
+        {
+            get { return latauskansio; }
+        }
+
 
         Ukko heebo = new pang.Ukko(); // luodaan Ukko-luokan instanssi, eli pelaaja
 
         public MainWindow()
         {
             InitializeComponent();
+            this.Loaded += new RoutedEventHandler(MainWindow_Loaded);   // kutsutaan metodia, kun ikkuna on latautunut
+            this.SizeChanged += new SizeChangedEventHandler(Window_SizeChanged);    // luodaan eventhandleri ikkunan koon muutokselle (en tiedä tarvitaanko lopulta)
 
-            //pallo.Stroke = System.Windows.Media.Brushes.Red;
-            pallo.Fill = System.Windows.Media.Brushes.SkyBlue;
+        //pallo.Stroke = System.Windows.Media.Brushes.Red;
+        pallo.Fill = System.Windows.Media.Brushes.SkyBlue;
             pallo.HorizontalAlignment = HorizontalAlignment.Left;
             pallo.VerticalAlignment = VerticalAlignment.Center;
             pallo.Width = 100;
             pallo.Height = 100;
 
             ImageBrush tekstuuri = new ImageBrush();                // kuva ladataan resursseista
-            tekstuuri.ImageSource = new BitmapImage(new Uri(Ukko.Latauskansio + "pallo.png", UriKind.Absolute));
+            tekstuuri.ImageSource = new BitmapImage(new Uri(Latauskansio + "pallo.png", UriKind.Absolute));
             pallo.Fill = tekstuuri;
             scene.Children.Add(pallo);
 
             // ukon lisääminen sceneen
             heebo.LuoUkko();
             scene.Children.Add(heebo.kuutio);
+            
 
-       
             // Create a Timer with a highest priority
             DispatcherTimer timer = new DispatcherTimer(DispatcherPriority.Send);
             timer.Interval = TimeSpan.FromMilliseconds(10);// Set the Interval
@@ -68,9 +78,13 @@ namespace pang
             timer_pallo.Tick += new EventHandler(timerpallo_Tick);      // Set the callback to invoke every tick time
             timer_pallo.Start();
 
+
         }
 
-
+        void MainWindow_Loaded(object sender, RoutedEventArgs e)    // kun ikkuna on avattu, otetaan muuttujaan ruudun leveyden tieto
+        {
+                ruudunLeveys = scene.ActualWidth;
+        }
 
         private void timerpallo_Tick(object sender, EventArgs e)
         {
@@ -84,13 +98,14 @@ namespace pang
         private void timer1_Tick(object sender, EventArgs e)
         {
             // pallo_x++;
-            
+
             Canvas.SetLeft(pallo, pallo_x);
             Canvas.SetTop(pallo, pallo_y);
-//            string str = angle + "   " +(200 + Math.Sin(angle) * 70).ToString();        
+            //            string str = angle + "   " +(200 + Math.Sin(angle) * 70).ToString();        
+            txtX.Text = ruudunLeveys.ToString();
 
         }
-        
+
 
         // näppäinkomennot
         private void Window_KeyDown(object sender, KeyEventArgs e)
@@ -110,10 +125,13 @@ namespace pang
             {
                 this.Close();
             }
-
         }
+
+        // lasketaan ruudunleveys
+        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            ruudunLeveys = scene.ActualWidth;
+        }
+            
     }
-
-
-
 }
