@@ -31,7 +31,7 @@ namespace pang
         public static double ruudunLeveys;
 
         public string txt;
-        public Ellipse pallo = new System.Windows.Shapes.Ellipse();
+        public Ellipse pallo = new Ellipse();
         public double angle = 40;
 
         private static string latauskansio = "pack://application:,,,/Pang;component/Images/";  // määritellään kansio, josta kuvat ladataan
@@ -41,7 +41,7 @@ namespace pang
         }
 
 
-        Ukko heebo = new pang.Ukko(); // luodaan Ukko-luokan instanssi, eli pelaaja
+        Ukko heebo = new Ukko(); // luodaan Ukko-luokan instanssi, eli pelaaja
 
         public MainWindow()
         {
@@ -49,12 +49,12 @@ namespace pang
             this.Loaded += new RoutedEventHandler(MainWindow_Loaded);   // kutsutaan metodia, kun ikkuna on latautunut
             this.SizeChanged += new SizeChangedEventHandler(Window_SizeChanged);    // luodaan eventhandleri ikkunan koon muutokselle (en tiedä tarvitaanko lopulta)
 
-        //pallo.Stroke = System.Windows.Media.Brushes.Red;
-        pallo.Fill = System.Windows.Media.Brushes.SkyBlue;
+            pallo.Stroke = Brushes.Red;
+            pallo.Fill = Brushes.SkyBlue;
             pallo.HorizontalAlignment = HorizontalAlignment.Left;
             pallo.VerticalAlignment = VerticalAlignment.Center;
-            pallo.Width = 100;
-            pallo.Height = 100;
+            pallo.Width = 110;
+            pallo.Height = 110;
 
             ImageBrush tekstuuri = new ImageBrush();                // kuva ladataan resursseista
             tekstuuri.ImageSource = new BitmapImage(new Uri(Latauskansio + "pallo.png", UriKind.Absolute));
@@ -63,7 +63,7 @@ namespace pang
 
             // ukon lisääminen sceneen
             heebo.LuoUkko();
-            scene.Children.Add(heebo.kuutio);
+            scene.Children.Add(heebo.pelaaja);
             
 
             // Create a Timer with a highest priority
@@ -81,19 +81,12 @@ namespace pang
 
         }
 
-        void MainWindow_Loaded(object sender, RoutedEventArgs e)    // kun ikkuna on avattu, otetaan muuttujaan ruudun leveyden tieto
-        {
-                ruudunLeveys = scene.ActualWidth;
-        }
-
         private void timerpallo_Tick(object sender, EventArgs e)
         {
             angle = angle + 0.1f;
             if (angle > 360) { angle = 0; }
             pallo_y = pallonKorkeus + Math.Cos(angle) * 140;
-
         }
-
 
         private void timer1_Tick(object sender, EventArgs e)
         {
@@ -127,11 +120,16 @@ namespace pang
             }
         }
 
-        // lasketaan ruudunleveys
-        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
+
+        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)    // lasketaan ruudunleveys sen muuttuessa
         {
             ruudunLeveys = scene.ActualWidth;
         }
-            
+
+        void MainWindow_Loaded(object sender, RoutedEventArgs e)    // kun ikkuna on avattu, otetaan muuttujaan ruudun leveyden tieto
+        {
+            ruudunLeveys = scene.ActualWidth;
+        }
+
     }
 }
