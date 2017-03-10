@@ -78,17 +78,10 @@ namespace pang
             timer_pallo.Interval = TimeSpan.FromMilliseconds(50);       // Set the Interval
             timer_pallo.Tick += new EventHandler(timerpallo_Tick);      // Set the callback to invoke every tick time
             timer_pallo.Start();
-
-
-
-
-
         }
 
 
-    
-
-
+ 
         private void timerpallo_Tick(object sender, EventArgs e)
         {
             angle = angle + 0.1f;
@@ -97,23 +90,11 @@ namespace pang
 
 
             // törmäyksen tunnistus
-            var x1 = Canvas.GetLeft(heebo.pelaaja);
-            var y1 = Canvas.GetTop(heebo.pelaaja);
-            Rect r1 = new Rect(x1, y1, heebo.pelaaja.ActualWidth, heebo.pelaaja.ActualHeight);
-
             var x2 = Canvas.GetLeft(pallo);
             var y2 = Canvas.GetTop(pallo);
             Rect r2 = new Rect(x2, y2, pallo.ActualWidth, pallo.ActualHeight);
-
-            if (r1.IntersectsWith(r2)) MessageBox.Show("Intersected!");
-
-            /*        System.Drawing.Rectangle rectangle3 = new System.Drawing.Rectangle();
-
-                    if (heebo.pelaaja.IntersectsWith(heebo.pelaaja))
-                    {
-                        rectangle3 = Rectangle.Intersect(heebo.pelaaja, heebo.pelaaja);
-                        if (!rectangle3.IsEmpty) MessageBox.Show("Intersected!");
-                    } */
+            
+            if (heebo.ukkoPuskuri.IntersectsWith(r2)) System.Diagnostics.Debug.WriteLine("OSUU !! "+pallo_y); // debuggia
         }
 
         private void timer1_Tick(object sender, EventArgs e)
@@ -135,12 +116,12 @@ namespace pang
             if (e.Key == Key.Right)
             {
                 this.Title = "Go right";
-                heebo.LiikutaUkkoa(15);
+                heebo.LiikutaUkkoa(2);
             }
             else if (e.Key == Key.Left)
             {
                 this.Title = "Go left";
-                heebo.LiikutaUkkoa(-15);
+                heebo.LiikutaUkkoa(-2);
             }
             else if (e.Key == Key.Escape) // esc lopettaa
             {

@@ -26,6 +26,8 @@ namespace pang
         
         public Rectangle pelaaja; // laatikko, jonka päälle pelaajahahmo rakentuu
 
+        public Rect ukkoPuskuri = new Rect(); // laatikko, joka toimii alueena, jolta törmäys tunnistetaan
+
         private double sijaintix;
         public double SijaintiX
         {
@@ -60,10 +62,24 @@ namespace pang
             Canvas.SetTop(pelaaja, sijaintiy);
             Canvas.SetLeft(pelaaja, SijaintiX);
 
-            System.Diagnostics.Debug.WriteLine(sijaintix); // debuggia
+            // törmäyksen tunnistusta varten tehty rect liikkuu pelaajahahmon mukana
+            ukkoPuskuri.X = Canvas.GetLeft(pelaaja) + 20;
+            ukkoPuskuri.Y = Canvas.GetTop(pelaaja) + 20;
+            ukkoPuskuri.Height = pelaaja.ActualHeight;
+            var apu = pelaaja.ActualWidth;  // pelaajaa luodessa actualWidth on 0, joka ei käy. Siksi tämä vertailu... Onko muuta keinoa?
+            if (apu > 0)
+            {
+                ukkoPuskuri.Width = apu-40;
+            }
+            else
+            {
+                ukkoPuskuri.Width = 20;
+            }
+                      
+            System.Diagnostics.Debug.WriteLine(" " + pelaaja.ActualWidth); // debuggia
         }
 
-        
+
         public void LuoUkko()
         {          
             // luodaan ukon hahmo
@@ -74,10 +90,15 @@ namespace pang
             pelaaja.VerticalAlignment = VerticalAlignment.Center;
             pelaaja.Width = 50;  // määritellään laatikon koko
             pelaaja.Height = 80;
-            pelaaja.Fill = kuva; // maalataan laatikko "ukko.png":llä
+            pelaaja.Fill = kuva; // maalataan ukko-tekstuuri laatikon päälle
             LiikutaUkkoa(0);    // piirtää ukon (laatikon) ruutuun
+            
+            // luodaan rect-laatikko ukon ympärille törmäyksen tunnistusta varten
+            //ukkoPuskuri = new Rect(Canvas.GetLeft(pelaaja) + 20, Canvas.GetTop(pelaaja) + 10, pelaaja.ActualWidth, pelaaja.ActualHeight);
+            
             // scene.Children.Add(pelaaja);          // tämä tehdään pääkoodissa, koska ei onnistu täällä?
         }
+
 
         public void Ammu()
         {
