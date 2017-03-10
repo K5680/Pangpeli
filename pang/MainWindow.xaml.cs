@@ -16,7 +16,7 @@ using System.Windows.Navigation;
 using System.Windows.Resources;
 using System.Windows.Shapes;
 using System.Windows.Threading;
-
+//using System.Drawing;
 
 namespace pang
 {
@@ -34,6 +34,7 @@ namespace pang
         public Ellipse pallo = new Ellipse();
         public double angle = 40;
 
+
         private static string latauskansio = "pack://application:,,,/Pang;component/Images/";  // määritellään kansio, josta kuvat ladataan
         public static string Latauskansio
         {
@@ -49,8 +50,8 @@ namespace pang
             this.Loaded += new RoutedEventHandler(MainWindow_Loaded);   // kutsutaan metodia, kun ikkuna on latautunut
             this.SizeChanged += new SizeChangedEventHandler(Window_SizeChanged);    // luodaan eventhandleri ikkunan koon muutokselle (en tiedä tarvitaanko lopulta)
 
-            pallo.Stroke = Brushes.Red;
-            pallo.Fill = Brushes.SkyBlue;
+            pallo.Stroke = System.Windows.Media.Brushes.Red;
+            pallo.Fill = System.Windows.Media.Brushes.SkyBlue;
             pallo.HorizontalAlignment = HorizontalAlignment.Left;
             pallo.VerticalAlignment = VerticalAlignment.Center;
             pallo.Width = 110;
@@ -79,13 +80,40 @@ namespace pang
             timer_pallo.Start();
 
 
+
+
+
         }
+
+
+    
+
 
         private void timerpallo_Tick(object sender, EventArgs e)
         {
             angle = angle + 0.1f;
             if (angle > 360) { angle = 0; }
             pallo_y = pallonKorkeus + Math.Cos(angle) * 140;
+
+
+            // törmäyksen tunnistus
+            var x1 = Canvas.GetLeft(heebo.pelaaja);
+            var y1 = Canvas.GetTop(heebo.pelaaja);
+            Rect r1 = new Rect(x1, y1, heebo.pelaaja.ActualWidth, heebo.pelaaja.ActualHeight);
+
+            var x2 = Canvas.GetLeft(pallo);
+            var y2 = Canvas.GetTop(pallo);
+            Rect r2 = new Rect(x2, y2, pallo.ActualWidth, pallo.ActualHeight);
+
+            if (r1.IntersectsWith(r2)) MessageBox.Show("Intersected!");
+
+            /*        System.Drawing.Rectangle rectangle3 = new System.Drawing.Rectangle();
+
+                    if (heebo.pelaaja.IntersectsWith(heebo.pelaaja))
+                    {
+                        rectangle3 = Rectangle.Intersect(heebo.pelaaja, heebo.pelaaja);
+                        if (!rectangle3.IsEmpty) MessageBox.Show("Intersected!");
+                    } */
         }
 
         private void timer1_Tick(object sender, EventArgs e)
