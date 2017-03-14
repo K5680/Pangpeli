@@ -22,6 +22,7 @@ namespace pang
 {
      class Ukko
     {
+
         private const double sijaintiy = 350;   // y:tä ei ehkä tarvitse muuttaa?
         
         public Rectangle pelaaja; // laatikko, jonka päälle pelaajahahmo rakentuu
@@ -40,25 +41,45 @@ namespace pang
                 if (value > -10 && value < pang.MainWindow.ruudunLeveys-30) sijaintix = value; // ei anneta ukon x-arvon mennä yli reunojen
             }
         }
+        private double askel;
+        public double Askel
+        {
+            get
+            {
+                return askel;
+            }
+            set
+            {
 
+            }
+        }
         public double UkonNopeus { get; set; }
         public int Elämät { get; set; }
+        public DispatcherTimer timer_ukko; // ukon ajastin
+        
+        public bool SaakoLiikkua;
 
 
-      
         public Ukko()
         {
             sijaintix = 350;
-            UkonNopeus = 10;
+            askel = 5;
+            UkonNopeus = 50; // millisekunnit
             Elämät = 3;
             pelaaja = new System.Windows.Shapes.Rectangle();    // pelaajan hahmon pohjaksi luodaan rectangle
             LuoUkko();
-
         }
+
 
         public void LiikutaUkkoa(double sij)
         {
-            SijaintiX = SijaintiX + sij;  // liikutetaan 
+            // jos taimeri sallii, niin liikutetaan
+            if (SaakoLiikkua)
+            {
+                SijaintiX = SijaintiX + sij;  // liikutetaan 
+                SaakoLiikkua = false;
+            }
+
             Canvas.SetTop(pelaaja, sijaintiy);
             Canvas.SetLeft(pelaaja, SijaintiX);
 
@@ -77,6 +98,7 @@ namespace pang
             }
                       
             System.Diagnostics.Debug.WriteLine(" " + pelaaja.ActualWidth); // debuggia
+           
         }
 
 
@@ -85,18 +107,27 @@ namespace pang
             // luodaan ukon hahmo
             ImageBrush kuva = new ImageBrush();     // ladataan kuva, joka liimataan liikuteltavan laatikon päälle
             kuva.ImageSource = new BitmapImage(new Uri(pang.MainWindow.Latauskansio + "ukko.png", UriKind.Absolute)); // 
-            //pelaaja.Fill = System.Windows.Media.Brushes.SkyBlue;
             pelaaja.HorizontalAlignment = HorizontalAlignment.Left;
             pelaaja.VerticalAlignment = VerticalAlignment.Center;
             pelaaja.Width = 50;  // määritellään laatikon koko
             pelaaja.Height = 80;
             pelaaja.Fill = kuva; // maalataan ukko-tekstuuri laatikon päälle
-            LiikutaUkkoa(0);    // piirtää ukon (laatikon) ruutuun
-            
-            // luodaan rect-laatikko ukon ympärille törmäyksen tunnistusta varten
-            //ukkoPuskuri = new Rect(Canvas.GetLeft(pelaaja) + 20, Canvas.GetTop(pelaaja) + 10, pelaaja.ActualWidth, pelaaja.ActualHeight);
-            
-            // scene.Children.Add(pelaaja);          // tämä tehdään pääkoodissa, koska ei onnistu täällä?
+            LiikutaUkkoa(0);    // piirtää ukon (laatikon) ruutuun kertaalleen, muuten se on pelin alkaessa nurkassa
+            SaakoLiikkua = true;
+            Askel = 5;
+            // MainWindow.Main.AddCanvasChild(pelaaja);          // tämä tehdään pääkoodissa, koska ei onnistu täällä?
+            //ajastin
+            timer_ukko = new DispatcherTimer(DispatcherPriority.Send);
+            timer_ukko.Interval = TimeSpan.FromMilliseconds(UkonNopeus);       // Set the Interval
+            timer_ukko.Tick += new EventHandler(timerukko_Tick);      // Set the callback to invoke every tick time
+            timer_ukko.Start();
+
+        }
+
+
+        private void timerukko_Tick(object sender, EventArgs e)
+        {
+            SaakoLiikkua = true;
         }
 
 
