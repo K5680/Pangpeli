@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Media;
 using System.Resources;
 using System.Text;
 using System.Threading.Tasks;
@@ -41,33 +42,24 @@ namespace pang
                 if (value > -10 && value < pang.MainWindow.ruudunLeveys-30) sijaintix = value; // ei anneta ukon x-arvon mennä yli reunojen
             }
         }
-        private double askel;
-        public double Askel
-        {
-            get
-            {
-                return askel;
-            }
-            set
-            {
-
-            }
-        }
+        public double Askel{ get; set; }
+           
         public double UkonNopeus { get; set; }
         public int Elämät { get; set; }
         public DispatcherTimer timer_ukko; // ukon ajastin
-        
         public bool SaakoLiikkua;
-
+        public MediaPlayer player;
 
         public Ukko()
         {
             sijaintix = 350;
-            askel = 5;
+            Askel = 5;
             UkonNopeus = 50; // millisekunnit
             Elämät = 3;
             pelaaja = new System.Windows.Shapes.Rectangle();    // pelaajan hahmon pohjaksi luodaan rectangle
             LuoUkko();
+
+            player = new MediaPlayer();
         }
 
 
@@ -122,6 +114,8 @@ namespace pang
             timer_ukko.Tick += new EventHandler(timerukko_Tick);      // Set the callback to invoke every tick time
             timer_ukko.Start();
 
+
+
         }
 
 
@@ -133,7 +127,21 @@ namespace pang
 
         public void Ammu()
         {
+            try
+            {
+                SystemSounds.Asterisk.Play();
 
+                player.Open(new Uri(pang.MainWindow.Latauskansio + "fire_bow_sound-mike-koenig.mp3", UriKind.RelativeOrAbsolute));
+                player.Play();
+
+                System.Diagnostics.Debug.WriteLine("ampu! " + (new Uri(pang.MainWindow.Latauskansio + "fire_bow_sound-mike-koenig.mp3", UriKind.RelativeOrAbsolute))); // debuggia
+
+                }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("ei ampu?! "+ex); // debuggia
+                // Either print out the exception or examine it in the debugger.
+            }
         }
 
     }

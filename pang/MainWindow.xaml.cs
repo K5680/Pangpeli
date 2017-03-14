@@ -165,6 +165,11 @@ namespace pang
             {
                 heebo2.LiikutaUkkoa((heebo2.Askel));
             }
+
+            if (e.Key == Key.Space)
+            {
+                heebo.Ammu();
+            }
         }
 
 
