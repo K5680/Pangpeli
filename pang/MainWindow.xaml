@@ -8,6 +8,8 @@
         Title="MainWindow" Height="600" Width="800"
         KeyDown="Window_KeyDown">
 
+    
+
     <Grid x:Name="gridi">
         <Canvas x:Name="scene" Grid.ColumnSpan="2">
             <Canvas.Background>
@@ -28,9 +30,9 @@
                 </EventTrigger>
             </Canvas.Triggers>
             <TextBlock x:Name="txtX" Height="42" Canvas.Left="267" TextWrapping="Wrap" Text=" " Canvas.Top="367" Width="240"/>
+            <MediaElement Height="20" Margin="10,10,108,0" LoadedBehavior="Manual" Name="mediaElementti" VerticalAlignment="Top"/>
 
         </Canvas>
 
     </Grid>
-
 </Window>

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using pang.Properties;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Media;
@@ -23,13 +24,11 @@ namespace pang
 {
      class Ukko
     {
-
+        
         private const double sijaintiy = 350;   // y:tä ei ehkä tarvitse muuttaa?
         
         public Rectangle pelaaja; // laatikko, jonka päälle pelaajahahmo rakentuu
-
         public Rect ukkoPuskuri = new Rect(); // laatikko, joka toimii alueena, jolta törmäys tunnistetaan
-
         private double sijaintix;
         public double SijaintiX
         {
@@ -39,7 +38,7 @@ namespace pang
             }
             set
             {
-                if (value > -10 && value < pang.MainWindow.ruudunLeveys-30) sijaintix = value; // ei anneta ukon x-arvon mennä yli reunojen
+                if (value > -10 && value < MainWindow.ruudunLeveys-30) sijaintix = value; // ei anneta ukon x-arvon mennä yli reunojen
             }
         }
         public double Askel{ get; set; }
@@ -48,7 +47,8 @@ namespace pang
         public int Elämät { get; set; }
         public DispatcherTimer timer_ukko; // ukon ajastin
         public bool SaakoLiikkua;
-        public MediaPlayer player;
+
+        
 
         public Ukko()
         {
@@ -58,8 +58,7 @@ namespace pang
             Elämät = 3;
             pelaaja = new System.Windows.Shapes.Rectangle();    // pelaajan hahmon pohjaksi luodaan rectangle
             LuoUkko();
-
-            player = new MediaPlayer();
+            
         }
 
 
@@ -101,21 +100,18 @@ namespace pang
             kuva.ImageSource = new BitmapImage(new Uri(pang.MainWindow.Latauskansio + "ukko.png", UriKind.Absolute)); // 
             pelaaja.HorizontalAlignment = HorizontalAlignment.Left;
             pelaaja.VerticalAlignment = VerticalAlignment.Center;
-            pelaaja.Width = 50;  // määritellään laatikon koko
-            pelaaja.Height = 80;
+            pelaaja.Width = 80;  // määritellään laatikon (pelaajahahmon) koko
+            pelaaja.Height = 120;
             pelaaja.Fill = kuva; // maalataan ukko-tekstuuri laatikon päälle
             LiikutaUkkoa(0);    // piirtää ukon (laatikon) ruutuun kertaalleen, muuten se on pelin alkaessa nurkassa
             SaakoLiikkua = true;
             Askel = 5;
-            // MainWindow.Main.AddCanvasChild(pelaaja);          // tämä tehdään pääkoodissa, koska ei onnistu täällä?
+            //MainWindow.instance.AddCanvasChild(pelaaja);          // tämä tehdään pääkoodissa, koska ei onnistu täällä?
             //ajastin
             timer_ukko = new DispatcherTimer(DispatcherPriority.Send);
             timer_ukko.Interval = TimeSpan.FromMilliseconds(UkonNopeus);       // Set the Interval
             timer_ukko.Tick += new EventHandler(timerukko_Tick);      // Set the callback to invoke every tick time
             timer_ukko.Start();
-
-
-
         }
 
 
@@ -127,21 +123,10 @@ namespace pang
 
         public void Ammu()
         {
-            try
-            {
-                SystemSounds.Asterisk.Play();
+            MainWindow.instance.Soita("ampu");    // soita ampu-soundi
 
-                player.Open(new Uri(pang.MainWindow.Latauskansio + "fire_bow_sound-mike-koenig.mp3", UriKind.RelativeOrAbsolute));
-                player.Play();
+            // ammukset...
 
-                System.Diagnostics.Debug.WriteLine("ampu! " + (new Uri(pang.MainWindow.Latauskansio + "fire_bow_sound-mike-koenig.mp3", UriKind.RelativeOrAbsolute))); // debuggia
-
-                }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine("ei ampu?! "+ex); // debuggia
-                // Either print out the exception or examine it in the debugger.
-            }
         }
 
     }

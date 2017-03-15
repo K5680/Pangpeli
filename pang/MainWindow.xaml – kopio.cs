@@ -28,8 +28,18 @@ namespace pang
   
         public static MainWindow instance { get; private set; } // tämän instanssin kautta voidaan kutsua MainWindow-luokan metodeita
 
+        public double pallo_x = 200;
+        public double pallo_y = 200;
+        public double pallonKorkeus = 180;
         public static double ruudunLeveys;
+
         public string txt;
+        
+        public Ellipse pallo = new Ellipse();
+        public double angle = 40;
+
+        
+
         private static string latauskansio = "pack://application:,,,/Pang;component/Images/";  // määritellään kansio, josta kuvat ladataan
         public static string Latauskansio
         {
@@ -41,16 +51,15 @@ namespace pang
         {
             scene.Children.Add(child);
         }
+
        
         // ukon lisääminen sceneen
         Ukko heebo = new Ukko(); // luodaan Ukko-luokan instanssi, eli pelaaja
         Ukko heebo2 = new Ukko(); // Kaksinpeliin toinen pelaaja
-        Pallo balli = new Pallo();
-        Pallo balli1 = new Pallo();
-        Pallo balli2 = new Pallo();
-        Pallo balli3 = new Pallo();
+        
         public static MainWindow Main; //  tarvitaanko?
-            
+        
+      
         public MainWindow()
         {
             
@@ -60,30 +69,33 @@ namespace pang
             this.Loaded += new RoutedEventHandler(MainWindow_Loaded);   // kutsutaan metodia, kun ikkuna on latautunut
             this.SizeChanged += new SizeChangedEventHandler(Window_SizeChanged);    // luodaan eventhandleri ikkunan koon muutokselle (en tiedä tarvitaanko lopulta)
 
+            pallo.Stroke = System.Windows.Media.Brushes.Red;
+            pallo.Fill = System.Windows.Media.Brushes.SkyBlue;
+            pallo.HorizontalAlignment = HorizontalAlignment.Left;
+            pallo.VerticalAlignment = VerticalAlignment.Center;
+            pallo.Width = 110;
+            pallo.Height = 110;
+
+            ImageBrush tekstuuri = new ImageBrush();                // kuva ladataan resursseista
+            tekstuuri.ImageSource = new BitmapImage(new Uri(Latauskansio + "pallo.png", UriKind.Absolute));
+            pallo.Fill = tekstuuri;
+            scene.Children.Add(pallo);
+
+
             heebo.LuoUkko();    // luodaan pelaaja
             AddCanvasChild(heebo.pelaaja); // ja liitetään canvasiin
-
-            balli.LuoPallo();
-            balli.PalloX = 100;
-            AddCanvasChild(balli.ball); // ja liitetään canvasiin
+           // heebo2.LuoUkko();    // luodaan pelaaja nro 2 
+           // AddCanvasChild(heebo2.pelaaja); // ja liitetään canvasiin
 
 
-            balli1.LuoPallo();
-            balli1.PalloX = 200;
-            AddCanvasChild(balli1.ball); // ja liitetään canvasiin
-
-            balli2.LuoPallo();
-            AddCanvasChild(balli2.ball); // ja liitetään canvasiin
-
-            balli3.LuoPallo();
-            AddCanvasChild(balli3.ball); // ja liitetään canvasiin
-
-
-            // heebo2.LuoUkko();    // luodaan pelaaja nro 2 
-            // AddCanvasChild(heebo2.pelaaja); // ja liitetään canvasiin
-
+            // pallon ajastin
+            DispatcherTimer timer_pallo = new DispatcherTimer(DispatcherPriority.Send);
+            timer_pallo.Interval = TimeSpan.FromMilliseconds(50);       // Set the Interval
+            timer_pallo.Tick += new EventHandler(timerpallo_Tick);      // Set the callback to invoke every tick time
+            timer_pallo.Start();
+            Soita("ampu");
+            
         }
-
 
         public void Soita(string ääni)
         {
@@ -99,6 +111,39 @@ namespace pang
                 mediaElementti.Play();  // soita ääni
         }
 
+private void timerpallo_Tick(object sender, EventArgs e)
+        {
+
+            // pallon liikutus sinikäyrällä
+            angle = angle + 0.1f;
+            if (angle > 360) { angle = 0; }
+            pallo_y = pallonKorkeus + Math.Cos(angle) * 140;
+            
+            // törmäyksen tunnistus Rect:illä
+            var x2 = Canvas.GetLeft(pallo);
+            var y2 = Canvas.GetTop(pallo);
+            Rect r2 = new Rect(x2, y2, pallo.ActualWidth, pallo.ActualHeight);
+            if (heebo.ukkoPuskuri.IntersectsWith(r2)) System.Diagnostics.Debug.WriteLine("OSUU !! "+pallo_y); // debuggia
+
+
+            // törmäyksen tunnistus etäisyyden mukaan, kumpi parempi? Onko vaihtoehtoja?
+            double xet = Canvas.GetLeft(pallo); //pallon x
+            double yet = Canvas.GetTop(pallo); // pallon y
+            double D = Math.Sqrt((xet - heebo.SijaintiX) * (xet - heebo.SijaintiX) + (yet - 350) * (yet - 350));
+
+            if (D < (pallo.Height))
+            {
+                var a = Console.ReadLine();
+                System.Diagnostics.Debug.WriteLine("Pallon etäisyysmittarisysteemillä osuu... " + D + " " + yet); // debuggia
+            }
+
+
+            // pallo_x++;
+            Canvas.SetLeft(pallo, pallo_x);
+            Canvas.SetTop(pallo, pallo_y);
+            
+            //txtX.Text = ruudunLeveys.ToString();
+        }
 
 
         // näppäinkomennot
