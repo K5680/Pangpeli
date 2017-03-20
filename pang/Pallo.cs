@@ -19,25 +19,34 @@ namespace pang
         public double PallonKorkeus { get; set; }
         public double Angle;
 
-        private double pallox;
+        //private double pallox;
         private double palloy;
         private double pallonKorkeus;
         private double angle;
 
         public Ellipse ball;
 
+        private static Random rnd = new Random(); // arvotaan sijainti, ei ehkä jää lopulliseen peliin
+        public static int GetRandom()
+        {
+            return rnd.Next(50,500);
+        }
+
         public Pallo()
         {
-            Random r = new Random();
-
-            double n = r.Next(0,750);
-
+            
+            double n = GetRandom();
+            System.Diagnostics.Debug.WriteLine("random: " + n); // debuggia
             PalloX = n;
-            PalloY = 200;
+            n = GetRandom();
+            System.Diagnostics.Debug.WriteLine("random: " + n); // debuggia
+            PalloY = n;
+
             pallonKorkeus = 180;
             angle = 40;
             ball = new Ellipse();
             LuoPallo();
+            
         }
 
         public void LuoPallo()
@@ -97,4 +106,7 @@ namespace pang
             }
 
 */
+
+    
+
 }

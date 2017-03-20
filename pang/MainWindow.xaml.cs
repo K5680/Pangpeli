@@ -63,13 +63,10 @@ namespace pang
             heebo.LuoUkko();    // luodaan pelaaja
             AddCanvasChild(heebo.pelaaja); // ja liitetään canvasiin
 
-
             balli.LuoPallo();
-            balli.PalloX = 100;
             AddCanvasChild(balli.ball); // ja liitetään canvasiin
 
             balli1.LuoPallo();
-            balli1.PalloX = 200;
             AddCanvasChild(balli1.ball); // ja liitetään canvasiin
 
             balli2.LuoPallo();
@@ -78,11 +75,9 @@ namespace pang
             balli3.LuoPallo();
             AddCanvasChild(balli3.ball); // ja liitetään canvasiin
 
-
             // heebo2.LuoUkko();    // luodaan pelaaja nro 2 
             // AddCanvasChild(heebo2.pelaaja); // ja liitetään canvasiin
-
-        }
+    }
 
 
         public void Soita(string ääni)
@@ -90,7 +85,7 @@ namespace pang
             switch (ääni)   // valitse soitettava ääni
             {
                 case "ampu":    // lataa ääni
-                    mediaElementti.Source = new Uri("C:\\Users\\Vesada\\Source\\Repos\\Pangpeli - Harjoitustyö\\pang\\Images\\fire.mp3", UriKind.RelativeOrAbsolute);         
+                    mediaElementti.Source = new Uri(pang.MainWindow.Latauskansio + "fire.mp3", UriKind.Absolute);  //("C:\\Users\\Vesada\\Source\\Repos\\Pangpeli - Harjoitustyö\\pang\\Images\\fire.mp3", UriKind.RelativeOrAbsolute);         
                     break;
                 case "jokumuu":
                    
@@ -109,8 +104,7 @@ namespace pang
                 this.Title = "Go right";
                 heebo.LiikutaUkkoa(heebo.Askel);
             }
-
-            if (e.Key == Key.Left)
+            else if (e.Key == Key.Left)
             {
                 this.Title = "Go left";
                 heebo.LiikutaUkkoa(-(heebo.Askel));
