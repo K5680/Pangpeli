@@ -58,9 +58,7 @@ namespace pang
             Elämät = 3;
             pelaaja = new System.Windows.Shapes.Rectangle();    // pelaajan hahmon pohjaksi luodaan rectangle
             LuoUkko();
-            
         }
-
 
         public void LiikutaUkkoa(double sij)
         {
@@ -89,7 +87,6 @@ namespace pang
             }
                       
             System.Diagnostics.Debug.WriteLine(" " + pelaaja.ActualWidth); // debuggia
-           
         }
 
 

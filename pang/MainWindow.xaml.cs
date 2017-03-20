@@ -63,10 +63,10 @@ namespace pang
             heebo.LuoUkko();    // luodaan pelaaja
             AddCanvasChild(heebo.pelaaja); // ja liitetään canvasiin
 
+
             balli.LuoPallo();
             balli.PalloX = 100;
             AddCanvasChild(balli.ball); // ja liitetään canvasiin
-
 
             balli1.LuoPallo();
             balli1.PalloX = 200;
@@ -93,12 +93,11 @@ namespace pang
                     mediaElementti.Source = new Uri("C:\\Users\\Vesada\\Source\\Repos\\Pangpeli - Harjoitustyö\\pang\\Images\\fire.mp3", UriKind.RelativeOrAbsolute);         
                     break;
                 case "jokumuu":
-                    
+                   
                     break;
             }
                 mediaElementti.Play();  // soita ääni
         }
-
 
 
         // näppäinkomennot
@@ -149,8 +148,6 @@ namespace pang
         {
             ruudunLeveys = scene.ActualWidth;
         }
-
-        
 
 
     }
