@@ -45,47 +45,48 @@ namespace pang
         // ukon lisääminen sceneen
         Ukko heebo = new Ukko(); // luodaan Ukko-luokan instanssi, eli pelaaja
         Ukko heebo2 = new Ukko(); // Kaksinpeliin toinen pelaaja
-        Pallo balli = new Pallo();
-        Pallo balli1 = new Pallo();
-        Pallo balli2 = new Pallo();
-        Pallo balli3 = new Pallo();
+
         public static MainWindow Main; //  tarvitaanko?
-            
+        public static int pallojaMax = 12;
+        Pallo[] palloLista = new Pallo[pallojaMax]; // luodaan tarvittava määrä pallo-olioita
+
+
         public MainWindow()
         {
-            
             InitializeComponent();
-            instance = this;    // tämä kautta kutsutaan MainWindow-instanssin metodeita
+            instance = this;    // tämän kautta kutsutaan MainWindow-instanssin metodeita
 
             this.Loaded += new RoutedEventHandler(MainWindow_Loaded);   // kutsutaan metodia, kun ikkuna on latautunut
             this.SizeChanged += new SizeChangedEventHandler(Window_SizeChanged);    // luodaan eventhandleri ikkunan koon muutokselle (en tiedä tarvitaanko lopulta)
 
+            for (int i = 0; i < pallojaMax; i++)    // luodaan pallo-instanssit
+            {
+                palloLista[i] = new Pallo();
+                palloLista[i].Numero = i + 1;               
+            }
+
+            AddCanvasChild(palloLista[1].ball); // lisätään pallo-oliot sceneen (canvasiin)
+            AddCanvasChild(palloLista[2].ball); // aluksi 2 kpl
+
             heebo.LuoUkko();    // luodaan pelaaja
             AddCanvasChild(heebo.pelaaja); // ja liitetään canvasiin
-
-            balli.LuoPallo();
-            AddCanvasChild(balli.ball); // ja liitetään canvasiin
-
-            balli1.LuoPallo();
-            AddCanvasChild(balli1.ball); // ja liitetään canvasiin
-
-            balli2.LuoPallo();
-            AddCanvasChild(balli2.ball); // ja liitetään canvasiin
-
-            balli3.LuoPallo();
-            AddCanvasChild(balli3.ball); // ja liitetään canvasiin
 
             // heebo2.LuoUkko();    // luodaan pelaaja nro 2 
             // AddCanvasChild(heebo2.pelaaja); // ja liitetään canvasiin
     }
-
 
         public void Soita(string ääni)
         {
             switch (ääni)   // valitse soitettava ääni
             {
                 case "ampu":    // lataa ääni
-                    mediaElementti.Source = new Uri(pang.MainWindow.Latauskansio + "fire.mp3", UriKind.Absolute);  //("C:\\Users\\Vesada\\Source\\Repos\\Pangpeli - Harjoitustyö\\pang\\Images\\fire.mp3", UriKind.RelativeOrAbsolute);         
+                    mediaElementti.Source = new Uri(@"C:\Users\Vesada\Source\Repos\Pangpeli - Harjoitustyö\pang\Images\fire.mp3", UriKind.RelativeOrAbsolute);    // miksei toimi! (MainWindow.Latauskansio + "fire.mp3", UriKind.Absolute);  
+
+                    // miksei toimi!?  
+                    //mediaElementti.Source = new Uri(MainWindow.Latauskansio + "fire.mp3", UriKind.Absolute);
+                    //mediaElementti.LoadedBehavior = MediaState.Manual;
+
+                    System.Diagnostics.Debug.WriteLine(Latauskansio+"fire.mp3"); // debuggia
                     break;
                 case "jokumuu":
                    
@@ -95,6 +96,7 @@ namespace pang
         }
 
 
+        #region EVENTS
         // näppäinkomennot
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
@@ -131,8 +133,7 @@ namespace pang
                 heebo.Ammu();
             }
         }
-
-
+        
         private void Window_SizeChanged(object sender, SizeChangedEventArgs e)    // lasketaan ruudunleveys sen muuttuessa
         {
             ruudunLeveys = scene.ActualWidth;
@@ -142,7 +143,7 @@ namespace pang
         {
             ruudunLeveys = scene.ActualWidth;
         }
-
+        #endregion
 
     }
 }

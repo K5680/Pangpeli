@@ -132,11 +132,6 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\pallo.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Images\pallo.png" />
   </ItemGroup>
   <ItemGroup>
@@ -157,8 +152,9 @@
   <ItemGroup>
     <Resource Include="Images\ukko.png" />
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Content Include="Resources\fire_bow_sound-mike-koenig.mp3" />
+    <Resource Include="Images\fire.mp3" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

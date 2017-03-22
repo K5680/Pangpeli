@@ -17,12 +17,11 @@ namespace pang
         public double PalloX { get; set; }
         public double PalloY { get; set; }
         public double PallonKorkeus { get; set; }
-        public double Angle;
+        public double Angle { get; set; }
+        public int Numero { get; set; }
 
         //private double pallox;
-        private double palloy;
         private double pallonKorkeus;
-        private double angle;
 
         public Ellipse ball;
 
@@ -34,23 +33,17 @@ namespace pang
 
         public Pallo()
         {
-            
-            double n = GetRandom();
-            System.Diagnostics.Debug.WriteLine("random: " + n); // debuggia
+            double n = GetRandom(); // sijainnin arvontaan
             PalloX = n;
-            n = GetRandom();
-            System.Diagnostics.Debug.WriteLine("random: " + n); // debuggia
-            PalloY = n;
-
             pallonKorkeus = 180;
-            angle = 40;
-            ball = new Ellipse();
+            Angle = 40;
             LuoPallo();
-            
         }
 
         public void LuoPallo()
         {
+            ball = new Ellipse();
+
             ball.Stroke = System.Windows.Media.Brushes.Red;
             ball.Fill = System.Windows.Media.Brushes.SkyBlue;
             ball.HorizontalAlignment = HorizontalAlignment.Left;
@@ -73,14 +66,12 @@ namespace pang
         private void timerpallo_Tick(object sender, EventArgs e)
         {
             // pallon liikutus sinikäyrällä
-            angle = angle + 0.1f;
-            if (angle > 360) { angle = 0; }
-            palloy = pallonKorkeus + Math.Cos(angle) * 140;
-
-            Angle = angle;
+            Angle = Angle + 0.1f;
+            if (Angle > 360) { Angle = 0; }
+            PalloY = pallonKorkeus + Math.Cos(Angle) * 140;
             // pallo_x++;
             Canvas.SetLeft(ball, PalloX);
-            Canvas.SetTop(ball, palloy);
+            Canvas.SetTop(ball, PalloY);
         }
 
 
