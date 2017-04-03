@@ -8,7 +8,7 @@
         Title="MainWindow" Height="600" Width="800"
         >
 
-    
+
 
     <Grid x:Name="gridi">
         <Canvas x:Name="scene" Grid.ColumnSpan="2">
@@ -16,7 +16,8 @@
                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                     <GradientStop Color="#FF0AF0C6" Offset="0"/>
                     <GradientStop Color="#FF7C4118" Offset="1"/>
-                    <GradientStop Color="#FE68958D" Offset="0.218"/>
+                    <GradientStop Color="#FE68958D" Offset="0.53"/>
+                    <GradientStop Color="#FE78502E" Offset="0.765"/>
                 </LinearGradientBrush>
             </Canvas.Background>
 

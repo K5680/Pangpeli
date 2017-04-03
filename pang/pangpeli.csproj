@@ -71,6 +71,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Ammus.cs" />
     <Compile Include="kuvat.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

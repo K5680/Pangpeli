@@ -48,6 +48,9 @@ namespace pang
         public static int pallojaMax = 12;
         Pallo[] palloLista = new Pallo[pallojaMax]; // luodaan tarvittava määrä pallo-olioita
 
+        public Rectangle re = new Rectangle(); // Ukon törmäyspuskurin testaukseen
+        public Rectangle rep = new Rectangle(); // Pallon törmäyspuskurin testaukseen
+
         public MainWindow()
         {
             InitializeComponent();
@@ -58,9 +61,28 @@ namespace pang
 
             heebo.LuoUkko();    // luodaan pelaaja
             AddCanvasChild(heebo.pelaaja); // ja liitetään canvasiin
-         // heebo2.LuoUkko();    // luodaan pelaaja nro 2 
-         // AddCanvasChild(heebo2.pelaaja); // ja liitetään canvasiin
-         
+                                           // heebo2.LuoUkko();    // luodaan pelaaja nro 2 
+                                           // AddCanvasChild(heebo2.pelaaja); // ja liitetään canvasiin
+
+
+            /*      Ukon törmäyspuskurin testaukseen
+            re.Fill = System.Windows.Media.Brushes.SkyBlue;
+            re.Width = 100;
+            re.Height = 100;
+
+            Canvas.SetTop(re, 100);
+            Canvas.SetLeft(re, 100);
+            AddCanvasChild(re);
+            /*      Pallon törmäyspuskurin testaukseen 
+            rep.Fill = System.Windows.Media.Brushes.SkyBlue;
+            rep.Width = 100;
+            rep.Height = 100;
+
+            Canvas.SetTop(rep, 100);
+            Canvas.SetLeft(rep, 100);
+            AddCanvasChild(rep);
+            */
+
             // luodaan pallo-instanssit
             for (int i = 0; i < pallojaMax; i++)    
             {
@@ -104,17 +126,34 @@ namespace pang
         // törmäyksen tunnistus timerilla
         private void timertörmäys_Tick(object sender, EventArgs e)
         {
+          /* Ukon törmäyspuskurin testaukseen
+            re.Width = heebo.ukkoPuskuri.Width;
+            re.Height = heebo.ukkoPuskuri.Height;
+
+            Canvas.SetLeft(re, heebo.ukkoPuskuri.X);
+            Canvas.SetTop(re, heebo.ukkoPuskuri.Y);
+
+            /* Pallon törmäyspuskurin testaukseen
+            rep.Width = palloLista[1].ball.ActualWidth;
+            rep.Height = palloLista[1].ball.ActualHeight;
+
+            Canvas.SetLeft(rep, palloLista[1].PalloX);
+            Canvas.SetTop(rep, palloLista[1].PalloY);
+            */
+
             // ukon ja pallojen välinen tunnistus
             for (int i = 0; i < pallojaMax; i++)    // käydään läpi kaikki pallo-instanssit
             {
                 // törmäyksen tunnistus Rect:illä
                 var x2 = Canvas.GetLeft(palloLista[i].ball);
                 var y2 = Canvas.GetTop(palloLista[i].ball);
-                Rect r2 = new Rect(x2, y2, palloLista[i].ball.ActualWidth, palloLista[i].ball.ActualHeight);
 
-                if (heebo.ukkoPuskuri.IntersectsWith(r2))
+                Rect r2 = new Rect(x2, y2, (palloLista[i].ball.ActualWidth), (palloLista[i].ball.ActualHeight));
+            
+                if (heebo.ukkoPuskuri.IntersectsWith(r2))   // osuuko ukko palloon
                 {
                     System.Diagnostics.Debug.WriteLine("OSUU palloon nro:" + i); // debuggia
+                    heebo.Osuuko = true; // jos osuu niin ukon "Osuuko"-bool on true (ja lähtee elämä)
                 }
             }
         }
