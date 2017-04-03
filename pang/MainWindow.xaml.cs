@@ -16,6 +16,7 @@ using System.Windows.Navigation;
 using System.Windows.Resources;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using static pang.Pallo;
 //using System.Drawing;
 
 namespace pang
@@ -26,7 +27,9 @@ namespace pang
     public partial class MainWindow : Window
     {
 
+
         public static MainWindow instance { get; private set; } // tämän instanssin kautta voidaan kutsua MainWindow-luokan metodeita
+        public static MainWindow Main; //  tarvitaanko?
 
         public static double ruudunLeveys;
         public string txt;
@@ -36,15 +39,14 @@ namespace pang
             get { return latauskansio; }
         }
 
+        List<Key> NapitAlhaallaLista = new List<Key>();     // KESKEN, usean näppäimen painallus tällä kuntoon?
 
         // ukon lisääminen sceneen
         Ukko heebo = new Ukko(); // luodaan Ukko-luokan instanssi, eli pelaaja
         Ukko heebo2 = new Ukko(); // Kaksinpeliin toinen pelaaja
 
-        public static MainWindow Main; //  tarvitaanko?
         public static int pallojaMax = 12;
         Pallo[] palloLista = new Pallo[pallojaMax]; // luodaan tarvittava määrä pallo-olioita
-
 
         public MainWindow()
         {
@@ -54,23 +56,36 @@ namespace pang
             this.Loaded += new RoutedEventHandler(MainWindow_Loaded);   // kutsutaan metodia, kun ikkuna on latautunut
             this.SizeChanged += new SizeChangedEventHandler(Window_SizeChanged);    // luodaan eventhandleri ikkunan koon muutokselle (tarvitaanko lopullisessa?)
 
-            for (int i = 0; i < pallojaMax; i++)    // luodaan pallo-instanssit
+            heebo.LuoUkko();    // luodaan pelaaja
+            AddCanvasChild(heebo.pelaaja); // ja liitetään canvasiin
+         // heebo2.LuoUkko();    // luodaan pelaaja nro 2 
+         // AddCanvasChild(heebo2.pelaaja); // ja liitetään canvasiin
+         
+            // luodaan pallo-instanssit
+            for (int i = 0; i < pallojaMax; i++)    
             {
                 palloLista[i] = new Pallo();
                 palloLista[i].Numero = i + 1;
 
                 if (i < 2) AddCanvasChild(palloLista[i].ball); // lisätään pallo-oliot sceneen (canvasiin), aluksi 2kpl
-            }
 
-            heebo.LuoUkko();    // luodaan pelaaja
-            AddCanvasChild(heebo.pelaaja); // ja liitetään canvasiin
+                switch (i)  // ensimmäisille palloille annetaan sijainti-arvot, ja suunnat
+                {
+                    case 0:
+                        palloLista[i].PalloX = 10; // ensimmäinen pallo vasempaan reunaan
+                        palloLista[i].palloMenossa = pallonSuunta.Oikea;
+                        break;
+                    case 1:
+                        palloLista[i].PalloX = this.Width-140; // toinen pallo oikeaan reunaan ruudunleveyden mukaan
+                        palloLista[i].palloMenossa = pallonSuunta.Vasen;
+                        break;
+                    default:
+                        break;
+                }
+            }
 
             //määritellään ikkunalle tapahtumankäsittelijä näppäimistön kuuntelua varten
             this.KeyDown += new KeyEventHandler(OnButtonKeyDown);
-
-
-            // heebo2.LuoUkko();    // luodaan pelaaja nro 2 
-            // AddCanvasChild(heebo2.pelaaja); // ja liitetään canvasiin
 
             // törmäyksen tunnistuksen ajastus
             DispatcherTimer timer_Törmäys = new DispatcherTimer(DispatcherPriority.Send);
@@ -97,9 +112,13 @@ namespace pang
                 var y2 = Canvas.GetTop(palloLista[i].ball);
                 Rect r2 = new Rect(x2, y2, palloLista[i].ball.ActualWidth, palloLista[i].ball.ActualHeight);
 
-                if (heebo.ukkoPuskuri.IntersectsWith(r2)) System.Diagnostics.Debug.WriteLine("OSUU palloon nro:" + i); // debuggia
+                if (heebo.ukkoPuskuri.IntersectsWith(r2))
+                {
+                    System.Diagnostics.Debug.WriteLine("OSUU palloon nro:" + i); // debuggia
+                }
             }
         }
+
 
         public void Soita(string ääni)
         {
@@ -112,18 +131,18 @@ namespace pang
                     //mediaElementti.Source = new Uri(MainWindow.Latauskansio + "fire.mp3", UriKind.Absolute);
                     //mediaElementti.LoadedBehavior = MediaState.Manual;
 
-                    System.Diagnostics.Debug.WriteLine(Latauskansio+"fire.mp3"); // debuggia
+                    System.Diagnostics.Debug.WriteLine(Latauskansio + "fire.mp3"); // debuggia
                     break;
                 case "jokumuu":
-                   
+
                     break;
             }
-                mediaElementti.Play();  // soita ääni
+            mediaElementti.Play();  // soita ääni
         }
 
 
         #region EVENTS
-        // näppäinkomennot
+        // näppäinkomennot                          // HUOM ei ota vastaan kuin yhden näppäimen kerrallaan, ongelma kaksinpelissä!
         private void OnButtonKeyDown(object sender, KeyEventArgs e)
         {
             // player ONE

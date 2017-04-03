@@ -47,10 +47,12 @@ namespace pang
         public int Elämät { get; set; }
         public DispatcherTimer timer_ukko; // ukon ajastin
         public bool SaakoLiikkua;
-     
+        public bool Osuuko { get; set; }
+
         public Ukko()
         {
             sijaintix = 350;
+            Osuuko = false;
             Askel = 5;
             UkonNopeus = 50; // millisekunnit
             Elämät = 3;

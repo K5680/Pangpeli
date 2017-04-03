@@ -14,7 +14,26 @@ namespace pang
 {
     class Pallo
     {
-        public double PalloX { get; set; }
+        public enum pallonSuunta
+        {
+            Vasen,
+            Oikea
+        }
+
+        public pallonSuunta palloMenossa { get; set; }
+        private double pallox;
+        public double PalloX {
+            get
+            {
+                return pallox;
+            }
+            set
+            {   // varmistetaan, ettei palloa aseteta ruudun ulkopuolelle
+                if (pallox < 0) pallox = 0;
+                if (pallox > MainWindow.instance.Width) pallox = 100; //MainWindow.instance.Width-140;
+                pallox = value;
+            }
+        }
         public double PalloY { get; set; }
         public double PallonKorkeus { get; set; }
         public double Angle { get; set; }
@@ -35,7 +54,7 @@ namespace pang
         {
             double n = GetRandom(); // sijainnin arvontaan
             PalloX = n;
-            pallonKorkeus = 180;
+            pallonKorkeus = 220;
             Angle = 40;
             LuoPallo();
         }
@@ -63,12 +82,26 @@ namespace pang
             timer_pallo.Start();
         }
 
+        // pallon liikkeen päivitys taimerilla
         private void timerpallo_Tick(object sender, EventArgs e)
         {
-            // pallon liikutus sinikäyrällä
+            // pallon liikutus sinikäyrällä ylös ja alas
             Angle = Angle + 0.1f;
             if (Angle > 360) { Angle = 0; }
             PalloY = pallonKorkeus + Math.Cos(Angle) * 140;
+
+            // pallon liikutus suunnan mukaan
+            if (palloMenossa == pallonSuunta.Oikea)
+            {
+                PalloX = PalloX + 5;    // pallon liikutus oikealla
+                if (PalloX > MainWindow.ruudunLeveys - ball.Width) palloMenossa = pallonSuunta.Vasen; // otetaan pallon leveys huomioon seinään törmätessä
+            }
+            else
+            {
+                PalloX = PalloX - 5; // pallon liikutus vasemmalle
+                if (PalloX < 0) palloMenossa = pallonSuunta.Oikea;
+            }
+
             // pallo_x++;
             Canvas.SetLeft(ball, PalloX);
             Canvas.SetTop(ball, PalloY);
@@ -77,26 +110,18 @@ namespace pang
 
     }
 
-    /*
-    // törmäyksen tunnistus Rect:illä
-    var x2 = Canvas.GetLeft(pallo);
-    var y2 = Canvas.GetTop(pallo);
-    Rect r2 = new Rect(x2, y2, pallo.ActualWidth, pallo.ActualHeight);
-            if (heebo.ukkoPuskuri.IntersectsWith(r2)) System.Diagnostics.Debug.WriteLine("OSUU !! " + pallo_y); // debuggia
 
-
-            // törmäyksen tunnistus etäisyyden mukaan, kumpi parempi? Onko vaihtoehtoja?
+          /*  // törmäyksen tunnistus etäisyyden mukaan, kumpi parempi? Onko vaihtoehtoja?
             double xet = Canvas.GetLeft(pallo); //pallon x
-    double yet = Canvas.GetTop(pallo); // pallon y
-    double D = Math.Sqrt((xet - heebo.SijaintiX) * (xet - heebo.SijaintiX) + (yet - 350) * (yet - 350));
+            double yet = Canvas.GetTop(pallo); // pallon y
+            double D = Math.Sqrt((xet - heebo.SijaintiX) * (xet - heebo.SijaintiX) + (yet - 350) * (yet - 350));
 
             if (D < (ball.Height))
             {
                 var a = Console.ReadLine();
                 System.Diagnostics.Debug.WriteLine("Pallon etäisyysmittarisysteemillä osuu... " + D + " " + yet); // debuggia
             }
-
-*/
+        */
 
     
 
