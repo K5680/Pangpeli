@@ -98,7 +98,7 @@ namespace pang
 
         #region EVENTS
         // näppäinkomennot
-        private void Window_KeyDown(object sender, KeyEventArgs e)
+        private void OnButtonKeyDown(object sender, KeyEventArgs e)
         {
             // player ONE
             if (e.Key == Key.Right)
