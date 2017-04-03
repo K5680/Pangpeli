@@ -36,12 +36,7 @@ namespace pang
             get { return latauskansio; }
         }
 
-        // tällä metodilla saadaan lisättyä canvakseen elementti toisen luokan kautta
-        public void AddCanvasChild(UIElement child)
-        {
-            scene.Children.Add(child);
-        }
-       
+
         // ukon lisääminen sceneen
         Ukko heebo = new Ukko(); // luodaan Ukko-luokan instanssi, eli pelaaja
         Ukko heebo2 = new Ukko(); // Kaksinpeliin toinen pelaaja
@@ -62,18 +57,27 @@ namespace pang
             for (int i = 0; i < pallojaMax; i++)    // luodaan pallo-instanssit
             {
                 palloLista[i] = new Pallo();
-                palloLista[i].Numero = i + 1;               
+                palloLista[i].Numero = i + 1;
+
+                if (i < 2) AddCanvasChild(palloLista[i].ball); // lisätään pallo-oliot sceneen (canvasiin), aluksi 2kpl
             }
-
-            AddCanvasChild(palloLista[1].ball); // lisätään pallo-oliot sceneen (canvasiin)
-            AddCanvasChild(palloLista[2].ball); // aluksi 2 kpl
-
+            
             heebo.LuoUkko();    // luodaan pelaaja
             AddCanvasChild(heebo.pelaaja); // ja liitetään canvasiin
 
+            //määritellään ikkunalle tapahtumankäsittelijä näppäimistön kuuntelua varten
+            this.KeyDown += new KeyEventHandler(OnButtonKeyDown);
+            
+
             // heebo2.LuoUkko();    // luodaan pelaaja nro 2 
             // AddCanvasChild(heebo2.pelaaja); // ja liitetään canvasiin
-    }
+        }
+
+        // tällä metodilla saadaan lisättyä canvakseen elementti toisen luokan kautta
+        public void AddCanvasChild(UIElement child)
+        {
+            scene.Children.Add(child);
+        }
 
         public void Soita(string ääni)
         {
