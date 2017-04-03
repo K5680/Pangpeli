@@ -47,9 +47,7 @@ namespace pang
         public int Elämät { get; set; }
         public DispatcherTimer timer_ukko; // ukon ajastin
         public bool SaakoLiikkua;
-
-        
-
+     
         public Ukko()
         {
             sijaintix = 350;
@@ -76,6 +74,7 @@ namespace pang
             ukkoPuskuri.X = Canvas.GetLeft(pelaaja) + 20;
             ukkoPuskuri.Y = Canvas.GetTop(pelaaja) + 20;
             ukkoPuskuri.Height = pelaaja.ActualHeight;
+
             var apu = pelaaja.ActualWidth;  // pelaajaa luodessa actualWidth on 0, joka ei käy. Siksi tämä vertailu... Onko muuta keinoa?
             if (apu > 0)
             {

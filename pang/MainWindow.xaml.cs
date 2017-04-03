@@ -25,7 +25,7 @@ namespace pang
     /// </summary>
     public partial class MainWindow : Window
     {
-  
+
         public static MainWindow instance { get; private set; } // tämän instanssin kautta voidaan kutsua MainWindow-luokan metodeita
 
         public static double ruudunLeveys;
@@ -52,7 +52,7 @@ namespace pang
             instance = this;    // tämän kautta kutsutaan MainWindow-instanssin metodeita
 
             this.Loaded += new RoutedEventHandler(MainWindow_Loaded);   // kutsutaan metodia, kun ikkuna on latautunut
-            this.SizeChanged += new SizeChangedEventHandler(Window_SizeChanged);    // luodaan eventhandleri ikkunan koon muutokselle (en tiedä tarvitaanko lopulta)
+            this.SizeChanged += new SizeChangedEventHandler(Window_SizeChanged);    // luodaan eventhandleri ikkunan koon muutokselle (tarvitaanko lopullisessa?)
 
             for (int i = 0; i < pallojaMax; i++)    // luodaan pallo-instanssit
             {
@@ -61,22 +61,44 @@ namespace pang
 
                 if (i < 2) AddCanvasChild(palloLista[i].ball); // lisätään pallo-oliot sceneen (canvasiin), aluksi 2kpl
             }
-            
+
             heebo.LuoUkko();    // luodaan pelaaja
             AddCanvasChild(heebo.pelaaja); // ja liitetään canvasiin
 
             //määritellään ikkunalle tapahtumankäsittelijä näppäimistön kuuntelua varten
             this.KeyDown += new KeyEventHandler(OnButtonKeyDown);
-            
+
 
             // heebo2.LuoUkko();    // luodaan pelaaja nro 2 
             // AddCanvasChild(heebo2.pelaaja); // ja liitetään canvasiin
+
+            // törmäyksen tunnistuksen ajastus
+            DispatcherTimer timer_Törmäys = new DispatcherTimer(DispatcherPriority.Send);
+            timer_Törmäys.Interval = TimeSpan.FromMilliseconds(50);       // Set the Interval
+            timer_Törmäys.Tick += new EventHandler(timertörmäys_Tick);      // Set the callback to invoke every tick time
+            timer_Törmäys.Start();
+
         }
 
         // tällä metodilla saadaan lisättyä canvakseen elementti toisen luokan kautta
         public void AddCanvasChild(UIElement child)
         {
             scene.Children.Add(child);
+        }
+
+        // törmäyksen tunnistus timerilla
+        private void timertörmäys_Tick(object sender, EventArgs e)
+        {
+            // ukon ja pallojen välinen tunnistus
+            for (int i = 0; i < pallojaMax; i++)    // käydään läpi kaikki pallo-instanssit
+            {
+                // törmäyksen tunnistus Rect:illä
+                var x2 = Canvas.GetLeft(palloLista[i].ball);
+                var y2 = Canvas.GetTop(palloLista[i].ball);
+                Rect r2 = new Rect(x2, y2, palloLista[i].ball.ActualWidth, palloLista[i].ball.ActualHeight);
+
+                if (heebo.ukkoPuskuri.IntersectsWith(r2)) System.Diagnostics.Debug.WriteLine("OSUU palloon nro:" + i); // debuggia
+            }
         }
 
         public void Soita(string ääni)
