@@ -29,11 +29,13 @@ namespace pang
         public Rect ukkoPuskuri = new Rect(); // laatikko, joka toimii alueena, jolta törmäys tunnistetaan
         private double sijaintix;
         private double sijaintiy = 350;
-        public static int ammuksiaMax = 10;             // ammusten maksimimäärä ruudulla
+        private int ammuksiaMax = 3;             // ammusten maksimimäärä ruudulla
+        
+        private int ammusTiheys = 700;
 
         public static List<Ammus> ammukset = new List<Ammus>();    // ammus-lista   
         private int ammusIlmassaNro = 0;                           // pitää yllä tietoa ammusten numeroista
-        private int kertaalleen;
+        
 
         public double SijaintiY
         {
@@ -120,7 +122,7 @@ namespace pang
             pelaaja.Fill = kuva; // maalataan ukko-tekstuuri laatikon päälle
             LiikutaUkkoa(0);    // piirtää ukon (laatikon) ruutuun kertaalleen, muuten se on pelin alkaessa nurkassa
             SaakoLiikkua = true;
-            Askel = 5;
+            Askel = 15;
             
 
             // AJASTIMET PELAAJALLE
@@ -132,7 +134,7 @@ namespace pang
 
             // Ampumistiheyden ajastin
             DispatcherTimer timer_tiheys = new DispatcherTimer(DispatcherPriority.Send);
-            timer_tiheys.Interval = TimeSpan.FromMilliseconds(800);    // asetetaan intervalli, jolla voi ampua
+            timer_tiheys.Interval = TimeSpan.FromMilliseconds(ammusTiheys);    // asetetaan intervalli, jolla voi ampua
             timer_tiheys.Tick += new EventHandler(timertiheys_Tick);      // Set the callback to invoke every tick time
             timer_tiheys.Start();
         }
@@ -169,13 +171,14 @@ namespace pang
             // ammukset...
             if (SaakoLiikkua && !Osuuko && SaakoAmpua)    // jos on liikkumislupa, ampumislupa, eikä ole pallo osunut ukkoon, niin voidaan ampua
             {
-                MainWindow.instance.Soita("ampu");    // soita ampu-soundi
 
-                if (ammukset.Count < 10) // ammutaan ammuksia, maksimissaan 10 ilmassa    
+                if (ammukset.Count < ammuksiaMax+1) // ammutaan ammuksia, maksimissaan 10 ilmassa    
                 {  
-                    ammukset.Add(new Ammus{ AmmusY = 350, AmmusX = sijaintix + 60, AmmuksenNopeus = 10, SaaAmpua = true, AmmusNro = ammusIlmassaNro});
+                    ammukset.Add(new Ammus{ AmmusY = 370, AmmusX = sijaintix + 57, AmmuksenNopeus = 10, SaaAmpua = true, AmmusNro = ammusIlmassaNro});
                     ammusIlmassaNro += 1;
                     if (ammusIlmassaNro == 10) ammusIlmassaNro = 1;
+
+                    MainWindow.instance.Soita("ampu");    // soita ampu-soundi
                 }
 
 
@@ -210,9 +213,7 @@ namespace pang
             
         }
 
-        
-        
-
+        // nollataan ajastimella ampumistiheys
         private void timertiheys_Tick(object sender, EventArgs e)
         {
             SaakoAmpua = true;
