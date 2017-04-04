@@ -142,7 +142,7 @@ namespace pang
 
         private void timerukko_Tick(object sender, EventArgs e)
         {
-            SaakoLiikkua = true;
+            SaakoLiikkua = true;         
 
             // mitä tehdään, jos ukkoon osuu pallo
             if (Osuuko == true)
@@ -162,6 +162,8 @@ namespace pang
                 }
 
             }
+
+            
         }
 
 

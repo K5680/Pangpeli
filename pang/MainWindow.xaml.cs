@@ -126,20 +126,24 @@ namespace pang
         // törmäyksen tunnistus timerilla
         private void timertörmäys_Tick(object sender, EventArgs e)
         {
-          /* Ukon törmäyspuskurin testaukseen
-            re.Width = heebo.ukkoPuskuri.Width;
-            re.Height = heebo.ukkoPuskuri.Height;
+            // päivitetään ruutuun elämät
+            pelaajanElämät.Text = heebo.Elämät.ToString();
 
-            Canvas.SetLeft(re, heebo.ukkoPuskuri.X);
-            Canvas.SetTop(re, heebo.ukkoPuskuri.Y);
 
-            /* Pallon törmäyspuskurin testaukseen
-            rep.Width = palloLista[1].ball.ActualWidth;
-            rep.Height = palloLista[1].ball.ActualHeight;
+            /* Ukon törmäyspuskurin testaukseen
+              re.Width = heebo.ukkoPuskuri.Width;
+              re.Height = heebo.ukkoPuskuri.Height;
 
-            Canvas.SetLeft(rep, palloLista[1].PalloX);
-            Canvas.SetTop(rep, palloLista[1].PalloY);
-            */
+              Canvas.SetLeft(re, heebo.ukkoPuskuri.X);
+              Canvas.SetTop(re, heebo.ukkoPuskuri.Y);
+
+              /* Pallon törmäyspuskurin testaukseen
+              rep.Width = palloLista[1].ball.ActualWidth;
+              rep.Height = palloLista[1].ball.ActualHeight;
+
+              Canvas.SetLeft(rep, palloLista[1].PalloX);
+              Canvas.SetTop(rep, palloLista[1].PalloY);
+              */
 
             // ukon ja pallojen välinen tunnistus
             for (int i = 0; i < pallojaMax; i++)    // käydään läpi kaikki pallo-instanssit
