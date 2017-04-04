@@ -30,8 +30,10 @@ namespace pang
         private double sijaintix;
         private double sijaintiy = 350;
         public static int ammuksiaMax = 10;             // ammusten maksimimäärä ruudulla
-        public static Ammus[] ammusLista = new Ammus[ammuksiaMax];    // ammus-lista
-        private int ammusIlmassaNro = 0;
+
+        public static List<Ammus> ammukset = new List<Ammus>();    // ammus-lista   
+        private int ammusIlmassaNro = 0;                           // pitää yllä tietoa ammusten numeroista
+        private int kertaalleen;
 
         public double SijaintiY
         {
@@ -63,6 +65,7 @@ namespace pang
         public int Elämät { get; set; }
         public DispatcherTimer timer_ukko; // ukon ajastin
         public bool SaakoLiikkua;
+        public bool SaakoAmpua;
         public bool Osuuko { get; set; }
 
         public Ukko()
@@ -101,9 +104,7 @@ namespace pang
             else
             {
                 ukkoPuskuri.Width = 15;
-            }         
-
-            System.Diagnostics.Debug.WriteLine(" " + pelaaja.ActualWidth); // debuggia
+            }                     
         }
 
 
@@ -120,21 +121,20 @@ namespace pang
             LiikutaUkkoa(0);    // piirtää ukon (laatikon) ruutuun kertaalleen, muuten se on pelin alkaessa nurkassa
             SaakoLiikkua = true;
             Askel = 5;
-            //MainWindow.instance.AddCanvasChild(pelaaja);          // tämä tehdään pääkoodissa, koska ei onnistu täällä?
-            //ajastin
+            
+
+            // AJASTIMET PELAAJALLE
+            // Liikkumisen ajastin
             timer_ukko = new DispatcherTimer(DispatcherPriority.Send);
             timer_ukko.Interval = TimeSpan.FromMilliseconds(UkonNopeus);       // Set the Interval
             timer_ukko.Tick += new EventHandler(timerukko_Tick);      // Set the callback to invoke every tick time
             timer_ukko.Start();
 
-            // luodaan ammus-instanssit
-/*            for (int i = 0; i < ammuksiaMax; i++)
-            {
-                ammusLista[i] = new Ammus();
-                ammusLista[i].AmmusNro = i + 1;
-                
-            }*/
-
+            // Ampumistiheyden ajastin
+            DispatcherTimer timer_tiheys = new DispatcherTimer(DispatcherPriority.Send);
+            timer_tiheys.Interval = TimeSpan.FromMilliseconds(800);    // asetetaan intervalli, jolla voi ampua
+            timer_tiheys.Tick += new EventHandler(timertiheys_Tick);      // Set the callback to invoke every tick time
+            timer_tiheys.Start();
         }
 
 
@@ -165,26 +165,57 @@ namespace pang
 
         public void Ammu()
         {
-         
-            // TOIMII YHDELLÄ, PITÄISI SAADA VAIHTUMAAN SEURAAVAAN INSTANSSIIN
-            
+                   
             // ammukset...
-            if (SaakoLiikkua && !Osuuko)    // jos on liikkumislupa, eikä ole pallo osunut ukkoon, niin voidaan ampua
+            if (SaakoLiikkua && !Osuuko && SaakoAmpua)    // jos on liikkumislupa, ampumislupa, eikä ole pallo osunut ukkoon, niin voidaan ampua
             {
                 MainWindow.instance.Soita("ampu");    // soita ampu-soundi
 
-                if (ammusIlmassaNro < 10)
-                {  // ammutaan ammuksia vuorotellen, maksimissaan 10 ilmassa    
-                    ammusLista[ammusIlmassaNro] = new Ammus();
-                    //ammusLista[ammusIlmassaNro].AmmusNro = ammusIlmassaNro
-
-                    ammusLista[ammusIlmassaNro].LiikutaAmmusta();
-                    ammusLista[ammusIlmassaNro].AmmusX = sijaintix + 60;
+                if (ammukset.Count < 10) // ammutaan ammuksia, maksimissaan 10 ilmassa    
+                {  
+                    ammukset.Add(new Ammus{ AmmusY = 350, AmmusX = sijaintix + 60, AmmuksenNopeus = 10, SaaAmpua = true, AmmusNro = ammusIlmassaNro});
                     ammusIlmassaNro += 1;
-                    
+                    if (ammusIlmassaNro == 10) ammusIlmassaNro = 1;
                 }
-                
+
+
+                System.Diagnostics.Debug.WriteLine("ammukset.Count  " + ammukset.Count); // debuggia              
+                foreach (Ammus ammus in ammukset)
+                {
+                        System.Diagnostics.Debug.WriteLine("lista: " + ammus.AmmusNro); // debuggia
+                }
+                SaakoAmpua = false; // rajataan ampumistiheyttä
             }
+        }
+
+        // tällä metodilla saadaan ammus poistettua kentästä Ammus-luokasta kutsumalla
+        public void PoistaAmmusIlmasta(int n)
+        {
+            try
+            {
+                System.Diagnostics.Debug.WriteLine(" --------------- "); // debuggia
+                System.Diagnostics.Debug.WriteLine("ammukset.Count " + ammukset.Count); // debuggia
+                System.Diagnostics.Debug.WriteLine("removeAt n " + n); // debuggia               
+                System.Diagnostics.Debug.WriteLine("poistuva ammusnro " + n); // debuggia           
+                System.Diagnostics.Debug.WriteLine(" --------------- "); // debuggia
+
+                ammukset.RemoveAt(0);    // poistetaan listasta alin
+
+            }
+            catch (Exception ex) 
+            {
+
+                MessageBox.Show(""+ex);
+            }
+            
+        }
+
+        
+        
+
+        private void timertiheys_Tick(object sender, EventArgs e)
+        {
+            SaakoAmpua = true;
         }
 
     }

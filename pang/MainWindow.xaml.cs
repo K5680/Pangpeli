@@ -48,8 +48,8 @@ namespace pang
         public static int pallojaMax = 12;
         Pallo[] palloLista = new Pallo[pallojaMax]; // luodaan tarvittava määrä pallo-olioita
 
-        public Rectangle re = new Rectangle(); // Ukon törmäyspuskurin testaukseen
-        public Rectangle rep = new Rectangle(); // Pallon törmäyspuskurin testaukseen
+      //  public Rectangle re = new Rectangle(); // Ukon törmäyspuskurin testaukseen
+      //  public Rectangle rep = new Rectangle(); // Pallon törmäyspuskurin testaukseen
 
         public MainWindow()
         {

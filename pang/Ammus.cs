@@ -18,6 +18,7 @@ namespace pang
         public double AmmuksenNopeus;
         public bool SaaAmpua;
         public int AmmusNro;
+        public double AmpumisTiheys;        // ukolla muuttuja?
 
         public Ellipse bullet;
 
@@ -25,6 +26,7 @@ namespace pang
         {
             SaaAmpua = true;
             LuoAmmus();
+            LiikutaAmmusta();
         }
 
 
@@ -38,7 +40,6 @@ namespace pang
             bullet.VerticalAlignment = VerticalAlignment.Center;
             bullet.Width = 10;
             bullet.Height = 10;
-
         }
 
 
@@ -51,7 +52,7 @@ namespace pang
                 // bullet.Fill = tekstuuri;
                 MainWindow.instance.scene.Children.Add(bullet);  // lisätään bullet canvasiin (scene -nimeltään)
 
-                // pallon ajastin
+                // ammuksen ajastin
                 DispatcherTimer timer_ammus = new DispatcherTimer(DispatcherPriority.Send);
                 timer_ammus.Interval = TimeSpan.FromMilliseconds(50);       // Set the Interval
                 timer_ammus.Tick += new EventHandler(timerammus_Tick);      // Set the callback to invoke every tick time
@@ -59,13 +60,14 @@ namespace pang
 
                 // ammuksen lähtöpiste y-suunnassa
                 AmmusY = 350;
-            }
 
+
+            }
         }
 
         private void timerammus_Tick(object sender, EventArgs e)
         {
-            AmmusY = AmmusY - 10;
+            if (AmmuksenNopeus > 0) AmmusY = AmmusY - AmmuksenNopeus;  // ruudun yli lennettyä nopeus nollataan
             // ammuksen liikutus
             Canvas.SetLeft(bullet, AmmusX);
             Canvas.SetTop(bullet, AmmusY);
@@ -73,12 +75,16 @@ namespace pang
             if (AmmusY < 0) PoisAmmus();
         }
 
-        private void PoisAmmus()  // destruktori
+        private void PoisAmmus()  
         {
-            MainWindow.instance.scene.Children.Remove(bullet);  // lisätään bullet canvasiin (scene -nimeltään)
-            // poista listasta?
-
+            MainWindow.instance.scene.Children.Remove(bullet);  // poistetaan bullet canvasilta (scene)
+                                                                // poista listasta?
+            Ukko ukk = new pang.Ukko();
+            if (AmmusNro > 0) ukk.PoistaAmmusIlmasta(AmmusNro);  // lista ei saa tyhjentyä, siksi ekaa ei voi poistaa        ???
+            AmmuksenNopeus = 0;
+            AmmusY = 1000;
         }
     }
+
 
 }
