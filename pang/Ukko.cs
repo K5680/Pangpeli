@@ -152,18 +152,15 @@ namespace pang
                            
                 LiikutaUkkoa(0);   // ukon liikutus ja paikan päivitys
 
-                if (sijaintiy > MainWindow.instance.Height)
+                if (sijaintiy > MainWindow.instance.Height) // Kun ukko on tippunut ruudun alapuolelle...
                 {
-                    Elämät -= 1;    // vähennetään elämä
-                    Osuuko = false; // nollataan sijainti
-                    sijaintix = 350;
+                    Elämät -= 1;        // vähennetään elämä
+                    Osuuko = false; 
+                    sijaintix = 350;    // nollataan sijainti
                     sijaintiy = 350;
-                    LiikutaUkkoa(0);   // ukko piirtyy uudestaan ruutuun
+                    LiikutaUkkoa(0);    // ukko piirtyy uudestaan ruutuun
                 }
-
             }
-
-            
         }
 
 
@@ -178,17 +175,15 @@ namespace pang
                 {  
                     ammukset.Add(new Ammus{ AmmusY = 370, AmmusX = sijaintix + 57, AmmuksenNopeus = 10, SaaAmpua = true, AmmusNro = ammusIlmassaNro});
                     ammusIlmassaNro += 1;
-                    if (ammusIlmassaNro == 10) ammusIlmassaNro = 1;
+                    if (ammusIlmassaNro == 10) ammusIlmassaNro = 0; // ammus-instanssin numeroa kierrätetään 0-10
 
                     MainWindow.instance.Soita("ampu");    // soita ampu-soundi
                 }
-
-
-                System.Diagnostics.Debug.WriteLine("ammukset.Count  " + ammukset.Count); // debuggia              
-                foreach (Ammus ammus in ammukset)
-                {
-                        System.Diagnostics.Debug.WriteLine("lista: " + ammus.AmmusNro); // debuggia
-                }
+//                System.Diagnostics.Debug.WriteLine("ammukset.Count  " + ammukset.Count); // debuggia              
+//                foreach (Ammus ammus in ammukset)
+//                {
+//                        System.Diagnostics.Debug.WriteLine("lista: " + ammus.AmmusNro); // debuggia
+//                }
                 SaakoAmpua = false; // rajataan ampumistiheyttä
             }
         }
@@ -210,7 +205,7 @@ namespace pang
             catch (Exception ex) 
             {
 
-                MessageBox.Show(""+ex);
+                MessageBox.Show("Ongelma ammus-instanssien poistamisessa..."+ex);
             }
             
         }

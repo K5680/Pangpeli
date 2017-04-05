@@ -125,10 +125,8 @@ namespace pang
 
         // törmäyksen tunnistus timerilla
         private void timertörmäys_Tick(object sender, EventArgs e)
-        {
-            // päivitetään ruutuun elämät
-            pelaajanElämät.Text = heebo.Elämät.ToString();
-
+        {          
+            pelaajanElämät.Text = heebo.Elämät.ToString();  // päivitetään ruutuun elämät
 
             /* Ukon törmäyspuskurin testaukseen
               re.Width = heebo.ukkoPuskuri.Width;
@@ -153,6 +151,10 @@ namespace pang
                 var y2 = Canvas.GetTop(palloLista[i].ball);
 
                 Rect r2 = new Rect(x2, y2, (palloLista[i].ball.ActualWidth), (palloLista[i].ball.ActualHeight));
+
+                
+                // osuuko ammus palloon, koodi tähän??          TODO
+
             
                 if (heebo.ukkoPuskuri.IntersectsWith(r2))   // osuuko ukko palloon
                 {

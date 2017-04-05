@@ -32,6 +32,7 @@
             </Canvas.Triggers>
             <TextBlock x:Name="txtX" Height="42" Canvas.Left="267" TextWrapping="Wrap" Text=" " Canvas.Top="367" Width="240"/>
             <MediaElement Height="20" Margin="10,10,108,0" LoadedBehavior="Manual" Name="mediaElementti" VerticalAlignment="Top"/>
+            
             <Rectangle HorizontalAlignment="Left" Height="46" Stroke="Black" VerticalAlignment="Top" Width="792">
                 <Rectangle.Fill>
                     <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
