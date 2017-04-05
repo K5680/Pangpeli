@@ -21,6 +21,7 @@ namespace pang
         public double AmpumisTiheys;        // ukolla muuttuja?
 
         public Ellipse bullet;
+        public Rect ammusPuskuri = new Rect(); // laatikko, joka toimii alueena, jolta törmäys tunnistetaan
 
         public Ammus()
         {
@@ -61,7 +62,11 @@ namespace pang
                 // ammuksen lähtöpiste y-suunnassa
                 AmmusY = 350;
 
-
+                // törmäyksen tunnistusta varten pidetään "rect"-ammuksen mukana
+                ammusPuskuri.X = Canvas.GetLeft(bullet) + 5;
+                ammusPuskuri.Y = Canvas.GetTop(bullet) + 5;
+                ammusPuskuri.Height = bullet.ActualHeight;
+                ammusPuskuri.Width = bullet.ActualWidth;
             }
         }
 
@@ -79,8 +84,10 @@ namespace pang
         {
             MainWindow.instance.scene.Children.Remove(bullet);  // poistetaan bullet canvasilta (scene)
                                                                 // poista listasta?
+            
             Ukko ukk = new pang.Ukko();
-            if (AmmusNro > 0) ukk.PoistaAmmusIlmasta(AmmusNro);  // lista ei saa tyhjentyä, siksi ekaa ei voi poistaa        ???
+
+            if (AmmusNro > 0) ukk.PoistaAmmusIlmasta(0);  // poistetaan instanssi listasta
             AmmuksenNopeus = 0;
             AmmusY = 1000;
         }

@@ -114,15 +114,9 @@ namespace pang
             timer_Törmäys.Interval = TimeSpan.FromMilliseconds(50);       // Set the Interval
             timer_Törmäys.Tick += new EventHandler(timertörmäys_Tick);      // Set the callback to invoke every tick time
             timer_Törmäys.Start();
-
         }
 
-        // tällä metodilla saadaan lisättyä canvakseen elementti toisen luokan kautta
-        public void AddCanvasChild(UIElement child)
-        {
-            scene.Children.Add(child);
-        }
-
+       
         // törmäyksen tunnistus timerilla
         private void timertörmäys_Tick(object sender, EventArgs e)
         {          
@@ -146,17 +140,22 @@ namespace pang
             // ukon ja pallojen välinen tunnistus
             for (int i = 0; i < pallojaMax; i++)    // käydään läpi kaikki pallo-instanssit
             {
-                // törmäyksen tunnistus Rect:illä
+                // törmäyksen tunnistus Rect:illä, luodaan pallon ympärille rect törmäystunnistusta varten
                 var x2 = Canvas.GetLeft(palloLista[i].ball);
                 var y2 = Canvas.GetTop(palloLista[i].ball);
-
                 Rect r2 = new Rect(x2, y2, (palloLista[i].ball.ActualWidth), (palloLista[i].ball.ActualHeight));
 
+                // käydään läpi kaikki ammukset, osuvatko kyseiseen palloon
+                foreach (Ammus ammus in Ukko.ammukset)
+                {
+                    if (ammus.ammusPuskuri.IntersectsWith(r2))
+                    {
+                        System.Diagnostics.Debug.WriteLine("    Ammus osui palloon! Ammuksen nro: " + ammus.AmmusNro); // debuggia
+                    }
+                }
                 
-                // osuuko ammus palloon, koodi tähän??          TODO
-
-            
-                if (heebo.ukkoPuskuri.IntersectsWith(r2))   // osuuko ukko palloon
+                // Osuuko ukko palloon
+                if (heebo.ukkoPuskuri.IntersectsWith(r2))   
                 {
                     System.Diagnostics.Debug.WriteLine("OSUU palloon nro:" + i); // debuggia
                     heebo.Osuuko = true; // jos osuu niin ukon "Osuuko"-bool on true (ja lähtee elämä)
@@ -183,6 +182,18 @@ namespace pang
                     break;
             }
             mediaElementti.Play();  // soita ääni
+        }
+
+        // tällä metodilla saadaan lisättyä canvakseen elementti toisen luokan kautta
+        public void AddCanvasChild(UIElement child)
+        {
+            scene.Children.Add(child);
+        }
+
+        public void PoistaAmmusJokaIlmassa()
+        {
+            System.Diagnostics.Debug.WriteLine("poista ammus-instanssi:" + Ukko.ammukset.Count()); // debuggia
+            //heebo.ammukset.RemoveAt(0);    // poistetaan listasta alin
         }
 
 
@@ -219,7 +230,7 @@ namespace pang
             }
 
             if (e.Key == Key.Space)
-            {
+            {                
                 heebo.Ammu();
             }
         }

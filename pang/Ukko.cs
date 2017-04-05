@@ -33,7 +33,7 @@ namespace pang
         
         private int ammusTiheys = 700;
 
-        public static List<Ammus> ammukset = new List<Ammus>();    // ammus-lista   
+        public List<Ammus> ammukset = new List<Ammus>();    // ammus-lista   
         private int ammusIlmassaNro = 0;                           // pitää yllä tietoa ammusten numeroista
         
 
@@ -106,7 +106,9 @@ namespace pang
             else
             {
                 ukkoPuskuri.Width = 15;
-            }                     
+            }
+
+            // debugilla, mikä on width?                            TODO
         }
 
 
@@ -123,7 +125,6 @@ namespace pang
             LiikutaUkkoa(0);    // piirtää ukon (laatikon) ruutuun kertaalleen, muuten se on pelin alkaessa nurkassa
             SaakoLiikkua = true;
             Askel = 15;
-            
 
             // AJASTIMET PELAAJALLE
             // Liikkumisen ajastin
@@ -175,16 +176,18 @@ namespace pang
                 {  
                     ammukset.Add(new Ammus{ AmmusY = 370, AmmusX = sijaintix + 57, AmmuksenNopeus = 10, SaaAmpua = true, AmmusNro = ammusIlmassaNro});
                     ammusIlmassaNro += 1;
-                    if (ammusIlmassaNro == 10) ammusIlmassaNro = 0; // ammus-instanssin numeroa kierrätetään 0-10
+                    if (ammusIlmassaNro == 10) ammusIlmassaNro = 0; // ammus-instanssin numeroa kierrätetään 1-10
 
+                    System.Diagnostics.Debug.WriteLine("  AMMUTAAN, COUNT " + ammukset.Count); // debuggia
                     MainWindow.instance.Soita("ampu");    // soita ampu-soundi
                 }
-//                System.Diagnostics.Debug.WriteLine("ammukset.Count  " + ammukset.Count); // debuggia              
-//                foreach (Ammus ammus in ammukset)
-//                {
-//                        System.Diagnostics.Debug.WriteLine("lista: " + ammus.AmmusNro); // debuggia
-//                }
-                SaakoAmpua = false; // rajataan ampumistiheyttä
+
+/*                System.Diagnostics.Debug.WriteLine("ammukset.Count  " + ammukset.Count); // debuggia              
+                foreach (Ammus ammus in ammukset)
+                {
+                        System.Diagnostics.Debug.WriteLine("lista: " + ammus.AmmusNro); // debuggia
+                }
+                SaakoAmpua = false; // rajataan ampumistiheyttä  */
             }
         }
 
@@ -199,12 +202,13 @@ namespace pang
                 System.Diagnostics.Debug.WriteLine("poistuva ammusnro " + n); // debuggia           
                 System.Diagnostics.Debug.WriteLine(" --------------- "); // debuggia
 
+                // POISTON TARKKAILU TEHTÄVÄ TÄNNE              !!          POIS AMMUS-LUOKASTA
+
                 ammukset.RemoveAt(0);    // poistetaan listasta alin
 
             }
             catch (Exception ex) 
             {
-
                 MessageBox.Show("Ongelma ammus-instanssien poistamisessa..."+ex);
             }
             
