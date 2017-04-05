@@ -33,7 +33,7 @@ namespace pang
         
         private int ammusTiheys = 700;
 
-        public List<Ammus> ammukset = new List<Ammus>();    // ammus-lista   
+        public static List<Ammus> ammukset = new List<Ammus>();    // ammus-lista   
         private int ammusIlmassaNro = 0;                           // pitää yllä tietoa ammusten numeroista
         
 
@@ -79,8 +79,8 @@ namespace pang
             Elämät = 3;
             pelaaja = new System.Windows.Shapes.Rectangle();    // pelaajan hahmon pohjaksi luodaan rectangle
             LuoUkko();
+        }
 
-            }
         public void LiikutaUkkoa(double sij)
         {
             // jos taimeri sallii, niin liikutetaan, eikä ukkoon ole osunut
@@ -204,7 +204,7 @@ namespace pang
 
                 // POISTON TARKKAILU TEHTÄVÄ TÄNNE              !!          POIS AMMUS-LUOKASTA
 
-                ammukset.RemoveAt(0);    // poistetaan listasta alin
+                //ammukset.RemoveAt(0);    // poistetaan listasta alin
 
             }
             catch (Exception ex) 

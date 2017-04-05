@@ -39,6 +39,8 @@ namespace pang
             get { return latauskansio; }
         }
 
+        private int poistetaanAmmus = -1;   // Muuttuja sisältää tiedon, että pitääkö ruudusta ja listasta poistaa "Ammus". -1 = ei poisteta mitään, muuten index-arvo.
+
         List<Key> NapitAlhaallaLista = new List<Key>();     // KESKEN, usean näppäimen painallus tällä kuntoon?
 
         // ukon lisääminen sceneen
@@ -48,8 +50,8 @@ namespace pang
         public static int pallojaMax = 12;
         Pallo[] palloLista = new Pallo[pallojaMax]; // luodaan tarvittava määrä pallo-olioita
 
-      //  public Rectangle re = new Rectangle(); // Ukon törmäyspuskurin testaukseen
-      //  public Rectangle rep = new Rectangle(); // Pallon törmäyspuskurin testaukseen
+        //  public Rectangle re = new Rectangle(); // Ukon törmäyspuskurin testaukseen
+        //  public Rectangle rep = new Rectangle(); // Pallon törmäyspuskurin testaukseen
 
         public MainWindow()
         {
@@ -63,7 +65,6 @@ namespace pang
             AddCanvasChild(heebo.pelaaja); // ja liitetään canvasiin
                                            // heebo2.LuoUkko();    // luodaan pelaaja nro 2 
                                            // AddCanvasChild(heebo2.pelaaja); // ja liitetään canvasiin
-
 
             /*      Ukon törmäyspuskurin testaukseen
             re.Fill = System.Windows.Media.Brushes.SkyBlue;
@@ -84,7 +85,7 @@ namespace pang
             */
 
             // luodaan pallo-instanssit
-            for (int i = 0; i < pallojaMax; i++)    
+            for (int i = 0; i < pallojaMax; i++)
             {
                 palloLista[i] = new Pallo();
                 palloLista[i].Numero = i + 1;
@@ -98,7 +99,7 @@ namespace pang
                         palloLista[i].palloMenossa = pallonSuunta.Oikea;
                         break;
                     case 1:
-                        palloLista[i].PalloX = this.Width-140; // toinen pallo oikeaan reunaan ruudunleveyden mukaan
+                        palloLista[i].PalloX = this.Width - 140; // toinen pallo oikeaan reunaan ruudunleveyden mukaan
                         palloLista[i].palloMenossa = pallonSuunta.Vasen;
                         break;
                     default:
@@ -114,12 +115,13 @@ namespace pang
             timer_Törmäys.Interval = TimeSpan.FromMilliseconds(50);       // Set the Interval
             timer_Törmäys.Tick += new EventHandler(timertörmäys_Tick);      // Set the callback to invoke every tick time
             timer_Törmäys.Start();
+
         }
 
-       
+
         // törmäyksen tunnistus timerilla
         private void timertörmäys_Tick(object sender, EventArgs e)
-        {          
+        {
             pelaajanElämät.Text = heebo.Elämät.ToString();  // päivitetään ruutuun elämät
 
             /* Ukon törmäyspuskurin testaukseen
@@ -136,7 +138,8 @@ namespace pang
               Canvas.SetLeft(rep, palloLista[1].PalloX);
               Canvas.SetTop(rep, palloLista[1].PalloY);
               */
-
+            
+            
             // ukon ja pallojen välinen tunnistus
             for (int i = 0; i < pallojaMax; i++)    // käydään läpi kaikki pallo-instanssit
             {
@@ -145,19 +148,44 @@ namespace pang
                 var y2 = Canvas.GetTop(palloLista[i].ball);
                 Rect r2 = new Rect(x2, y2, (palloLista[i].ball.ActualWidth), (palloLista[i].ball.ActualHeight));
 
-                // käydään läpi kaikki ammukset, osuvatko kyseiseen palloon
-                foreach (Ammus ammus in Ukko.ammukset)
+
+                // Käydään läpi kaikki ammukset, osuvatko kyseiseen palloon + yliruudun. Mutta vasta kun ammuksia on luotu.
+                if (Ukko.ammukset.Count > 0)
                 {
-                    if (ammus.ammusPuskuri.IntersectsWith(r2))
+                    foreach (Ammus ampuu in Ukko.ammukset)
                     {
-                        System.Diagnostics.Debug.WriteLine("    Ammus osui palloon! Ammuksen nro: " + ammus.AmmusNro); // debuggia
+                        System.Diagnostics.Debug.WriteLine("puskur: " + ampuu.ammusPuskuri);    // debuggia
+                        System.Diagnostics.Debug.WriteLine("nro: " + ampuu.AmmusNro);           // debuggia
+
+                        if (ampuu.ammusPuskuri.IntersectsWith(r2) || ampuu.AmmusY < 0)  // Laitetaan samaan silmukkaan ammuksen poisto jos se on yli ruudun
+                        {
+                            if (ampuu.AmmusY < 0)   //debuggia
+                            {
+                                System.Diagnostics.Debug.WriteLine("- 1. Ammus yli ruudun! Ammuksen nro: " + ampuu.AmmusNro + " index: " + Ukko.ammukset.IndexOf(ampuu)); // debuggia
+                            }
+                            else
+                            {
+                                // Ammus osui palloon, pallo poksahtaa
+                                palloLista[i].Puolitus();
+                                System.Diagnostics.Debug.WriteLine("- - 2. Osui palloon Ammuksen nro: " + ampuu.AmmusNro + " index: " + Ukko.ammukset.IndexOf(ampuu)); // debuggia
+                            }
+
+                            ampuu.AmmuksenNopeus = 0;     // Pysäytys
+                            ampuu.AmmusY = 1000;          // ja siirto, varulta
+                            MainWindow.instance.scene.Children.Remove(ampuu.bullet);  // poistetaan bullet canvasilta (scene)
+                            poistetaanAmmus = Ukko.ammukset.IndexOf(ampuu);           // otetaan muuttujaan talteen, minkä indexin 
+                        }
                     }
+
+                    // Foreachin sisällä ei voi poistaa ammus-instanssi, joten poistetaan tässä
+                    if (poistetaanAmmus != -1) PoistaAmmusJokaIlmassa(poistetaanAmmus);
                 }
-                
+
+
                 // Osuuko ukko palloon
-                if (heebo.ukkoPuskuri.IntersectsWith(r2))   
+                if (heebo.ukkoPuskuri.IntersectsWith(r2))
                 {
-                    System.Diagnostics.Debug.WriteLine("OSUU palloon nro:" + i); // debuggia
+                    System.Diagnostics.Debug.WriteLine("Ukko OSUU palloon nro:" + i + "   "  +heebo.ukkoPuskuri); // debuggia
                     heebo.Osuuko = true; // jos osuu niin ukon "Osuuko"-bool on true (ja lähtee elämä)
                 }
             }
@@ -190,10 +218,17 @@ namespace pang
             scene.Children.Add(child);
         }
 
-        public void PoistaAmmusJokaIlmassa()
+        public void PoistaAmmusJokaIlmassa(int n)
         {
-            System.Diagnostics.Debug.WriteLine("poista ammus-instanssi:" + Ukko.ammukset.Count()); // debuggia
-            //heebo.ammukset.RemoveAt(0);    // poistetaan listasta alin
+            //System.Diagnostics.Debug.WriteLine("poisto, ammukset.Count:" + Ukko.ammukset.Count()); // debuggia
+            //heebo.ammukset.RemoveAt(0);    // poistetaan listasta alin   
+            foreach (Ammus ammus in Ukko.ammukset)
+            {
+                System.Diagnostics.Debug.WriteLine("poistetaan ammusinstanssi indexillä "+n); // debuggia
+            }
+
+            Ukko.ammukset.RemoveAt(n);    // poistetaan listasta se, joka osui palloon tai on yli ruudun
+            poistetaanAmmus = -1;
         }
 
 

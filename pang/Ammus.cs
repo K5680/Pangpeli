@@ -61,12 +61,6 @@ namespace pang
 
                 // ammuksen lähtöpiste y-suunnassa
                 AmmusY = 350;
-
-                // törmäyksen tunnistusta varten pidetään "rect"-ammuksen mukana
-                ammusPuskuri.X = Canvas.GetLeft(bullet) + 5;
-                ammusPuskuri.Y = Canvas.GetTop(bullet) + 5;
-                ammusPuskuri.Height = bullet.ActualHeight;
-                ammusPuskuri.Width = bullet.ActualWidth;
             }
         }
 
@@ -77,21 +71,12 @@ namespace pang
             Canvas.SetLeft(bullet, AmmusX);
             Canvas.SetTop(bullet, AmmusY);
 
-            if (AmmusY < 0) PoisAmmus();
+            // törmäyksen tunnistusta varten pidetään "rect"-ammuksen mukana
+            ammusPuskuri.X = Canvas.GetLeft(bullet) + 5;
+            ammusPuskuri.Y = Canvas.GetTop(bullet) + 5;
+            ammusPuskuri.Height = bullet.ActualHeight;
+            ammusPuskuri.Width = bullet.ActualWidth;
         }
-
-        private void PoisAmmus()  
-        {
-            MainWindow.instance.scene.Children.Remove(bullet);  // poistetaan bullet canvasilta (scene)
-                                                                // poista listasta?
-            
-            Ukko ukk = new pang.Ukko();
-
-            if (AmmusNro > 0) ukk.PoistaAmmusIlmasta(0);  // poistetaan instanssi listasta
-            AmmuksenNopeus = 0;
-            AmmusY = 1000;
-        }
+       
     }
-
-
 }

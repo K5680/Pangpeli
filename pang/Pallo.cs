@@ -82,6 +82,15 @@ namespace pang
             timer_pallo.Start();
         }
 
+
+        // Pallon puolitus ammukseen osuessa
+        public void Puolitus()
+        {
+            ball.Height = ball.Height / 2;
+            ball.Width = ball.Width / 2;
+        }
+
+
         // pallon liikkeen päivitys taimerilla
         private void timerpallo_Tick(object sender, EventArgs e)
         {
@@ -106,12 +115,20 @@ namespace pang
             Canvas.SetLeft(ball, PalloX);
             Canvas.SetTop(ball, PalloY);
         }
-
-
     }
 
 
-          /*  // törmäyksen tunnistus etäisyyden mukaan, kumpi parempi? Onko vaihtoehtoja?
+
+
+
+
+
+
+
+
+
+
+          /*  // törmäyksen tunnistus etäisyyden mukaan, kumpi parempi?  Käytössä nyt rect-tunnistus.
             double xet = Canvas.GetLeft(pallo); //pallon x
             double yet = Canvas.GetTop(pallo); // pallon y
             double D = Math.Sqrt((xet - heebo.SijaintiX) * (xet - heebo.SijaintiX) + (yet - 350) * (yet - 350));
