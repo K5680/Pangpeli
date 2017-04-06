@@ -35,12 +35,24 @@ namespace pang
             }
         }
         public double PalloY { get; set; }
-        public double PallonKorkeus { get; set; }
+
+        private double pallonKorkeus = 220;
+
+        public double PallonKorkeus
+        {   get
+            {
+                return pallonKorkeus;
+            }
+            set
+            {
+                pallonKorkeus = value;
+            }
+        }
+
         public double Angle { get; set; }
         public int Numero { get; set; }
 
         //private double pallox;
-        private double pallonKorkeus;
 
         public Ellipse ball;
 
@@ -52,9 +64,6 @@ namespace pang
 
         public Pallo()
         {
-            double n = GetRandom(); // sijainnin arvontaan
-            PalloX = n;
-            pallonKorkeus = 220;
             Angle = 40;
             LuoPallo();
         }
@@ -88,6 +97,8 @@ namespace pang
         {
             ball.Height = ball.Height / 2;
             ball.Width = ball.Width / 2;
+            pallonKorkeus = pallonKorkeus + 50;
+            Angle = 40;
         }
 
 

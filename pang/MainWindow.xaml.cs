@@ -216,29 +216,30 @@ namespace pang                                                                  
                
                 // luodaan 1 palloinstanssi lisää, kun toinen on puolitettu pienemmäksi
                 palloLista[i] = new Pallo();
-                palloLista[i].Numero = i + 1;
-
-                AddCanvasChild(palloLista[i].ball); // lisätään pallo-oliot sceneen (canvasiin), aluksi 2kpl
+                palloLista[i].Numero = i + 1;             
 
                 switch (palloLista[n].palloMenossa)  // metodiin tuodun pallon numeron perusteella katsotaan sen suunta
                 {
-                    case pallonSuunta.Oikea:
-                        palloLista[i].PalloX = palloLista[n].PalloX; // ensimmäinen pallo vasempaan reunaan
-                        palloLista[i].palloMenossa = pallonSuunta.Oikea;
-                        palloLista[i].ball.Width = palloLista[n].ball.Width;
-                        palloLista[i].ball.Height = palloLista[n].ball.Height;
+                    case pallonSuunta.Oikea:          
+                    palloLista[i].palloMenossa = pallonSuunta.Vasen;    // mutta eri suunta.
                     break;
                 case pallonSuunta.Vasen:
-                        palloLista[i].PalloX = palloLista[n].PalloX; // ensimmäinen pallo vasempaan reunaan
-                        palloLista[i].palloMenossa = pallonSuunta.Vasen;
-                        palloLista[i].ball.Width = palloLista[n].ball.Width;
-                        palloLista[i].ball.Height = palloLista[n].ball.Height;
+                    palloLista[i].palloMenossa = pallonSuunta.Oikea;
                         break;
                     default:
                         break;
                 }
 
-                pallojaLuotu += 1;
+                palloLista[i].PalloX = palloLista[n].PalloX;
+                palloLista[i].PalloY = palloLista[n].PalloY;
+                palloLista[i].PallonKorkeus = palloLista[n].PallonKorkeus;
+
+                palloLista[i].ball.Width = palloLista[n].ball.Width;    // uudelle pallolle sama koko kuin sille, joka poksahti
+                palloLista[i].ball.Height = palloLista[n].ball.Height;
+
+                AddCanvasChild(palloLista[i].ball); // lisätään pallo sceneen
+
+                pallojaLuotu += 1;  // lisätään pallojen määrää
          }
         
 
