@@ -21,6 +21,7 @@ namespace pang
         }
 
         public pallonSuunta palloMenossa { get; set; }
+
         private double pallox;
         public double PalloX {
             get
@@ -35,9 +36,7 @@ namespace pang
             }
         }
         public double PalloY { get; set; }
-
         private double pallonKorkeus = 220;
-
         public double PallonKorkeus
         {   get
             {
@@ -51,16 +50,15 @@ namespace pang
 
         public double Angle { get; set; }
         public int Numero { get; set; }
-
-        //private double pallox;
+        private double kiihtyvyys = 0.1f;
 
         public Ellipse ball;
 
-        private static Random rnd = new Random(); // arvotaan sijainti, ei ehkä jää lopulliseen peliin
+/*        private static Random rnd = new Random(); // arvotaan sijainti, ei ehkä jää lopulliseen peliin
         public static int GetRandom()
         {
             return rnd.Next(50,500);
-        }
+        }*/
 
         public Pallo()
         {
@@ -82,7 +80,7 @@ namespace pang
             ImageBrush tekstuuri = new ImageBrush();                // kuva ladataan resursseista
             tekstuuri.ImageSource = new BitmapImage(new Uri(MainWindow.Latauskansio + "pallo.png", UriKind.Absolute));
             ball.Fill = tekstuuri;
-            //MainWindow.instance.scene.Children.Add(ball);  // ei toimi, tehdään pääkoodissa
+            //MainWindow.instance.scene.Children.Add(ball);  //tehdään pääkoodissa
 
             // pallon ajastin
             DispatcherTimer timer_pallo = new DispatcherTimer(DispatcherPriority.Send);
@@ -91,23 +89,33 @@ namespace pang
             timer_pallo.Start();
         }
 
-
         // Pallon puolitus ammukseen osuessa
         public void Puolitus()
         {
             ball.Height = ball.Height / 2;
             ball.Width = ball.Width / 2;
-            pallonKorkeus = pallonKorkeus + 50;
-            Angle = 40;
+            pallonKorkeus = pallonKorkeus + 40;     // pienemmät pallot pomppii matalemmalla
+            Angle = 40;                             // nollataan lähtökulma (sinikäyrään)
         }
-
 
         // pallon liikkeen päivitys taimerilla
         private void timerpallo_Tick(object sender, EventArgs e)
         {
+            // alas tullessa kovempi vauhti kuin ylhäällä
+            if (Angle > 41.5 && Angle < 45.5)
+            {
+                kiihtyvyys += 0.02f;
+            }
+            else
+            {
+                kiihtyvyys = 0.1f;
+            }
+
+            System.Diagnostics.Debug.WriteLine("angle:" + Angle);
+
             // pallon liikutus sinikäyrällä ylös ja alas
-            Angle = Angle + 0.1f;
-            if (Angle > 360) { Angle = 0; }
+            Angle = Angle + kiihtyvyys;
+            if (Angle > 46.3) { Angle = 40; }           // näillä asteilla liikkuminen näyttää sulavalta
             PalloY = pallonKorkeus + Math.Cos(Angle) * 140;
 
             // pallon liikutus suunnan mukaan
