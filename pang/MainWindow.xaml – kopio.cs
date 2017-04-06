@@ -16,6 +16,7 @@ using System.Windows.Navigation;
 using System.Windows.Resources;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using static pang.Pallo;
 //using System.Drawing;
 
 namespace pang
@@ -25,25 +26,197 @@ namespace pang
     /// </summary>
     public partial class MainWindow : Window
     {
-  
+
+
         public static MainWindow instance { get; private set; } // tämän instanssin kautta voidaan kutsua MainWindow-luokan metodeita
+        public static MainWindow Main; //  tarvitaanko?
 
-        public double pallo_x = 200;
-        public double pallo_y = 200;
-        public double pallonKorkeus = 180;
         public static double ruudunLeveys;
-
         public string txt;
-        
-        public Ellipse pallo = new Ellipse();
-        public double angle = 40;
-
-        
-
         private static string latauskansio = "pack://application:,,,/Pang;component/Images/";  // määritellään kansio, josta kuvat ladataan
         public static string Latauskansio
         {
             get { return latauskansio; }
+        }
+
+        private int poistetaanAmmus = -1;   // Muuttuja sisältää tiedon, että pitääkö ruudusta ja listasta poistaa "Ammus". -1 = ei poisteta mitään, muuten index-arvo.
+
+        List<Key> NapitAlhaallaLista = new List<Key>();     // KESKEN, usean näppäimen painallus tällä kuntoon?
+
+        // ukon lisääminen sceneen
+        Ukko heebo = new Ukko(); // luodaan Ukko-luokan instanssi, eli pelaaja
+        Ukko heebo2 = new Ukko(); // Kaksinpeliin toinen pelaaja
+
+        public static int pallojaMax = 12;
+        Pallo[] palloLista = new Pallo[pallojaMax]; // luodaan tarvittava määrä pallo-olioita
+
+        //  public Rectangle re = new Rectangle(); // Ukon törmäyspuskurin testaukseen
+        //  public Rectangle rep = new Rectangle(); // Pallon törmäyspuskurin testaukseen
+
+        public MainWindow()
+        {
+            InitializeComponent();
+            instance = this;    // tämän kautta kutsutaan MainWindow-instanssin metodeita
+
+            this.Loaded += new RoutedEventHandler(MainWindow_Loaded);   // kutsutaan metodia, kun ikkuna on latautunut
+            this.SizeChanged += new SizeChangedEventHandler(Window_SizeChanged);    // luodaan eventhandleri ikkunan koon muutokselle (tarvitaanko lopullisessa?)
+
+            heebo.LuoUkko();    // luodaan pelaaja
+            AddCanvasChild(heebo.pelaaja); // ja liitetään canvasiin
+                                           // heebo2.LuoUkko();    // luodaan pelaaja nro 2 
+                                           // AddCanvasChild(heebo2.pelaaja); // ja liitetään canvasiin
+
+            /*      Ukon törmäyspuskurin testaukseen
+            re.Fill = System.Windows.Media.Brushes.SkyBlue;
+            re.Width = 100;
+            re.Height = 100;
+
+            Canvas.SetTop(re, 100);
+            Canvas.SetLeft(re, 100);
+            AddCanvasChild(re);
+            /*      Pallon törmäyspuskurin testaukseen 
+            rep.Fill = System.Windows.Media.Brushes.SkyBlue;
+            rep.Width = 100;
+            rep.Height = 100;
+
+            Canvas.SetTop(rep, 100);
+            Canvas.SetLeft(rep, 100);
+            AddCanvasChild(rep);
+            */
+
+            // luodaan pallo-instanssit
+            for (int i = 0; i < pallojaMax; i++)
+            {
+                palloLista[i] = new Pallo();
+                palloLista[i].Numero = i + 1;
+
+                if (i < 2) AddCanvasChild(palloLista[i].ball); // lisätään pallo-oliot sceneen (canvasiin), aluksi 2kpl
+
+                switch (i)  // ensimmäisille palloille annetaan sijainti-arvot, ja suunnat
+                {
+                    case 0:
+                        palloLista[i].PalloX = 10; // ensimmäinen pallo vasempaan reunaan
+                        palloLista[i].palloMenossa = pallonSuunta.Oikea;
+                        break;
+                    case 1:
+                        palloLista[i].PalloX = this.Width - 140; // toinen pallo oikeaan reunaan ruudunleveyden mukaan
+                        palloLista[i].palloMenossa = pallonSuunta.Vasen;
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            //määritellään ikkunalle tapahtumankäsittelijä näppäimistön kuuntelua varten
+            this.KeyDown += new KeyEventHandler(OnButtonKeyDown);
+
+            // törmäyksen tunnistuksen ajastus
+            DispatcherTimer timer_Törmäys = new DispatcherTimer(DispatcherPriority.Send);
+            timer_Törmäys.Interval = TimeSpan.FromMilliseconds(50);       // Set the Interval
+            timer_Törmäys.Tick += new EventHandler(timertörmäys_Tick);      // Set the callback to invoke every tick time
+            timer_Törmäys.Start();
+
+        }
+
+
+        // törmäyksen tunnistus timerilla
+        private void timertörmäys_Tick(object sender, EventArgs e)
+        {
+            pelaajanElämät.Text = heebo.Elämät.ToString();  // päivitetään ruutuun elämät
+
+            /* Ukon törmäyspuskurin testaukseen
+              re.Width = heebo.ukkoPuskuri.Width;
+              re.Height = heebo.ukkoPuskuri.Height;
+
+              Canvas.SetLeft(re, heebo.ukkoPuskuri.X);
+              Canvas.SetTop(re, heebo.ukkoPuskuri.Y);
+
+              /* Pallon törmäyspuskurin testaukseen
+              rep.Width = palloLista[1].ball.ActualWidth;
+              rep.Height = palloLista[1].ball.ActualHeight;
+
+              Canvas.SetLeft(rep, palloLista[1].PalloX);
+              Canvas.SetTop(rep, palloLista[1].PalloY);
+              */
+            
+            
+            // TÖRMÄYKSEN TUNNISTUS     Ukon ja pallojen / Ammusten ja pallojen välillä
+            for (int i = 0; i < pallojaMax; i++)    // käydään läpi kaikki pallo-instanssit
+            {
+                // törmäyksen tunnistus Rect:illä, luodaan pallon ympärille rect
+                var x2 = Canvas.GetLeft(palloLista[i].ball);
+                var y2 = Canvas.GetTop(palloLista[i].ball);
+                Rect r2 = new Rect(x2, y2, (palloLista[i].ball.ActualWidth), (palloLista[i].ball.ActualHeight));
+
+
+                // Käydään läpi kaikki ammukset, osuvatko kyseiseen palloon + yliruudun. Mutta vasta kun ammuksia on luotu.
+                if (Ukko.ammukset.Count > 0)
+                {
+                    foreach (Ammus ampuu in Ukko.ammukset)
+                    {
+                        //System.Diagnostics.Debug.WriteLine("puskur: " + ampuu.ammusPuskuri);    // debuggia
+                        //System.Diagnostics.Debug.WriteLine("nro: " + ampuu.AmmusNro);           // debuggia
+
+                        if (ampuu.ammusPuskuri.IntersectsWith(r2) || ampuu.AmmusY < 0)  // Laitetaan samaan silmukkaan ammuksen poisto jos se on yli ruudun
+                        {
+                            if (ampuu.AmmusY < 0)   //debuggia
+                            {
+                                System.Diagnostics.Debug.WriteLine("- 1. Ammus yli ruudun! Ammuksen nro: " + ampuu.AmmusNro + " index: " + Ukko.ammukset.IndexOf(ampuu)); // debuggia
+                            }
+                            else
+                            {
+                                // Ammus osui palloon, pallo poksahtaa kahteen osaan...
+                                palloLista[i].Puolitus();
+                                if (palloLista[i].ball.Width < 10) // ... ja pienin pallo häviää kokonaan.
+                                {
+                                    MainWindow.instance.scene.Children.Remove(palloLista[i].ball);  // poistetaan bullet canvasilta (scene)
+                                }
+                                else    // jos ei vielä häviä, niin jaetaan kahteen
+                                {
+
+                                }
+                        //      System.Diagnostics.Debug.WriteLine("- - 2. Osui palloon Ammuksen nro: " + ampuu.AmmusNro + " index: " + Ukko.ammukset.IndexOf(ampuu)); // debuggia
+                            }
+
+                            ampuu.AmmuksenNopeus = 0;     // Pysäytys
+                            ampuu.AmmusY = 1000;          // ja siirto, varulta
+                            MainWindow.instance.scene.Children.Remove(ampuu.bullet);  // poistetaan bullet canvasilta (scene)
+                            poistetaanAmmus = Ukko.ammukset.IndexOf(ampuu);           // otetaan muuttujaan talteen, minkä indexin 
+                        }
+                    }
+
+                    // Foreachin sisällä ei voi poistaa ammus-instanssi, joten poistetaan tässä
+                    if (poistetaanAmmus != -1) PoistaAmmusJokaIlmassa(poistetaanAmmus);
+                }
+
+
+                // Osuuko ukko palloon
+                if (heebo.ukkoPuskuri.IntersectsWith(r2))
+                {
+                    System.Diagnostics.Debug.WriteLine("Ukko OSUU palloon nro:" + i + "   "  +heebo.ukkoPuskuri); // debuggia
+                    heebo.Osuuko = true; // jos osuu niin ukon "Osuuko"-bool on true (ja lähtee elämä)
+                }
+            }
+        }
+
+
+        public void Soita(string ääni)
+        {
+            switch (ääni)   // valitse soitettava ääni
+            {
+                case "ampu":    // lataa ääni
+                    mediaElementti.Source = new Uri(@"C:\Users\Vesada\Source\Repos\Pangpeli - Harjoitustyö\pang\Images\fire.mp3", UriKind.RelativeOrAbsolute);    // miksei toimi! (MainWindow.Latauskansio + "fire.mp3", UriKind.Absolute);  
+                    
+        //         var sijainti = Latauskansio+"fire.mp3";
+        //         mediaElementti.Source = new Uri(sijainti, UriKind.RelativeOrAbsolute);    // miksei toimi !? 
+        //         System.Diagnostics.Debug.WriteLine(sijainti); // debuggia
+
+                    break;
+                case "jokumuu":
+
+                    break;
+            }
+            mediaElementti.Play();  // soita ääni
         }
 
         // tällä metodilla saadaan lisättyä canvakseen elementti toisen luokan kautta
@@ -52,102 +225,23 @@ namespace pang
             scene.Children.Add(child);
         }
 
-       
-        // ukon lisääminen sceneen
-        Ukko heebo = new Ukko(); // luodaan Ukko-luokan instanssi, eli pelaaja
-        Ukko heebo2 = new Ukko(); // Kaksinpeliin toinen pelaaja
-        
-        public static MainWindow Main; //  tarvitaanko?
-        
-      
-        public MainWindow()
+        public void PoistaAmmusJokaIlmassa(int n)
         {
-            
-            InitializeComponent();
-            instance = this;    // tämä kautta kutsutaan MainWindow-instanssin metodeita
-
-            this.Loaded += new RoutedEventHandler(MainWindow_Loaded);   // kutsutaan metodia, kun ikkuna on latautunut
-            this.SizeChanged += new SizeChangedEventHandler(Window_SizeChanged);    // luodaan eventhandleri ikkunan koon muutokselle (en tiedä tarvitaanko lopulta)
-
-            pallo.Stroke = System.Windows.Media.Brushes.Red;
-            pallo.Fill = System.Windows.Media.Brushes.SkyBlue;
-            pallo.HorizontalAlignment = HorizontalAlignment.Left;
-            pallo.VerticalAlignment = VerticalAlignment.Center;
-            pallo.Width = 110;
-            pallo.Height = 110;
-
-            ImageBrush tekstuuri = new ImageBrush();                // kuva ladataan resursseista
-            tekstuuri.ImageSource = new BitmapImage(new Uri(Latauskansio + "pallo.png", UriKind.Absolute));
-            pallo.Fill = tekstuuri;
-            scene.Children.Add(pallo);
-
-
-            heebo.LuoUkko();    // luodaan pelaaja
-            AddCanvasChild(heebo.pelaaja); // ja liitetään canvasiin
-           // heebo2.LuoUkko();    // luodaan pelaaja nro 2 
-           // AddCanvasChild(heebo2.pelaaja); // ja liitetään canvasiin
-
-
-            // pallon ajastin
-            DispatcherTimer timer_pallo = new DispatcherTimer(DispatcherPriority.Send);
-            timer_pallo.Interval = TimeSpan.FromMilliseconds(50);       // Set the Interval
-            timer_pallo.Tick += new EventHandler(timerpallo_Tick);      // Set the callback to invoke every tick time
-            timer_pallo.Start();
-            Soita("ampu");
-            
-        }
-
-        public void Soita(string ääni)
-        {
-            switch (ääni)   // valitse soitettava ääni
+            //System.Diagnostics.Debug.WriteLine("poisto, ammukset.Count:" + Ukko.ammukset.Count()); // debuggia
+            //heebo.ammukset.RemoveAt(0);    // poistetaan listasta alin   
+            foreach (Ammus ammus in Ukko.ammukset)
             {
-                case "ampu":    // lataa ääni
-                    mediaElementti.Source = new Uri("C:\\Users\\Vesada\\Source\\Repos\\Pangpeli - Harjoitustyö\\pang\\Images\\fire.mp3", UriKind.RelativeOrAbsolute);         
-                    break;
-                case "jokumuu":
-                    
-                    break;
-            }
-                mediaElementti.Play();  // soita ääni
-        }
-
-private void timerpallo_Tick(object sender, EventArgs e)
-        {
-
-            // pallon liikutus sinikäyrällä
-            angle = angle + 0.1f;
-            if (angle > 360) { angle = 0; }
-            pallo_y = pallonKorkeus + Math.Cos(angle) * 140;
-            
-            // törmäyksen tunnistus Rect:illä
-            var x2 = Canvas.GetLeft(pallo);
-            var y2 = Canvas.GetTop(pallo);
-            Rect r2 = new Rect(x2, y2, pallo.ActualWidth, pallo.ActualHeight);
-            if (heebo.ukkoPuskuri.IntersectsWith(r2)) System.Diagnostics.Debug.WriteLine("OSUU !! "+pallo_y); // debuggia
-
-
-            // törmäyksen tunnistus etäisyyden mukaan, kumpi parempi? Onko vaihtoehtoja?
-            double xet = Canvas.GetLeft(pallo); //pallon x
-            double yet = Canvas.GetTop(pallo); // pallon y
-            double D = Math.Sqrt((xet - heebo.SijaintiX) * (xet - heebo.SijaintiX) + (yet - 350) * (yet - 350));
-
-            if (D < (pallo.Height))
-            {
-                var a = Console.ReadLine();
-                System.Diagnostics.Debug.WriteLine("Pallon etäisyysmittarisysteemillä osuu... " + D + " " + yet); // debuggia
+                System.Diagnostics.Debug.WriteLine("poistetaan ammusinstanssi indexillä "+n); // debuggia
             }
 
-
-            // pallo_x++;
-            Canvas.SetLeft(pallo, pallo_x);
-            Canvas.SetTop(pallo, pallo_y);
-            
-            //txtX.Text = ruudunLeveys.ToString();
+            Ukko.ammukset.RemoveAt(n);    // poistetaan listasta se, joka osui palloon tai on yli ruudun
+            poistetaanAmmus = -1;
         }
 
 
-        // näppäinkomennot
-        private void Window_KeyDown(object sender, KeyEventArgs e)
+        #region EVENTS
+        // näppäinkomennot                          // HUOM ei ota vastaan kuin yhden näppäimen kerrallaan, ongelma kaksinpelissä!
+        private void OnButtonKeyDown(object sender, KeyEventArgs e)
         {
             // player ONE
             if (e.Key == Key.Right)
@@ -155,8 +249,7 @@ private void timerpallo_Tick(object sender, EventArgs e)
                 this.Title = "Go right";
                 heebo.LiikutaUkkoa(heebo.Askel);
             }
-
-            if (e.Key == Key.Left)
+            else if (e.Key == Key.Left)
             {
                 this.Title = "Go left";
                 heebo.LiikutaUkkoa(-(heebo.Askel));
@@ -179,12 +272,11 @@ private void timerpallo_Tick(object sender, EventArgs e)
             }
 
             if (e.Key == Key.Space)
-            {
+            {                
                 heebo.Ammu();
             }
         }
-
-
+        
         private void Window_SizeChanged(object sender, SizeChangedEventArgs e)    // lasketaan ruudunleveys sen muuttuessa
         {
             ruudunLeveys = scene.ActualWidth;
@@ -194,9 +286,7 @@ private void timerpallo_Tick(object sender, EventArgs e)
         {
             ruudunLeveys = scene.ActualWidth;
         }
-
-        
-
+        #endregion
 
     }
 }

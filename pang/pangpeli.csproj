@@ -77,6 +77,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>kuvat.resx</DependentUpon>
     </Compile>
+    <Compile Include="MainWindow.xaml.cs" />
     <Compile Include="Players.xaml.cs">
       <DependentUpon>Players.xaml</DependentUpon>
     </Compile>
@@ -124,7 +125,6 @@
       <LastGenOutput>kuvat.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <Compile Include="MainWindow.xaml.cs" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -169,7 +169,9 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <Resource Include="Images\fire.mp3" />
+    <Resource Include="Images\fire.mp3">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
