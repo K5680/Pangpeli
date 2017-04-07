@@ -37,6 +37,8 @@ namespace pang
         }
         public double PalloY { get; set; }
         private double pallonKorkeus = 220;
+        public int Kaari = 140;
+        
         public double PallonKorkeus
         {   get
             {
@@ -63,6 +65,7 @@ namespace pang
         public Pallo()
         {
             Angle = 40;
+            PalloY = -100;
             LuoPallo();
         }
 
@@ -94,7 +97,8 @@ namespace pang
         {
             ball.Height = ball.Height / 2;
             ball.Width = ball.Width / 2;
-            pallonKorkeus = pallonKorkeus + 40;     // pienemmät pallot pomppii matalemmalla
+            pallonKorkeus = pallonKorkeus + 50;     // pienemmät pallot pomppii matalemmalla
+            Kaari = Kaari - 20;
             Angle = 40;                             // nollataan lähtökulma (sinikäyrään)
         }
 
@@ -104,11 +108,11 @@ namespace pang
             // alas tullessa kovempi vauhti kuin ylhäällä
             if (Angle > 41.5 && Angle < 45.5)
             {
-                kiihtyvyys += 0.02f;
+                kiihtyvyys += 0.02f + ((Convert.ToDouble(pallonKorkeus))/8000);    // pallonkorkeuden kautta pallon koko vaikuttaa nopeuteen
             }
             else
             {
-                kiihtyvyys = 0.1f;
+                kiihtyvyys = 0.1f + ((Convert.ToDouble(pallonKorkeus)) / 8000);    // pallonkorkeuden kautta pallon koko vaikuttaa nopeuteen;
             }
 
             System.Diagnostics.Debug.WriteLine("angle:" + Angle);
@@ -116,7 +120,7 @@ namespace pang
             // pallon liikutus sinikäyrällä ylös ja alas
             Angle = Angle + kiihtyvyys;
             if (Angle > 46.3) { Angle = 40; }           // näillä asteilla liikkuminen näyttää sulavalta
-            PalloY = pallonKorkeus + Math.Cos(Angle) * 140;
+            PalloY = pallonKorkeus + Math.Cos(Angle) * Kaari;
 
             // pallon liikutus suunnan mukaan
             if (palloMenossa == pallonSuunta.Oikea)

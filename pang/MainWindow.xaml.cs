@@ -230,6 +230,7 @@ namespace pang                                                                  
                         break;
                 }
 
+                palloLista[i].Kaari = palloLista[n].Kaari;  // sinikäyrän laskemiseen käytetty halkaisija
                 palloLista[i].PalloX = palloLista[n].PalloX;
                 palloLista[i].PalloY = palloLista[n].PalloY;
                 palloLista[i].PallonKorkeus = palloLista[n].PallonKorkeus;
@@ -249,8 +250,9 @@ namespace pang                                                                  
         // näppäinkomennot                          // HUOM ei ota vastaan kuin yhden näppäimen kerrallaan, ongelma kaksinpelissä!
         private void OnButtonKeyDown(object sender, KeyEventArgs e)
         {
+            
             // player ONE
-            if (e.Key == Key.Right)
+            if (e.Key == Key.Right || e.Key == Key.Right && e.Key == Key.Space)
             {
                 this.Title = "Go right";
                 heebo.LiikutaUkkoa(heebo.Askel);
@@ -266,6 +268,12 @@ namespace pang                                                                  
                 this.Close();
             }
 
+            if (e.Key == Key.Space)
+            {
+                heebo.Ammu();
+            }
+
+
             // kakkospelaaja
             if (e.Key == Key.A)
             {
@@ -275,11 +283,6 @@ namespace pang                                                                  
             if (e.Key == Key.D)
             {
                 heebo2.LiikutaUkkoa((heebo2.Askel));
-            }
-
-            if (e.Key == Key.Space)
-            {                
-                heebo.Ammu();
             }
         }
         
