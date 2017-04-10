@@ -18,7 +18,7 @@ namespace pang
         public double AmmuksenNopeus;
         public bool SaaAmpua;
         public int AmmusNro;
-        public double AmpumisTiheys;        // ukolla muuttuja?
+        //public double AmpumisTiheys;        // ukolla muuttuja?
 
         public Ellipse bullet;
         public Rect ammusPuskuri = new Rect(); // laatikko, joka toimii alueena, jolta törmäys tunnistetaan

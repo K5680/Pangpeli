@@ -4,10 +4,20 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:pang"
+        xmlns:views="clr-namespace:pang"
         mc:Ignorable="d"
-        Title="StartGame" Height="350" Width="300"
+        Title="StartGame" Width="{Binding CustomWidth, Mode=TwoWay}" Height="320"
         WindowStartupLocation="Manual" 
         Left="300" Top="300">
+    
+    <Window.Resources>
+        <DataTemplate x:Key="myData">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="{Binding FullInfo}"/>
+            </StackPanel>
+        </DataTemplate>
+    </Window.Resources>
+
     
     <Canvas>
         <Rectangle HorizontalAlignment="Left" Height="46" Stroke="Black" VerticalAlignment="Top" Width="292">
@@ -18,8 +28,15 @@
             </LinearGradientBrush>
         </Rectangle.Fill>
     </Rectangle>
-    <Grid>
-            <StackPanel>
+    <Grid x:Name="myGrid">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="300" />
+                <ColumnDefinition Width="300" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="300"/>
+            </Grid.RowDefinitions>
+            <StackPanel  Grid.Column="0">
                 <Label x:Name="lblPangpeli" Content="Pangpeli" Height="46" Width="150" FontSize="26" Foreground="Black" Margin="75,0" HorizontalContentAlignment="Center"/>
                 <Button x:Name="btnNewPlayer" FontSize="20" Content="New Player" Height="40" Width="220" Margin="5" Click="btnNewPlayer_Click"/>
                 <Button x:Name="btnLoadPlayer" FontSize="20" Content="Load Player" Height="40" Width="220" Margin="5" Click="btnLoadPlayer_Click"/>
@@ -27,12 +44,50 @@
                 <Label x:Name="labeli" Content="" Height="10" Width="150" FontSize="26" Foreground="Black" Margin="75,0"/>
                 <Button x:Name="btnExitPlayer" FontSize="20" Content="Quit" Height="40" Width="220" Margin="10" Click="btnExitPlayer_Click"/>
                 <TextBox x:Name="txtCopyright" Height="20" TextWrapping="Wrap" Text="2017 © Vesa Vertainen" Width="220" Margin="10"/>
-
-
-                
             </StackPanel>
-        </Grid>
-        
+            <StackPanel Grid.Column="1" Grid.Row="0">
+                <Label x:Name="lblNewOrLoad" FontSize="24" Content="{Binding CustomLabel, Mode=TwoWay}"/>
+<!--                <Label x:Name="tyhjä_väli" FontSize="24"/>
+                <TextBox Width="200">Player name</TextBox>
+                <Button x:Name="btnOK" Width="200" Click="btnOK_Click">OK</Button>
+-->                
+            
+                <views:PelaajatView x:Name="PelaajatViewControl" Loaded="PelaajatViewControl_Loaded" DockPanel.Dock="Left"/>
 
+             <!--               <DataGrid x:Name="dgPelaajat"  ItemsSource="{Binding}" Loaded="dgPelaajat_Loaded" />
+                                <TextBox x:Name="txtPlayerPoints" Width="200" />
+-->
+                <TextBox x:Name="valittu" Height="20" Text="{Binding PelaajatViewControl}"></TextBox>
+                <Button x:Name="valinta" Height="20" Content="Select Player">
+                    
+                </Button>
+                <StackPanel>
+                    <TextBox x:Name="txtPlayerName" Text="my player" Width="200" MouseLeftButtonDown="txtPlayerName_MouseLeftButtonDown">
+                        <TextBox.InputBindings>
+                            <KeyBinding Key="Return" Command="{Binding btnAddNew_Click}" />
+                        </TextBox.InputBindings>
+                    </TextBox>
+
+                    <Button x:Name="btnAddNew" Content="Add Player" Width="200" Click="btnAddNew_Click"/>
+
+                </StackPanel>
+
+                <StackPanel x:Name="spData" Orientation="Horizontal" Background="#FF1AEDDA">
+                    <TextBlock Text="{Binding AllInfo}" FontFamily="Berlin Sans FB"  FontSize="16"/>
+                   </StackPanel>
+                
+<!--                <StackPanel x:Name="listaStack">
+                    <ListView x:Name="lsvPelaajat" Height="50" FontSize="16" 
+                    ItemsSource="{Binding}"
+                    SelectionChanged="ListView_SelectionChanged"
+                    ItemTemplate="{Binding AllInfo}"/>
+                </StackPanel> -->
+
+            </StackPanel>
+
+        </Grid>
     </Canvas>
 </Window>
+
+    
+    

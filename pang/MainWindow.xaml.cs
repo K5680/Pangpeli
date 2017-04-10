@@ -107,7 +107,7 @@ namespace pang                                                                  
         {
             pelaajanElämät.Text = heebo.Elämät.ToString();  // päivitetään ruutuun elämät
 
-            
+
             // TÖRMÄYKSEN TUNNISTUS     Ukon ja pallojen / Ammusten ja pallojen välillä
             for (int i = 0; i < pallojaLuotu; i++)    // käydään läpi kaikki pallo-instanssit
             {
@@ -115,8 +115,8 @@ namespace pang                                                                  
                 var x2 = Canvas.GetLeft(palloLista[i].ball);
                 var y2 = Canvas.GetTop(palloLista[i].ball);
                 Rect r2 = new Rect(x2, y2, (palloLista[i].ball.ActualWidth), (palloLista[i].ball.ActualHeight));
-
-
+                
+                
                 // Käydään läpi kaikki ammukset, osuvatko kyseiseen palloon + yliruudun. Mutta vasta kun ammuksia on luotu.
                 if (Ukko.ammukset.Count > 0)
                 {
@@ -138,7 +138,7 @@ namespace pang                                                                  
                                 palloLista[i].Puolitus();
                                 if (palloLista[i].ball.Width < 10) // ... ja pienin pallo häviää kokonaan.
                                 {
-                                    MainWindow.instance.scene.Children.Remove(palloLista[i].ball);  // poistetaan bullet canvasilta (scene)
+                                    scene.Children.Remove(palloLista[i].ball);  // poistetaan bullet canvasilta (scene)
                                 }
                                 else    // jos ei vielä häviä, niin jaetaan kahteen
                                 {
@@ -154,16 +154,19 @@ namespace pang                                                                  
                         }
                     }
 
-                    // Foreachin sisällä ei voi poistaa ammus-instanssi, joten poistetaan tässä
+                    // Foreachin sisällä ei voi poistaa ammus-instanssia, joten poistetaan tässä
                     if (poistetaanAmmus != -1) PoistaAmmusJokaIlmassa(poistetaanAmmus);
                 }
 
 
                 // Osuuko ukko palloon
-                if (heebo.ukkoPuskuri.IntersectsWith(r2))
+                if (scene.Children.Contains(palloLista[i].ball)) // ei tehdä törmäystunnistusta jos pallo ei ole canvasilla (jostain syystä näkymättömiä palloja jää?)
                 {
-                    System.Diagnostics.Debug.WriteLine("Ukko OSUU palloon nro:" + i + "   "  +heebo.ukkoPuskuri); // debuggia
-                    heebo.Osuuko = true; // jos osuu niin ukon "Osuuko"-bool on true (ja lähtee elämä)
+                    if (heebo.ukkoPuskuri.IntersectsWith(r2))
+                    {
+                        System.Diagnostics.Debug.WriteLine("Ukko OSUU palloon nro:" + i + "   " + heebo.ukkoPuskuri); // debuggia
+                        heebo.Osuuko = true; // jos osuu niin ukon "Osuuko"-bool on true (ja lähtee elämä)
+                    }
                 }
             }
         }

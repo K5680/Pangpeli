@@ -115,7 +115,7 @@ namespace pang
                 kiihtyvyys = 0.1f + ((Convert.ToDouble(pallonKorkeus)) / 8000);    // pallonkorkeuden kautta pallon koko vaikuttaa nopeuteen;
             }
 
-            System.Diagnostics.Debug.WriteLine("angle:" + Angle);
+            // System.Diagnostics.Debug.WriteLine("angle:" + Angle);
 
             // pallon liikutus sinikäyrällä ylös ja alas
             Angle = Angle + kiihtyvyys;
@@ -132,7 +132,7 @@ namespace pang
             {
                 PalloX = PalloX - 5; // pallon liikutus vasemmalle
                 if (PalloX < 0) palloMenossa = pallonSuunta.Oikea;
-            }
+            }            
 
             // pallo_x++;
             Canvas.SetLeft(ball, PalloX);

@@ -40,5 +40,10 @@ namespace pang
         {
             // tässä näytetään lista parhaista pelaajista   TODO
         }
+
+        private void textBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
+        }
     }
 }
