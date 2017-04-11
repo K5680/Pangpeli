@@ -5,14 +5,22 @@ using System.Text;
 using System.Threading.Tasks;
 using pang.Model;
 using System.Collections.ObjectModel;
+using System.Windows;
+using System.IO;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace pang.ViewModel
 {
+    //
+    //  Pelaajat - ViewModel. Alkuvalikon pelaajien listaukseen/hallintaan
+    //
+
+    [Serializable]
     class PelaajatViewModel
     {
-            //private List<Pelaajat> pelaajat = new List<Pelaajat>();
-            //public List<Pelaajat> Pelaajat { get { return pelaajat; } }
-
+            public string Polku { get; set; }
+        
             public ObservableCollection<Pelaajat> Pelaajat
             {
                 get;
@@ -21,18 +29,50 @@ namespace pang.ViewModel
 
             public void LataaPelaajat()
             {
-                ObservableCollection<Pelaajat> pelaajat = new ObservableCollection<Pelaajat>();
+                ObservableCollection<Pelaajat> pelaajat = new ObservableCollection<Pelaajat>();               
 
- //           public PelaajatViewModel()
- //           {
-   
-                pelaajat.Add(new Pelaajat { PlayerName = "Jokke", PlayerPoints = 0 });
-                pelaajat.Add(new Pelaajat { PlayerName = "Guest Player", PlayerPoints = 0 });
-                Pelaajat = pelaajat;
+                // nykyinen hakemisto talteen
+                Polku = Path.GetDirectoryName(System.Windows.Forms.Application.ExecutablePath);
 
+            try
+            {
+                // jollei players-kansiota ole, luodaan se
+                if (!Directory.Exists(Polku + @"\players"))
+                {
+                    Directory.CreateDirectory(Polku + @"\players");
+                }
+                
+                // jollei Players.bin:iä ole, luodaan se, ja laitetaan tiedostoon pari pelaaja-oliota
+                if (!File.Exists(Polku + @"\players\"+"Players.bin"))
+                {
+                    pelaajat.Add(new Pelaajat { PlayerName = "Guest Player", PlayerPoints = 0 });
 
-    //          pelaajat.Add(new Pelaajat { PlayerName = "Lokke", PlayerPoints = 0 });
-    //          pelaajat.Add(new Pelaajat { PlayerName = "Quest Player", PlayerPoints = 0 });
+                    // open stream for writing objects
+                    Stream writeStream = new FileStream(Polku + @"\players\Players.bin", FileMode.Create, FileAccess.Write, FileShare.None);
+                    // use binary formatted                    
+                    IFormatter formatter = new BinaryFormatter();
+                    // kirjoitetaan pelaajat Players.bin:iin
+                    formatter.Serialize(writeStream, pelaajat);
+                    writeStream.Close();
+                }
+                else  // jos tiedosto on jo olemassa, luetaan sieltä pelaajat
+                {
+                    // luodaan stream pelaajien lataamiseen levyltä
+                    Stream readStream = new FileStream(Polku + "\\players\\Players.bin", FileMode.Open, FileAccess.Read, FileShare.Read);
+                    
+                    IFormatter formatter = new BinaryFormatter();
+
+                    pelaajat = (ObservableCollection<Pelaajat>)formatter.Deserialize(readStream);
+
+                    readStream.Close();
+                }
+            }           // jos levytoiminnot ei onnistu, näytetään poikkeus
+            catch (Exception e)
+            {
+                MessageBox.Show("Disk read error: " + e.ToString() + "\n" + Polku +"\\players\\Players.bin");
+            }
+
+            Pelaajat = pelaajat;
         }
     }
 }

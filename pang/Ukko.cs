@@ -25,6 +25,8 @@ namespace pang
      class Ukko
     {      
        
+        public static string NykyinenPelaaja;   // pitää tiedon alkuvalikosta valitusta pelaajasta
+
         public Rectangle pelaaja; // laatikko, jonka päälle pelaajahahmo rakentuu
         public Rect ukkoPuskuri = new Rect(); // laatikko, joka toimii alueena, jolta törmäys tunnistetaan
         private double sijaintix;
@@ -32,6 +34,8 @@ namespace pang
         private int ammuksiaMax = 3;             // ammusten maksimimäärä ruudulla
         
         private int ammusTiheys = 700;
+
+        public int Pisteet { get; set; }
 
         public static List<Ammus> ammukset = new List<Ammus>();    // ammus-lista   
         private int ammusIlmassaNro = 0;                           // pitää yllä tietoa ammusten numeroista
@@ -73,6 +77,7 @@ namespace pang
         public Ukko()
         {
             sijaintix = 350;
+            Pisteet = 0;
             Osuuko = false;
             Askel = 10;
             UkonNopeus = 50; // millisekunnit

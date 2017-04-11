@@ -52,15 +52,22 @@
                 <Label x:Name="lblNewOrLoad" FontSize="24" Content="{Binding CustomLabel, Mode=TwoWay}"/>
                 <TextBox x:Name="txtPlayerName" Text="my player" Width="200" MouseLeftButtonDown="txtPlayerName_MouseLeftButtonDown">
                     <TextBox.InputBindings>
-                        <KeyBinding Key="Return" Command="{Binding btnAddNew_Click_1 }" />
+                        <KeyBinding Key="Return" Command="{Binding btnAddNew_Click_1 }" /> <!-- ei toimi enterillä suoraan add-nappiin  -->
                     </TextBox.InputBindings>
                 </TextBox>
 
-                <Button x:Name="btnAddNew" Width="100" Content="Add Player" Margin="5 5 5 5" Click="btnAddNew_Click_1"></Button>
+                <Button x:Name="btnAddNew" Width="100" Content="Add Player" Margin="10" Click="btnAddNew_Click_1"></Button>
+
+                <TextBlock x:Name="txbChoose" Text="Choose Player:"/>
 
                 <ListView x:Name="lsvPelaajat" ItemsSource="{Binding}" Loaded="lvPelaajat_Loaded" SelectionChanged="ListView_SelectionChanged" ItemTemplate="{StaticResource myData}"/>
 
+                <Button x:Name="btnOK" Width="100" Content="OK" Margin="10" Click="btnOK_Click"/>
+
             </StackPanel>
+
+            
+        
             <StackPanel x:Name="spData" Grid.Column="2">
                 <StackPanel>
                     <!--    <TextBlock Text="{Binding FullInfo}" FontFamily="Berlin Sans FB"  FontSize="16"/>

@@ -31,6 +31,8 @@ namespace pang                                                                  
         public static MainWindow instance { get; private set; } // tämän instanssin kautta voidaan kutsua MainWindow-luokan metodeita
         public static MainWindow Main; //  tarvitaanko?
 
+        public string NykyinenPelaaja { get; set; } // pelaajan nimi yläpalkkiin ym.
+
         public static double ruudunLeveys;
         public string txt;
         private static string latauskansio = "pack://application:,,,/Pang;component/Images/";  // määritellään kansio, josta kuvat ladataan
@@ -60,6 +62,8 @@ namespace pang                                                                  
 
             this.Loaded += new RoutedEventHandler(MainWindow_Loaded);   // kutsutaan metodia, kun ikkuna on latautunut
             this.SizeChanged += new SizeChangedEventHandler(Window_SizeChanged);    // luodaan eventhandleri ikkunan koon muutokselle (tarvitaanko lopullisessa?)
+
+            txtPelaajanNimi.Text = Ukko.NykyinenPelaaja;    // alussa valittu pelaajanimi ruutuun
 
             heebo.LuoUkko();    // luodaan pelaaja
             AddCanvasChild(heebo.pelaaja); // ja liitetään canvasiin
@@ -98,14 +102,14 @@ namespace pang                                                                  
             timer_Törmäys.Interval = TimeSpan.FromMilliseconds(50);       // Set the Interval
             timer_Törmäys.Tick += new EventHandler(timertörmäys_Tick);      // Set the callback to invoke every tick time
             timer_Törmäys.Start();
-
         }
 
 
-        // törmäyksen tunnistus timerilla
+        // törmäyksen tunnistus ym. timerilla
         private void timertörmäys_Tick(object sender, EventArgs e)
         {
-            pelaajanElämät.Text = heebo.Elämät.ToString();  // päivitetään ruutuun elämät
+            txtPelaajanElämät.Text = heebo.Elämät.ToString();  // päivitetään ruutuun elämät
+            txtPelaajanPisteet.Text = heebo.Pisteet.ToString(); // ja pisteet
 
 
             // TÖRMÄYKSEN TUNNISTUS     Ukon ja pallojen / Ammusten ja pallojen välillä
@@ -121,30 +125,30 @@ namespace pang                                                                  
                 if (Ukko.ammukset.Count > 0)
                 {
                     foreach (Ammus ampuu in Ukko.ammukset)
-                    {
-                        //System.Diagnostics.Debug.WriteLine("puskur: " + ampuu.ammusPuskuri);    // debuggia
-                        //System.Diagnostics.Debug.WriteLine("nro: " + ampuu.AmmusNro);           // debuggia
-
+                    {   // osuuko ammus-rect pallo-rect:iin       tai  ammuksen Y on yli ruudun
                         if (ampuu.ammusPuskuri.IntersectsWith(r2) || ampuu.AmmusY < 0)  // Laitetaan samaan silmukkaan ammuksen poisto jos se on yli ruudun
                         {
-                            if (ampuu.AmmusY < 0)   //debuggia
+                            if (ampuu.AmmusY < 0)   //debuggia varten pelkästään
                             {
                                 System.Diagnostics.Debug.WriteLine("- 1. Ammus yli ruudun! Ammuksen nro: " + ampuu.AmmusNro + " index: " + Ukko.ammukset.IndexOf(ampuu)); // debuggia
                             }
                             else
-                            {
+                            {   // Ammus osuu palloon                                
                                 System.Diagnostics.Debug.WriteLine("osuu palloon: " + i + " /"+pallojaLuotu); // debuggia
+
                                 // Ammus osui palloon, pallo poksahtaa kahteen osaan...
                                 palloLista[i].Puolitus();
                                 if (palloLista[i].ball.Width < 10) // ... ja pienin pallo häviää kokonaan.
                                 {
-                                    scene.Children.Remove(palloLista[i].ball);  // poistetaan bullet canvasilta (scene)
+                                    scene.Children.Remove(palloLista[i].ball);  // poistetaan ball canvasilta (scene)
+                                    Soita("pallo_poksahtaa4");
+                                    heebo.Pisteet += 500;
                                 }
                                 else    // jos ei vielä häviä, niin jaetaan kahteen
-                                {
-                                    JaaPallo(i);
+                                {                                    
+                                    JaaPallo(i, palloLista[i].ball.Width);
+                                    heebo.Pisteet += 100;
                                 }
-                        //      System.Diagnostics.Debug.WriteLine("- - 2. Osui palloon Ammuksen nro: " + ampuu.AmmusNro + " index: " + Ukko.ammukset.IndexOf(ampuu)); // debuggia
                             }
 
                             ampuu.AmmuksenNopeus = 0;     // Pysäytys
@@ -174,21 +178,36 @@ namespace pang                                                                  
 
         public void Soita(string ääni)
         {
-            switch (ääni)   // valitse soitettava ääni
-            {
-                case "ampu":    // lataa ääni
-                    mediaElementti.Source = new Uri(@"C:\Users\Vesada\Source\Repos\Pangpeli - Harjoitustyö\pang\Images\fire.mp3", UriKind.RelativeOrAbsolute);    // miksei toimi! (MainWindow.Latauskansio + "fire.mp3", UriKind.Absolute);  
-                    
-        //         var sijainti = Latauskansio+"fire.mp3";
-        //         mediaElementti.Source = new Uri(sijainti, UriKind.RelativeOrAbsolute);    // miksei toimi !? 
-        //         System.Diagnostics.Debug.WriteLine(sijainti); // debuggia
+            // meneekö kansiorakenne näin oikein valmiissa pelissä??            
+            string path2 = System.IO.Path.GetDirectoryName(System.Windows.Forms.Application.ExecutablePath);
 
+            switch (ääni)   // valitse soitettava ääni              // elementtejä on monta, jotta voi olla monta ääntä yhtäaikaa
+            {
+                case "ampu":    // lataa ääni                              
+                    mediaElementti.Source = new Uri(path2 + @"\sounds\fire.mp3", UriKind.RelativeOrAbsolute);
+                    mediaElementti.Play();  // soita ääni
+                    break;
+                case "pallo_poksahtaa":
+                    mediaElementti2.Source = new Uri(path2 + @"\sounds\balloonpop.mp3", UriKind.RelativeOrAbsolute);
+                    mediaElementti2.Play();  // soita ääni
+                    break;
+                case "pallo_poksahtaa2":
+                    mediaElementti3.Source = new Uri(path2 + @"\sounds\balloonpop2.mp3", UriKind.RelativeOrAbsolute);
+                    mediaElementti3.Play();  // soita ääni
+                    break;
+                case "pallo_poksahtaa3":
+                    mediaElementti4.Source = new Uri(path2 + @"\sounds\balloonpop3.mp3", UriKind.RelativeOrAbsolute);
+                    mediaElementti4.Play();  // soita ääni
+                    break;
+                case "pallo_poksahtaa4":
+                    mediaElementti2.Source = new Uri(path2 + @"\sounds\balloonpop4.mp3", UriKind.RelativeOrAbsolute);
+                    mediaElementti2.Play();  // soita ääni
                     break;
                 case "jokumuu":
 
                     break;
             }
-            mediaElementti.Play();  // soita ääni
+            
         }
 
         // tällä metodilla saadaan lisättyä canvakseen elementti toisen luokan kautta
@@ -198,9 +217,7 @@ namespace pang                                                                  
         }
 
         public void PoistaAmmusJokaIlmassa(int n)
-        {
-            //System.Diagnostics.Debug.WriteLine("poisto, ammukset.Count:" + Ukko.ammukset.Count()); // debuggia
-            //heebo.ammukset.RemoveAt(0);    // poistetaan listasta alin   
+        {            
             foreach (Ammus ammus in Ukko.ammukset)
             {
                 System.Diagnostics.Debug.WriteLine("poistetaan ammusinstanssi indexillä "+n); // debuggia
@@ -211,9 +228,23 @@ namespace pang                                                                  
         }
 
 
-        public void JaaPallo(int n)
+        public void JaaPallo(int n, double halkaisija)
         {
-                var i = pallojaLuotu; // lasketaan montako palloa on jo luotu ja asetetaan se seuraavan pallon numeroksi
+            // soitetaan poksahdusääni koon mukaan
+            if (halkaisija > 50)
+            {
+                Soita("pallo_poksahtaa");
+            }
+            else if (halkaisija > 25)
+            {
+                Soita("pallo_poksahtaa2");
+            }
+            else if (halkaisija > 12)
+            {
+                Soita("pallo_poksahtaa3");
+            }
+
+            var i = pallojaLuotu; // lasketaan montako palloa on jo luotu ja asetetaan se seuraavan pallon numeroksi
 
                 System.Diagnostics.Debug.WriteLine("JaaPallo. Luotu: " + i + "   Jaettava:" + n); // debuggia
                

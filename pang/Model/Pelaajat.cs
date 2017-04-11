@@ -5,12 +5,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace pang.Model
 {
-         /// <summary>
-        /// This class holds Pelaajat properties.
-        /// </summary>
-        public class Pelaajat : INotifyPropertyChanged  // lisätty inotify
+    /// <summary>
+    /// This class holds Pelaajat properties.
+    /// </summary>
+    [Serializable]
+    public class Pelaajat : INotifyPropertyChanged  // lisätty inotify
     {
         private string playerName;
         private int playerPoints;    
@@ -69,6 +71,9 @@ namespace pang.Model
             }
         }
 
-
+        public static implicit operator string(Pelaajat v)
+        {
+            throw new NotImplementedException();
+        }
     }
     }

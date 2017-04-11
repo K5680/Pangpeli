@@ -59,7 +59,7 @@ namespace pang
         {
             // uuden pelaajan luonti    TODO
             CustomWidth = 600;          // levennetään ikkuna, pelaajien luomisen kenttiä varten
-            lblNewOrLoad.Content = "Create / Select player";
+            lblNewOrLoad.Content = "Create Player";
         }
 
 
@@ -67,11 +67,8 @@ namespace pang
         {
             // pelaajien lataus, tässä vaiheessa oikaistaan suoraan peliin  TODO
             CustomWidth = 600;          // levennetään ikkuna, pelaajien luomisen kenttiä varten
-            lblNewOrLoad.Content = "Load new player";
+            lblNewOrLoad.Content = "Load Player";
 
-            StartGame startGame = new pang.StartGame();
-            startGame.Show();
-            Close();
         }
 
         private void btnExitPlayer_Click(object sender, RoutedEventArgs e)
@@ -80,11 +77,17 @@ namespace pang
             Application.Current.Shutdown();
         }
 
+
         private void btnOK_Click(object sender, RoutedEventArgs e)
         {
-            StartGame startGame = new pang.StartGame(); // aloita peli
-            startGame.Show();
-            Close();                                    // sulje tämä ikkuna
+            // OK -napilla kuitataan valittu pelaaja, ja jatketaan, ellei pelaaja ole tyhjä
+            Model.Pelaajat valittu = (Model.Pelaajat)lsvPelaajat.SelectedItem;
+            if (valittu != null)
+            {
+                StartGame startGame = new pang.StartGame(); // aloita peli
+                startGame.Show();
+                Close();                                    // sulje tämä ikkuna
+            }
         }
 
 
@@ -124,6 +127,7 @@ namespace pang
         {
             Model.Pelaajat valittu = (Model.Pelaajat)lsvPelaajat.SelectedItem;
             spData.DataContext = valittu;
+            Ukko.NykyinenPelaaja = valittu.PlayerName;
         }
 
 

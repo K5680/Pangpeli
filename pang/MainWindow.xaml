@@ -32,7 +32,10 @@
             </Canvas.Triggers>
             <TextBlock x:Name="txtX" Height="42" Canvas.Left="267" TextWrapping="Wrap" Text=" " Canvas.Top="367" Width="240"/>
             <MediaElement Height="20" Margin="10,10,108,0" LoadedBehavior="Manual" Name="mediaElementti" VerticalAlignment="Top" Source="Images/" />
-            
+            <MediaElement Height="20" Margin="10,10,108,0" LoadedBehavior="Manual" Name="mediaElementti2" VerticalAlignment="Top" Source="Images/" />
+            <MediaElement Height="20" Margin="10,10,108,0" LoadedBehavior="Manual" Name="mediaElementti3" VerticalAlignment="Top" Source="Images/" />
+            <MediaElement Height="20" Margin="10,10,108,0" LoadedBehavior="Manual" Name="mediaElementti4" VerticalAlignment="Top" Source="Images/" />
+
             <Rectangle HorizontalAlignment="Left" Height="46" Stroke="Black" VerticalAlignment="Top" Width="792">
                 <Rectangle.Fill>
                     <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
@@ -45,17 +48,21 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="120" />
                     <ColumnDefinition Width="200" />
+                    <ColumnDefinition Width="70" />
+                    <ColumnDefinition Width="150" />
                     <ColumnDefinition Width="50" />
-                    <ColumnDefinition Width="150" />
-                    <ColumnDefinition Width="150" />
-                    <ColumnDefinition Width="120" />
+                    <ColumnDefinition Width="100" />
+                    <ColumnDefinition Width="50" />
+                    <ColumnDefinition Width="20" />
                 </Grid.ColumnDefinitions>
-                <Label x:Name="label" Grid.Column="0" Content="Pangpeli" Height="46" Width="150" FontSize="26" Foreground="White"/>
-                <TextBlock x:Name="copyTxt" Grid.Column="1" Height="20" TextWrapping="NoWrap" Text="© 2017   Vesa Vertainen"  Width="Auto" FontSize="16"/>
-                <TextBlock x:Name="playerTxt" Grid.Column="2" Height="20" TextWrapping="Wrap" Text="Player:"  Width="144" FontSize="16"/>
-                <TextBlock x:Name="pelaajanNimi" Grid.Column="3" Height="20" TextWrapping="Wrap" Text="{Binding}" Width="144" FontSize="16"/>
-                <TextBlock x:Name="pelaajanPisteet" Grid.Column="4" Height="20" TextWrapping="Wrap" Text="{Binding}" Width="144" FontSize="16"/>
-                <TextBlock x:Name="pelaajanElämät" Grid.Column="5" Height="20" TextWrapping="Wrap" Text="{Binding Elämät}" Width="144" FontSize="16"/>
+                <Label x:Name="label" Grid.Column="0" Content="Pangpeli" Height="46" Width="150" FontSize="26" Foreground="White" Grid.ColumnSpan="2" Margin="0,0,170,0"/>
+                <TextBlock x:Name="copyTxt" Grid.Column="1" Height="20" TextWrapping="NoWrap" Foreground="#444444" Text="© 2017   Vesa Vertainen"  Width="Auto" FontSize="16" Margin="0,13"/>
+                <TextBlock x:Name="playerTxt" Grid.Column="2" Height="20" TextWrapping="Wrap" Text="Player:"  Width="144" FontSize="16" />
+                <TextBlock x:Name="txtPelaajanNimi" Grid.Column="3" Height="20" TextWrapping="Wrap" Text="{Binding}" Width="144" FontSize="16" Margin="3,13"/>
+                <TextBlock x:Name="pisteetTxt" Grid.Column="4" Height="20" TextWrapping="Wrap" Text="Score:" Width="144" FontSize="16" Margin="3,13"/>
+                <TextBlock x:Name="txtPelaajanPisteet" Grid.Column="5" Height="20" TextWrapping="Wrap" Text="{Binding}" Width="144" FontSize="16" Margin="3,13"/>
+                <TextBlock x:Name="elämätTxt" Grid.Column="6" Height="20" TextWrapping="Wrap" Text="Lives:" Width="144" FontSize="16" Margin="3,13"/>
+                <TextBlock x:Name="txtPelaajanElämät" Grid.Column="7" Height="20" TextWrapping="Wrap" Text="{Binding Elämät}" Width="144" FontSize="16" Margin="0,13,-24,13"/>
             </Grid>
         </Canvas>
 
