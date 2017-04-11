@@ -42,8 +42,8 @@ namespace pang
         public Players()
         {
             InitializeComponent();
-
-            pvm.LataaPelaajat(); //pvm = new ViewModel.PelaajatViewModel();
+            
+            pvm.LataaPelaajat(); // lataa pelaajat
             myGrid.DataContext = pvm.Pelaajat;
 
             this.DataContext = this;
@@ -91,35 +91,31 @@ namespace pang
         }
 
 
-        private void lsvPelaajat_Loaded(object sender, RoutedEventArgs e)
-        {
-            //lsvPelaajat.DataContext = svmo.Pelaajat;
-        }
-
-
         private void btnAddNew_Click_1(object sender, RoutedEventArgs e)
         {
             if (txtPlayerName.Text != "")       // ei lisätä tyhjää pelaajaa
             {
-
                 Pelaajat uusi = new Pelaajat();
                 uusi.PlayerName = txtPlayerName.Text;
                 uusi.PlayerPoints = 0; // pelaajaa luodessa pisteet 0, eikä tulosteta vielä mihinkään
                 pvm.Pelaajat.Add(uusi);
-                txtPlayerName.Text = "";
 
+                pvm.TalletaPelaajat(uusi.PlayerName, uusi.PlayerPoints);
+
+                txtPlayerName.Text = "";
             }
         }
 
 
-        private void lvPelaajat_Loaded(object sender, RoutedEventArgs e)
+        private void lvPelaajat_Loaded(object sender, RoutedEventArgs e)                //              TURHA               ?
         {
             lsvPelaajat.DataContext = pvm.Pelaajat;
         }
 
+
         private void txtPlayerName_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            txtPlayerName.Text = "";    // tyhjennä nimi ruutu klikatessa
+            txtPlayerName.Text = "";    // tyhjennä nimi ruutua klikatessa
         }
 
 

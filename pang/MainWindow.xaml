@@ -8,8 +8,6 @@
         Title="MainWindow" Height="600" Width="800"
         >
 
-
-
     <Grid x:Name="gridi">
         <Canvas x:Name="scene">
             <Canvas.Background>
@@ -65,7 +63,5 @@
                 <TextBlock x:Name="txtPelaajanElämät" Grid.Column="7" Height="20" TextWrapping="Wrap" Text="{Binding Elämät}" Width="144" FontSize="16" Margin="0,13,-24,13"/>
             </Grid>
         </Canvas>
-
-
     </Grid>
 </Window>

@@ -19,15 +19,16 @@ namespace pang.ViewModel
     [Serializable]
     class PelaajatViewModel
     {
-            public string Polku { get; set; }
+        public string Polku { get; set; }
         
-            public ObservableCollection<Pelaajat> Pelaajat
-            {
-                get;
-                set;
-            }
+        public ObservableCollection<Pelaajat> Pelaajat
+        {
+            get;
+            set;
+        }
 
-            public void LataaPelaajat()
+        
+    public void LataaPelaajat()
             {
                 ObservableCollection<Pelaajat> pelaajat = new ObservableCollection<Pelaajat>();               
 
@@ -74,5 +75,35 @@ namespace pang.ViewModel
 
             Pelaajat = pelaajat;
         }
+
+
+        
+        public void TalletaPelaajat(string nimi, int pisteet)       // uusien pelaajien tallennus levylle
+        {
+            ObservableCollection<Pelaajat> pelaajat = new ObservableCollection<Pelaajat>();
+
+            try
+            {
+                // luodaan stream pelaajien lataamiseen levyltä
+                Stream readStream = new FileStream(Polku + "\\players\\Players.bin", FileMode.Open, FileAccess.Read, FileShare.Read);
+                IFormatter formatter = new BinaryFormatter();
+                pelaajat = (ObservableCollection<Pelaajat>)formatter.Deserialize(readStream);
+                readStream.Close();
+
+                pelaajat.Add(new Pelaajat { PlayerName = nimi, PlayerPoints = pisteet });   // lisätään valikossa tehty uusi pelaaja listaan
+
+                Stream writeStream = new FileStream(Polku + @"\players\Players.bin", FileMode.Create, FileAccess.Write, FileShare.None);
+
+                // kirjoitetaan pelaajat Players.bin:iin
+                formatter.Serialize(writeStream, pelaajat);
+                writeStream.Close();
+            }
+            catch (Exception e) // jos levytoiminnot ei onnistu, näytetään poikkeus
+            {
+                MessageBox.Show("Disk read error: " + e.ToString());
+            }
+
+        }
+
     }
 }
