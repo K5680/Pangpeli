@@ -111,16 +111,15 @@ namespace pang                                                                  
             txtPelaajanElämät.Text = heebo.Elämät.ToString();  // päivitetään ruutuun elämät
             txtPelaajanPisteet.Text = heebo.Pisteet.ToString(); // ja pisteet
 
-
             // TÖRMÄYKSEN TUNNISTUS     Ukon ja pallojen / Ammusten ja pallojen välillä
             for (int i = 0; i < pallojaLuotu; i++)    // käydään läpi kaikki pallo-instanssit
             {
                 // törmäyksen tunnistus Rect:illä, luodaan pallon ympärille rect
                 var x2 = Canvas.GetLeft(palloLista[i].ball);
                 var y2 = Canvas.GetTop(palloLista[i].ball);
+
                 Rect r2 = new Rect(x2, y2, (palloLista[i].ball.ActualWidth), (palloLista[i].ball.ActualHeight));
-                
-                
+
                 // Käydään läpi kaikki ammukset, osuvatko kyseiseen palloon + yliruudun. Mutta vasta kun ammuksia on luotu.
                 if (Ukko.ammukset.Count > 0)
                 {
@@ -133,27 +132,35 @@ namespace pang                                                                  
                                 System.Diagnostics.Debug.WriteLine("- 1. Ammus yli ruudun! Ammuksen nro: " + ampuu.AmmusNro + " index: " + Ukko.ammukset.IndexOf(ampuu)); // debuggia
                             }
                             else
-                            {   // Ammus osuu palloon                                
-                                System.Diagnostics.Debug.WriteLine("osuu palloon: " + i + " /"+pallojaLuotu); // debuggia
+                            {   // Ammus osuu palloon 
+                                if (scene.Children.Contains(palloLista[i].ball)) // ei tehdä törmäystunnistusta jos pallo ei ole canvasilla (jostain syystä näkymättömiä palloja jää?)
+                                {                                                 
+                                    System.Diagnostics.Debug.WriteLine("osuu palloon: " + i + " /" + pallojaLuotu); // debuggia
 
-                                // Ammus osui palloon, pallo poksahtaa kahteen osaan...
-                                palloLista[i].Puolitus();
-                                if (palloLista[i].ball.Width < 10) // ... ja pienin pallo häviää kokonaan.
-                                {
-                                    scene.Children.Remove(palloLista[i].ball);  // poistetaan ball canvasilta (scene)
-                                    Soita("pallo_poksahtaa4");
-                                    heebo.Pisteet += 500;
-                                }
-                                else    // jos ei vielä häviä, niin jaetaan kahteen
-                                {                                    
-                                    JaaPallo(i, palloLista[i].ball.Width);
-                                    heebo.Pisteet += 100;
+                                    // Ammus osui palloon, pallo poksahtaa kahteen osaan...
+                                    palloLista[i].Puolitus();
+                                    if (palloLista[i].ball.Width < 10) // ... ja pienin pallo häviää kokonaan.
+                                    {
+                                        scene.Children.Remove(palloLista[i].ball);  // poistetaan ball canvasilta (scene)
+                                        Soita("pallo_poksahtaa4");
+                                        heebo.Pisteet += 500;
+                                        System.Diagnostics.Debug.WriteLine("poistetaan pallo NRO :  " + i); // debuggia
+                                        palloLista[i].PalloX = -100;
+                                        palloLista[i].PalloSaaLiikkua = false;  // pallo siirretään hävitessä varulta pois canvasilta
+                                    }
+                                    else    // jos ei vielä häviä, niin jaetaan kahteen
+                                    {
+                                        JaaPallo(i, palloLista[i].ball.Width);
+                                        heebo.Pisteet += 100;
+                                    }
                                 }
                             }
+                            //                              TODO    TODO                ammus poistuu näkymättömään palloon, koska poistetaanAmmus tehdään, vaikka tunnistusta ei tehtäisi!!!
+
 
                             ampuu.AmmuksenNopeus = 0;     // Pysäytys
-                            ampuu.AmmusY = 1000;          // ja siirto, varulta
-                            MainWindow.instance.scene.Children.Remove(ampuu.bullet);  // poistetaan bullet canvasilta (scene)
+                            //ampuu.AmmusY = 1000;          // ja siirto, varulta
+                            scene.Children.Remove(ampuu.bullet);                      // poistetaan bullet canvasilta (scene)
                             poistetaanAmmus = Ukko.ammukset.IndexOf(ampuu);           // otetaan muuttujaan talteen, minkä indexin 
                         }
                     }
@@ -215,6 +222,7 @@ namespace pang                                                                  
         {
             scene.Children.Add(child);
         }
+
 
         public void PoistaAmmusJokaIlmassa(int n)
         {            
@@ -303,7 +311,7 @@ namespace pang                                                                  
             }
 
             if (e.Key == Key.Space)
-            {
+            {                
                 heebo.Ammu();
             }
 

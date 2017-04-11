@@ -31,7 +31,7 @@ namespace pang
         public Rect ukkoPuskuri = new Rect(); // laatikko, joka toimii alueena, jolta törmäys tunnistetaan
         private double sijaintix;
         private double sijaintiy = 350;
-        private int ammuksiaMax = 3;             // ammusten maksimimäärä ruudulla
+        private int ammuksiaMax;             // ammusten maksimimäärä ruudulla
         
         private int ammusTiheys = 700;
 
@@ -76,6 +76,7 @@ namespace pang
 
         public Ukko()
         {
+            ammuksiaMax = 5;
             sijaintix = 350;
             Pisteet = 0;
             Osuuko = false;
@@ -112,8 +113,6 @@ namespace pang
             {
                 ukkoPuskuri.Width = 15;
             }
-
-            // debugilla, mikä on width?                            TODO
         }
 
 
@@ -196,7 +195,7 @@ namespace pang
             }
         }
 
-        // tällä metodilla saadaan ammus poistettua kentästä Ammus-luokasta kutsumalla
+/*        // tällä metodilla saadaan ammus poistettua kentästä Ammus-luokasta kutsumalla
         public void PoistaAmmusIlmasta(int n)
         {
             try
@@ -209,7 +208,7 @@ namespace pang
 
                 // POISTON TARKKAILU TEHTÄVÄ TÄNNE              !!          POIS AMMUS-LUOKASTA
 
-                //ammukset.RemoveAt(0);    // poistetaan listasta alin
+                ammukset.RemoveAt(0);    // poistetaan listasta alin
 
             }
             catch (Exception ex) 
@@ -217,7 +216,7 @@ namespace pang
                 MessageBox.Show("Ongelma ammus-instanssien poistamisessa..."+ex);
             }
             
-        }
+        }*/
 
         // nollataan ajastimella ampumistiheys
         private void timertiheys_Tick(object sender, EventArgs e)

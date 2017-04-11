@@ -54,6 +54,8 @@ namespace pang
         public int Numero { get; set; }
         private double kiihtyvyys = 0.1f;
 
+        public bool PalloSaaLiikkua { get; set; }
+
         public Ellipse ball;
 
 /*        private static Random rnd = new Random(); // arvotaan sijainti, ei ehkä jää lopulliseen peliin
@@ -67,6 +69,7 @@ namespace pang
             Angle = 40;
             PalloY = -100;
             LuoPallo();
+            PalloSaaLiikkua = true;
         }
 
         public void LuoPallo()
@@ -105,38 +108,41 @@ namespace pang
         // pallon liikkeen päivitys taimerilla
         private void timerpallo_Tick(object sender, EventArgs e)
         {
-            // alas tullessa kovempi vauhti kuin ylhäällä
-            if (Angle > 41.5 && Angle < 45.5)
+            if (PalloSaaLiikkua)    // Pallon liikkumislupa, tarvitaanko lopulta?
             {
-                kiihtyvyys += 0.02f + ((Convert.ToDouble(pallonKorkeus))/8000);    // pallonkorkeuden kautta pallon koko vaikuttaa nopeuteen
+                // alas tullessa kovempi vauhti kuin ylhäällä
+                if (Angle > 41.5 && Angle < 45.5)
+                {
+                    kiihtyvyys += 0.02f + ((Convert.ToDouble(pallonKorkeus)) / 8000);    // pallonkorkeuden kautta pallon koko vaikuttaa nopeuteen
+                }
+                else
+                {
+                    kiihtyvyys = 0.1f + ((Convert.ToDouble(pallonKorkeus)) / 8000);    // pallonkorkeuden kautta pallon koko vaikuttaa nopeuteen;
+                }
+
+                // System.Diagnostics.Debug.WriteLine("angle:" + Angle);
+
+                // pallon liikutus sinikäyrällä ylös ja alas
+                Angle = Angle + kiihtyvyys;
+                if (Angle > 46.3) { Angle = 40; }           // näillä asteilla (40 - 46.3) liikkuminen näyttää sulavalta
+                PalloY = pallonKorkeus + Math.Cos(Angle) * Kaari;
+
+                // pallon liikutus suunnan mukaan
+                if (palloMenossa == pallonSuunta.Oikea)
+                {
+                    PalloX = PalloX + 5;    // pallon liikutus oikealla
+                    if (PalloX > MainWindow.ruudunLeveys - ball.Width) palloMenossa = pallonSuunta.Vasen; // otetaan pallon leveys huomioon seinään törmätessä
+                }
+                else
+                {
+                    PalloX = PalloX - 5; // pallon liikutus vasemmalle
+                    if (PalloX < 0) palloMenossa = pallonSuunta.Oikea;
+                }
+
+                // pallo_x++;
+                Canvas.SetLeft(ball, PalloX);
+                Canvas.SetTop(ball, PalloY);
             }
-            else
-            {
-                kiihtyvyys = 0.1f + ((Convert.ToDouble(pallonKorkeus)) / 8000);    // pallonkorkeuden kautta pallon koko vaikuttaa nopeuteen;
-            }
-
-            // System.Diagnostics.Debug.WriteLine("angle:" + Angle);
-
-            // pallon liikutus sinikäyrällä ylös ja alas
-            Angle = Angle + kiihtyvyys;
-            if (Angle > 46.3) { Angle = 40; }           // näillä asteilla liikkuminen näyttää sulavalta
-            PalloY = pallonKorkeus + Math.Cos(Angle) * Kaari;
-
-            // pallon liikutus suunnan mukaan
-            if (palloMenossa == pallonSuunta.Oikea)
-            {
-                PalloX = PalloX + 5;    // pallon liikutus oikealla
-                if (PalloX > MainWindow.ruudunLeveys - ball.Width) palloMenossa = pallonSuunta.Vasen; // otetaan pallon leveys huomioon seinään törmätessä
-            }
-            else
-            {
-                PalloX = PalloX - 5; // pallon liikutus vasemmalle
-                if (PalloX < 0) palloMenossa = pallonSuunta.Oikea;
-            }            
-
-            // pallo_x++;
-            Canvas.SetLeft(ball, PalloX);
-            Canvas.SetTop(ball, PalloY);
         }
     }
 

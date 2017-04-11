@@ -90,7 +90,8 @@ namespace pang.ViewModel
                 pelaajat = (ObservableCollection<Pelaajat>)formatter.Deserialize(readStream);
                 readStream.Close();
 
-                pelaajat.Add(new Pelaajat { PlayerName = nimi, PlayerPoints = pisteet });   // lisätään valikossa tehty uusi pelaaja listaan
+                // lisätään alkuvalikossa tehty uusi pelaaja listaan
+                pelaajat.Add(new Pelaajat { PlayerName = nimi, PlayerPoints = pisteet });  
 
                 Stream writeStream = new FileStream(Polku + @"\players\Players.bin", FileMode.Create, FileAccess.Write, FileShare.None);
 
