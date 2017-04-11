@@ -1,4 +1,5 @@
-﻿using System;
+﻿using pang.Model;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -21,9 +22,7 @@ namespace pang
     /// 
     public partial class Players: Window, INotifyPropertyChanged
     {
-        PelaajatViewModel svmo = new PelaajatViewModel();
-
-        PelaajatViewModel evm;
+        ViewModel.PelaajatViewModel pvm = new ViewModel.PelaajatViewModel();
 
         private int width;
         public int CustomWidth
@@ -44,15 +43,14 @@ namespace pang
         {
             InitializeComponent();
 
-            svmo.LataaPelaajat();
+            pvm.LataaPelaajat(); //pvm = new ViewModel.PelaajatViewModel();
+            myGrid.DataContext = pvm.Pelaajat;
 
             this.DataContext = this;
             CustomWidth = 300;  // ikkunan leveyden määrittely
 
             // textboxin tyhjennys, kun laatikko valitaan
             txtPlayerName.AddHandler(FrameworkElement.MouseLeftButtonDownEvent, new MouseButtonEventHandler(txtPlayerName_MouseLeftButtonDown), true); 
-
-
         }
 
         public event PropertyChangedEventHandler PropertyChanged;       
@@ -90,36 +88,31 @@ namespace pang
         }
 
 
-        private void PelaajatViewControl_Loaded(object sender, RoutedEventArgs e)
-        {
-            PelaajatViewControl.DataContext = svmo;
-        }
-
-        private void dgPelaajat_Loaded(object sender, RoutedEventArgs e)
-        {
-            //dgPelaajat.DataContext = svmo.Pelaajat;
-            
-        }
-
         private void lsvPelaajat_Loaded(object sender, RoutedEventArgs e)
         {
             //lsvPelaajat.DataContext = svmo.Pelaajat;
         }
 
 
-        private void btnAddNew_Click(object sender, RoutedEventArgs e)
+        private void btnAddNew_Click_1(object sender, RoutedEventArgs e)
         {
             if (txtPlayerName.Text != "")       // ei lisätä tyhjää pelaajaa
-            { 
+            {
+
                 Pelaajat uusi = new Pelaajat();
                 uusi.PlayerName = txtPlayerName.Text;
                 uusi.PlayerPoints = 0; // pelaajaa luodessa pisteet 0, eikä tulosteta vielä mihinkään
-                svmo.Pelaajat.Add(uusi);
+                pvm.Pelaajat.Add(uusi);
                 txtPlayerName.Text = "";
-                //txtPlayerPoints.Text = "";
+
             }
         }
 
+
+        private void lvPelaajat_Loaded(object sender, RoutedEventArgs e)
+        {
+            lsvPelaajat.DataContext = pvm.Pelaajat;
+        }
 
         private void txtPlayerName_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
@@ -129,11 +122,13 @@ namespace pang
 
         private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-//            Pelaajat valittu = (Pelaajat)lsvPelaajat.SelectedItem;
-//            spData.DataContext = valittu;
+            Model.Pelaajat valittu = (Model.Pelaajat)lsvPelaajat.SelectedItem;
+            spData.DataContext = valittu;
         }
+
+
     }
 }
 
 
-// TODO   TODO   TODO   TODO   TODO   TODO   TODO   vaihda tiedonsidonta demo 2:een pelaajien valinta
+

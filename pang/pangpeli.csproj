@@ -80,9 +80,7 @@
     </Compile>
     <Compile Include="MainWindow.xaml.cs" />
     <Compile Include="Model\Pelaajat.cs" />
-    <Compile Include="Model\PelaajatViewModel.cs" />
-    <Compile Include="PelaajatModel.cs" />
-    <Compile Include="PelaajatViewModel.cs" />
+    <Compile Include="ViewModel\PelaajatViewModel.cs" />
     <Compile Include="Players.xaml.cs">
       <DependentUpon>Players.xaml</DependentUpon>
     </Compile>
@@ -90,9 +88,6 @@
       <DependentUpon>StartGame.xaml</DependentUpon>
     </Compile>
     <Compile Include="Ukko.cs" />
-    <Compile Include="PelaajatView.xaml.cs">
-      <DependentUpon>PelaajatView.xaml</DependentUpon>
-    </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -106,10 +101,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="StartGame.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="PelaajatView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

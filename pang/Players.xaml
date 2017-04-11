@@ -9,11 +9,12 @@
         Title="StartGame" Width="{Binding CustomWidth, Mode=TwoWay}" Height="320"
         WindowStartupLocation="Manual" 
         Left="300" Top="300">
+
     
     <Window.Resources>
         <DataTemplate x:Key="myData">
             <StackPanel Orientation="Horizontal">
-                <TextBlock Text="{Binding FullInfo}"/>
+                <TextBlock Text="{Binding FullInfo}" />
             </StackPanel>
         </DataTemplate>
     </Window.Resources>
@@ -31,7 +32,8 @@
     <Grid x:Name="myGrid">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="300" />
-                <ColumnDefinition Width="300" />
+                <ColumnDefinition Width="200" />
+                <ColumnDefinition Width="200" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="300"/>
@@ -45,44 +47,29 @@
                 <Button x:Name="btnExitPlayer" FontSize="20" Content="Quit" Height="40" Width="220" Margin="10" Click="btnExitPlayer_Click"/>
                 <TextBox x:Name="txtCopyright" Height="20" TextWrapping="Wrap" Text="2017 © Vesa Vertainen" Width="220" Margin="10"/>
             </StackPanel>
+        
             <StackPanel Grid.Column="1" Grid.Row="0">
                 <Label x:Name="lblNewOrLoad" FontSize="24" Content="{Binding CustomLabel, Mode=TwoWay}"/>
-<!--                <Label x:Name="tyhjä_väli" FontSize="24"/>
-                <TextBox Width="200">Player name</TextBox>
-                <Button x:Name="btnOK" Width="200" Click="btnOK_Click">OK</Button>
--->                
-            
-                <views:PelaajatView x:Name="PelaajatViewControl" Loaded="PelaajatViewControl_Loaded" DockPanel.Dock="Left"/>
+                <TextBox x:Name="txtPlayerName" Text="my player" Width="200" MouseLeftButtonDown="txtPlayerName_MouseLeftButtonDown">
+                    <TextBox.InputBindings>
+                        <KeyBinding Key="Return" Command="{Binding btnAddNew_Click_1 }" />
+                    </TextBox.InputBindings>
+                </TextBox>
 
-             <!--               <DataGrid x:Name="dgPelaajat"  ItemsSource="{Binding}" Loaded="dgPelaajat_Loaded" />
-                                <TextBox x:Name="txtPlayerPoints" Width="200" />
--->
-                <TextBox x:Name="valittu" Height="20" Text="{Binding PelaajatViewControl}"></TextBox>
-                <Button x:Name="valinta" Height="20" Content="Select Player">
-                    
-                </Button>
+                <Button x:Name="btnAddNew" Width="100" Content="Add Player" Margin="5 5 5 5" Click="btnAddNew_Click_1"></Button>
+
+                <ListView x:Name="lsvPelaajat" ItemsSource="{Binding}" Loaded="lvPelaajat_Loaded" SelectionChanged="ListView_SelectionChanged" ItemTemplate="{StaticResource myData}"/>
+
+            </StackPanel>
+            <StackPanel x:Name="spData" Grid.Column="2">
                 <StackPanel>
-                    <TextBox x:Name="txtPlayerName" Text="my player" Width="200" MouseLeftButtonDown="txtPlayerName_MouseLeftButtonDown">
-                        <TextBox.InputBindings>
-                            <KeyBinding Key="Return" Command="{Binding btnAddNew_Click}" />
-                        </TextBox.InputBindings>
-                    </TextBox>
-
-                    <Button x:Name="btnAddNew" Content="Add Player" Width="200" Click="btnAddNew_Click"/>
-
+                    <!--    <TextBlock Text="{Binding FullInfo}" FontFamily="Berlin Sans FB"  FontSize="16"/>
+                        
+                            Tarvitaanko tätä osiota?
+                        
+                        <TextBox Text="{Binding PlayerName}" />
+                        <TextBox Text="{Binding PlayerPoints}" /> -->
                 </StackPanel>
-
-                <StackPanel x:Name="spData" Orientation="Horizontal" Background="#FF1AEDDA">
-                    <TextBlock Text="{Binding AllInfo}" FontFamily="Berlin Sans FB"  FontSize="16"/>
-                   </StackPanel>
-                
-<!--                <StackPanel x:Name="listaStack">
-                    <ListView x:Name="lsvPelaajat" Height="50" FontSize="16" 
-                    ItemsSource="{Binding}"
-                    SelectionChanged="ListView_SelectionChanged"
-                    ItemTemplate="{Binding AllInfo}"/>
-                </StackPanel> -->
-
             </StackPanel>
 
         </Grid>
