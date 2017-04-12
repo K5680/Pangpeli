@@ -30,7 +30,6 @@ namespace pang
             LiikutaAmmusta();
         }
 
-
         public void LuoAmmus()
         {
             bullet = new Ellipse();
@@ -51,7 +50,6 @@ namespace pang
                 // ImageBrush tekstuuri = new ImageBrush();                // kuva ladataan resursseista
                 // tekstuuri.ImageSource = new BitmapImage(new Uri(MainWindow.Latauskansio + "pallo.png", UriKind.Absolute));
                 // bullet.Fill = tekstuuri;
-                MainWindow.instance.scene.Children.Add(bullet);  // lisätään bullet canvasiin (scene -nimeltään)
 
                 // ammuksen ajastin
                 DispatcherTimer timer_ammus = new DispatcherTimer(DispatcherPriority.Send);
@@ -60,7 +58,8 @@ namespace pang
                 timer_ammus.Start();
 
                 // ammuksen lähtöpiste y-suunnassa
-                AmmusY = 350;
+                AmmusY = 350;                
+                MainWindow.instance.AddCanvasChild(bullet);  // lisätään bullet canvasiin (scene -nimeltään)
             }
         }
 

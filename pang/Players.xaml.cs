@@ -50,26 +50,13 @@ namespace pang
             CustomWidth = 300;  // ikkunan leveyden määrittely
 
             // textboxin tyhjennys, kun laatikko valitaan
-            txtPlayerName.AddHandler(FrameworkElement.MouseLeftButtonDownEvent, new MouseButtonEventHandler(txtPlayerName_MouseLeftButtonDown), true); 
+            txtPlayerName.AddHandler(FrameworkElement.MouseLeftButtonDownEvent, new MouseButtonEventHandler(txtPlayerName_MouseLeftButtonDown), true);
+
+            txtMessage.Text = "";
         }
 
         public event PropertyChangedEventHandler PropertyChanged;       
 
-        private void btnNewPlayer_Click(object sender, RoutedEventArgs e)
-        {
-            // uuden pelaajan luonti    TODO
-            CustomWidth = 600;          // levennetään ikkuna, pelaajien luomisen kenttiä varten
-            lblNewOrLoad.Content = "Create Player";
-        }
-
-
-        private void btnLoadPlayer_Click(object sender, RoutedEventArgs e)
-        {
-            // pelaajien lataus, tässä vaiheessa oikaistaan suoraan peliin  TODO
-            CustomWidth = 600;          // levennetään ikkuna, pelaajien luomisen kenttiä varten
-            lblNewOrLoad.Content = "Load Player";
-
-        }
 
         private void btnExitPlayer_Click(object sender, RoutedEventArgs e)
         {
@@ -80,18 +67,33 @@ namespace pang
 
         private void btnOK_Click(object sender, RoutedEventArgs e)
         {
-            // OK -napilla kuitataan valittu pelaaja, ja jatketaan, ellei pelaaja ole tyhjä
+            // OK -napilla kuitataan valittu pelaaja, ja jatketaan, ellei pelaaja ole tyhjä, MUTTA
+            // Jos ollaan Delete player -moodissa, poistetaan pelaaja listasta
             Model.Pelaajat valittu = (Model.Pelaajat)lsvPelaajat.SelectedItem;
+
             if (valittu != null)
             {
-                StartGame startGame = new pang.StartGame(); // aloita peli
-                startGame.Show();
-                Close();                                    // sulje tämä ikkuna
+                String sisus = btnOK.Content.ToString();
+
+                if (sisus == "OK")
+                {
+                    StartGame startGame = new pang.StartGame(); // aloita peli
+                    startGame.Show();
+                    Close();                                    // sulje tämä ikkuna
+                }
+                else
+                {
+                    Pelaajat poisto = new Pelaajat();
+                    poisto.PlayerName = Ukko.NykyinenPelaaja;   // listasta valittu pelaajanimi
+                   // pvm.PoistaPelaajat(poisto.PlayerName);                            // PITÄÄKÖ TEHDÄ INDEKSI?
+
+                }
+
             }
         }
 
 
-        private void btnAddNew_Click_1(object sender, RoutedEventArgs e)
+        private void btnAddNew_Click_1(object sender, RoutedEventArgs e)    // pelaajan lisäys -nappi
         {
             if (txtPlayerName.Text != "")       // ei lisätä tyhjää pelaajaa
             {
@@ -100,16 +102,39 @@ namespace pang
                 uusi.PlayerPoints = 0; // pelaajaa luodessa pisteet 0, eikä tulosteta vielä mihinkään
                 pvm.Pelaajat.Add(uusi);
 
-                pvm.TalletaPelaajat(uusi.PlayerName, uusi.PlayerPoints);
+                pvm.TalletaPelaajat(uusi.PlayerName, uusi.PlayerPoints);    // tallennetaan pelaajalistaan muutokset
 
                 txtPlayerName.Text = "";
+                txtMessage.Text = "Player Added.";
             }
         }
 
 
-        private void lvPelaajat_Loaded(object sender, RoutedEventArgs e)                //              TURHA               ?
+        private void btnNewPlayer_Click(object sender, RoutedEventArgs e)
         {
-            lsvPelaajat.DataContext = pvm.Pelaajat;
+            txtPlayerName.Visibility = Visibility.Visible;          // valitun moodin mukaan näytetään ja piilotetaan valintoja
+            btnAddNew.Visibility = Visibility.Visible;
+            lsvPelaajat.Visibility = Visibility.Hidden;
+            btnOK.Visibility = Visibility.Hidden;
+            scrLista.Visibility = Visibility.Hidden;
+
+            // uuden pelaajan luonti    TODO
+            CustomWidth = 600;          // levennetään ikkuna, pelaajien luomisen kenttiä varten
+            lblLoad.Content = "Create Player";
+        }
+
+
+        private void btnLoadPlayer_Click(object sender, RoutedEventArgs e)
+        {
+            txtPlayerName.Visibility = Visibility.Hidden;           // valitun moodin mukaan näytetään ja piilotetaan valintoja
+            btnAddNew.Visibility = Visibility.Hidden;
+            lsvPelaajat.Visibility = Visibility.Visible;
+            btnOK.Visibility = Visibility.Visible;
+            scrLista.Visibility = Visibility.Visible;
+
+            CustomWidth = 600;          // levennetään ikkuna, pelaajien luomisen kenttiä varten
+            lblLoad.Content = "Load Player";
+            btnOK.Content = "OK";
         }
 
 
@@ -125,8 +150,20 @@ namespace pang
             spData.DataContext = valittu;
             Ukko.NykyinenPelaaja = valittu.PlayerName;
         }
+ 
 
-
+        private void btnDeletePlayer_Click(object sender, RoutedEventArgs e)
+        {
+            txtPlayerName.Visibility = Visibility.Hidden;           // valitun moodin mukaan näytetään ja piilotetaan valintoja
+            btnAddNew.Visibility = Visibility.Hidden;
+            lsvPelaajat.Visibility = Visibility.Visible;
+            btnOK.Visibility = Visibility.Visible;
+            scrLista.Visibility = Visibility.Visible;
+            
+            CustomWidth = 600;          // levennetään ikkuna, pelaajien luomisen kenttiä varten
+            lblLoad.Content = "Delete Player";
+            btnOK.Content = "Delete";
+        }
     }
 }
 

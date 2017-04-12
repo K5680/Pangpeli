@@ -6,9 +6,9 @@
         xmlns:local="clr-namespace:pang"
         xmlns:views="clr-namespace:pang"
         mc:Ignorable="d"
-        Title="StartGame" Width="{Binding CustomWidth, Mode=TwoWay}" Height="320"
+        Title="StartGame" Width="{Binding CustomWidth, Mode=TwoWay}" Height="370"
         WindowStartupLocation="Manual" 
-        Left="300" Top="300">
+        Left="350" Top="300">
 
     
     <Window.Resources>
@@ -21,53 +21,77 @@
 
     
     <Canvas>
-        <Rectangle HorizontalAlignment="Left" Height="46" Stroke="Black" VerticalAlignment="Top" Width="292">
+        <Rectangle HorizontalAlignment="Left" Height="46" Stroke="Black" VerticalAlignment="Top" Width="270">
             <Rectangle.Fill>
-            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                <GradientStop Color="#FF993663" Offset="1"/>
-                <GradientStop Color="#FF73FF80"/>
-            </LinearGradientBrush>
-        </Rectangle.Fill>
-    </Rectangle>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                  <GradientStop Color="#FF993663" Offset="1"/>
+                 <GradientStop Color="#FF73FF80"/>
+                </LinearGradientBrush>
+            </Rectangle.Fill>
+        </Rectangle>
+        
+        <DockPanel Width="750" Height="40">
+            <!-- Vaihtuva otsikko  Load/Create ...-->
+            <Label x:Name="lblLoad" FontSize="24" Content="{Binding CustomLabel, Mode=TwoWay}" Margin="0" HorizontalAlignment="Center" Width="200"/>
+        </DockPanel>
+        
     <Grid x:Name="myGrid">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="300" />
+                <ColumnDefinition Width="280" />
                 <ColumnDefinition Width="200" />
                 <ColumnDefinition Width="200" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height="300"/>
+                <RowDefinition Height="330"/>
             </Grid.RowDefinitions>
             <StackPanel  Grid.Column="0">
-                <Label x:Name="lblPangpeli" Content="Pangpeli" Height="46" Width="150" FontSize="26" Foreground="Black" Margin="75,0" HorizontalContentAlignment="Center"/>
+                <Label x:Name="lblPangpeli" Content="Pangpeli" Height="46" Width="150" FontSize="26" Foreground="Black" Margin="60,0" HorizontalContentAlignment="Center"/>
                 <Button x:Name="btnNewPlayer" FontSize="20" Content="New Player" Height="40" Width="220" Margin="5" Click="btnNewPlayer_Click"/>
                 <Button x:Name="btnLoadPlayer" FontSize="20" Content="Load Player" Height="40" Width="220" Margin="5" Click="btnLoadPlayer_Click"/>
-                <Button x:Name="btnDeletePlayer" FontSize="20" Content="Delete Player" Height="40" Width="220" Margin="5"/>
+                <Button x:Name="btnDeletePlayer" FontSize="20" Content="Delete Player" Height="40" Width="220" Margin="5" Click="btnDeletePlayer_Click"/>
                 <Label x:Name="labeli" Content="" Height="10" Width="150" FontSize="26" Foreground="Black" Margin="75,0"/>
                 <Button x:Name="btnExitPlayer" FontSize="20" Content="Quit" Height="40" Width="220" Margin="10" Click="btnExitPlayer_Click"/>
                 <TextBox x:Name="txtCopyright" Height="20" TextWrapping="Wrap" Text="2017 © Vesa Vertainen" Width="220" Margin="10"/>
             </StackPanel>
         
-            <StackPanel Grid.Column="1" Grid.Row="0">
-                <Label x:Name="lblNewOrLoad" FontSize="24" Content="{Binding CustomLabel, Mode=TwoWay}"/>
-                <TextBox x:Name="txtPlayerName" Text="my player" Width="200" MouseLeftButtonDown="txtPlayerName_MouseLeftButtonDown">
+            <DockPanel Grid.ColumnSpan="3" Background="DarkOliveGreen"  Height="15" VerticalAlignment="Bottom" Margin="0">
+                <TextBlock x:Name="txtMessage" Text="{Binding}" VerticalAlignment="Bottom" HorizontalAlignment="Center" Width="150"/>
+            </DockPanel>
+            
+   
+            <!-- New Player -osio -->
+            <StackPanel Grid.Column="1" Grid.Row="0" Margin="0,40">
+                <TextBox x:Name="txtPlayerName" Text="my player" Width="200" MouseLeftButtonDown="txtPlayerName_MouseLeftButtonDown" Visibility="{Binding}">
                     <TextBox.InputBindings>
                         <KeyBinding Key="Return" Command="{Binding btnAddNew_Click_1 }" /> <!-- ei toimi enterillä suoraan add-nappiin  -->
                     </TextBox.InputBindings>
                 </TextBox>
 
-                <Button x:Name="btnAddNew" Width="100" Content="Add Player" Margin="10" Click="btnAddNew_Click_1"></Button>
-
-                <TextBlock x:Name="txbChoose" Text="Choose Player:"/>
-
-                <ListView x:Name="lsvPelaajat" ItemsSource="{Binding}" Loaded="lvPelaajat_Loaded" SelectionChanged="ListView_SelectionChanged" ItemTemplate="{StaticResource myData}"/>
-
-                <Button x:Name="btnOK" Width="100" Content="OK" Margin="10" Click="btnOK_Click"/>
-
+                <Button x:Name="btnAddNew" Width="100" Content="Add Player" Margin="5" Click="btnAddNew_Click_1" Visibility="{Binding}"/>
             </StackPanel>
 
-            
-        
+            <!-- Load Player -osio -->
+            <ScrollViewer x:Name="scrLista" Width="190" Height="220" HorizontalAlignment="Center" Grid.Column="1" Grid.Row="0" Visibility="{Binding}">
+                <StackPanel Grid.Column="1" Grid.Row="0" Margin="0">
+                    <ListView Grid.Row="1" x:Name="lsvPelaajat"  ScrollViewer.VerticalScrollBarVisibility="Visible" Foreground="Black" ItemsSource="{Binding}" SelectionChanged="ListView_SelectionChanged" ItemTemplate="{StaticResource myData}" Visibility="{Binding}">
+                        <ListView.Resources>
+                            <Style TargetType="GridViewColumnHeader">
+                                <Setter Property="Visibility" Value="Collapsed" />
+                            </Style>
+                        </ListView.Resources>
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn DisplayMemberBinding="{Binding PlayerName}"/>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </StackPanel>
+            </ScrollViewer>
+            <StackPanel Grid.Column="1" VerticalAlignment="Bottom">
+                <Button x:Name="btnOK" Width="100" Content="{Binding}" Margin="30" Click="btnOK_Click" Visibility="{Binding}"/>
+            </StackPanel>
+
+            <!-- Highscores?-->
             <StackPanel x:Name="spData" Grid.Column="2">
                 <StackPanel>
                     <!--    <TextBlock Text="{Binding FullInfo}" FontFamily="Berlin Sans FB"  FontSize="16"/>
@@ -79,7 +103,11 @@
                 </StackPanel>
             </StackPanel>
 
+
+
         </Grid>
+
+        
     </Canvas>
 </Window>
 

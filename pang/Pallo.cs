@@ -105,6 +105,7 @@ namespace pang
             Angle = 40;                             // nollataan lähtökulma (sinikäyrään)
         }
 
+
         // pallon liikkeen päivitys taimerilla
         private void timerpallo_Tick(object sender, EventArgs e)
         {
@@ -138,11 +139,11 @@ namespace pang
                     PalloX = PalloX - 5; // pallon liikutus vasemmalle
                     if (PalloX < 0) palloMenossa = pallonSuunta.Oikea;
                 }
-
-                // pallo_x++;
-                Canvas.SetLeft(ball, PalloX);
-                Canvas.SetTop(ball, PalloY);
             }
+          
+            // pallo_x++;
+            Canvas.SetLeft(ball, PalloX);
+            Canvas.SetTop(ball, PalloY);            
         }
     }
 

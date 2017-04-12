@@ -118,7 +118,10 @@ namespace pang                                                                  
                 var x2 = Canvas.GetLeft(palloLista[i].ball);
                 var y2 = Canvas.GetTop(palloLista[i].ball);
 
-                Rect r2 = new Rect(x2, y2, (palloLista[i].ball.ActualWidth), (palloLista[i].ball.ActualHeight));
+//                if (scene.Children.Contains(palloLista[i].ball)) // ei tehdä törmäystunnistusta jos pallo ei ole canvasilla (jostain syystä näkymättömiä palloja jää?)
+//                {
+                    Rect r2 = new Rect(x2, y2, (palloLista[i].ball.ActualWidth), (palloLista[i].ball.ActualHeight));
+//                }
 
                 // Käydään läpi kaikki ammukset, osuvatko kyseiseen palloon + yliruudun. Mutta vasta kun ammuksia on luotu.
                 if (Ukko.ammukset.Count > 0)
@@ -133,9 +136,7 @@ namespace pang                                                                  
                             }
                             else
                             {   // Ammus osuu palloon 
-                                if (scene.Children.Contains(palloLista[i].ball)) // ei tehdä törmäystunnistusta jos pallo ei ole canvasilla (jostain syystä näkymättömiä palloja jää?)
-                                {                                                 
-                                    System.Diagnostics.Debug.WriteLine("osuu palloon: " + i + " /" + pallojaLuotu); // debuggia
+                                System.Diagnostics.Debug.WriteLine("osuu palloon: " + i + " /" + pallojaLuotu); // debuggia
 
                                     // Ammus osui palloon, pallo poksahtaa kahteen osaan...
                                     palloLista[i].Puolitus();
@@ -152,11 +153,8 @@ namespace pang                                                                  
                                     {
                                         JaaPallo(i, palloLista[i].ball.Width);
                                         heebo.Pisteet += 100;
-                                    }
-                                }
+                                    }                                
                             }
-                            //                              TODO    TODO                ammus poistuu näkymättömään palloon, koska poistetaanAmmus tehdään, vaikka tunnistusta ei tehtäisi!!!
-
 
                             ampuu.AmmuksenNopeus = 0;     // Pysäytys
                             //ampuu.AmmusY = 1000;          // ja siirto, varulta
