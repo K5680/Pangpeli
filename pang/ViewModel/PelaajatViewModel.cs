@@ -60,11 +60,8 @@ namespace pang.ViewModel
                 {
                     // luodaan stream pelaajien lataamiseen levyltä
                     Stream readStream = new FileStream(Polku + "\\players\\Players.bin", FileMode.Open, FileAccess.Read, FileShare.Read);
-                    
                     IFormatter formatter = new BinaryFormatter();
-
                     pelaajat = (ObservableCollection<Pelaajat>)formatter.Deserialize(readStream);
-
                     readStream.Close();
                 }
             }           // jos levytoiminnot ei onnistu, näytetään poikkeus
@@ -91,8 +88,38 @@ namespace pang.ViewModel
                 readStream.Close();
 
                 // lisätään alkuvalikossa tehty uusi pelaaja listaan
-                pelaajat.Add(new Pelaajat { PlayerName = nimi, PlayerPoints = pisteet });  
+                pelaajat.Add(new Pelaajat { PlayerName = nimi, PlayerPoints = pisteet });
+                               
+                Stream writeStream = new FileStream(Polku + @"\players\Players.bin", FileMode.Create, FileAccess.Write, FileShare.None);
 
+                // kirjoitetaan pelaajat Players.bin:iin
+                formatter.Serialize(writeStream, pelaajat);
+                writeStream.Close();
+            }
+            catch (Exception e) // jos levytoiminnot ei onnistu, näytetään poikkeus
+            {
+                MessageBox.Show("Disk read error: " + e.ToString());
+            }
+
+        }
+
+
+        public void PoistaPelaajat(int indeksi)       // pelaajan poisto
+        {
+            ObservableCollection<Pelaajat> pelaajat = new ObservableCollection<Pelaajat>();
+
+            try
+            {
+                // luodaan stream pelaajien lataamiseen levyltä
+                Stream readStream = new FileStream(Polku + "\\players\\Players.bin", FileMode.Open, FileAccess.Read, FileShare.Read);
+                IFormatter formatter = new BinaryFormatter();
+                pelaajat = (ObservableCollection<Pelaajat>)formatter.Deserialize(readStream);
+                readStream.Close();
+
+                // poistetaan pelaaja indeksi mukaan
+                pelaajat.RemoveAt(indeksi);
+
+                // uuden kokoelman tallennus
                 Stream writeStream = new FileStream(Polku + @"\players\Players.bin", FileMode.Create, FileAccess.Write, FileShare.None);
 
                 // kirjoitetaan pelaajat Players.bin:iin

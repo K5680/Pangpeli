@@ -24,7 +24,10 @@ namespace pang
     {
         ViewModel.PelaajatViewModel pvm = new ViewModel.PelaajatViewModel();
 
-        private int width;
+        private int width;      // ikkunan leveys muuttuu -> muuttuja
+        private int indeksi;    // pelaajan poistamiseen indeksi perusteella collectionista
+        private int poistotehty;    // jotta lista ei jumitu, sitä ei saa päivittää kun valinta on poistetulla Itemillä
+
         public int CustomWidth
         {
             get { return width; }
@@ -81,11 +84,15 @@ namespace pang
                     startGame.Show();
                     Close();                                    // sulje tämä ikkuna
                 }
-                else
+                else // jos nappi on "Delete"
                 {
-                    Pelaajat poisto = new Pelaajat();
-                    poisto.PlayerName = Ukko.NykyinenPelaaja;   // listasta valittu pelaajanimi
-                   // pvm.PoistaPelaajat(poisto.PlayerName);                            // PITÄÄKÖ TEHDÄ INDEKSI?
+                    System.Diagnostics.Debug.WriteLine("indeksi 1: " + indeksi);
+
+                    poistotehty = 1;
+                    pvm.PoistaPelaajat(indeksi);
+                    pvm.Pelaajat.RemoveAt(indeksi);
+                    lsvPelaajat.SelectedItem = 0;
+                    poistotehty = 0;
 
                 }
 
@@ -101,9 +108,7 @@ namespace pang
                 uusi.PlayerName = txtPlayerName.Text;
                 uusi.PlayerPoints = 0; // pelaajaa luodessa pisteet 0, eikä tulosteta vielä mihinkään
                 pvm.Pelaajat.Add(uusi);
-
                 pvm.TalletaPelaajat(uusi.PlayerName, uusi.PlayerPoints);    // tallennetaan pelaajalistaan muutokset
-
                 txtPlayerName.Text = "";
                 txtMessage.Text = "Player Added.";
             }
@@ -118,7 +123,6 @@ namespace pang
             btnOK.Visibility = Visibility.Hidden;
             scrLista.Visibility = Visibility.Hidden;
 
-            // uuden pelaajan luonti    TODO
             CustomWidth = 600;          // levennetään ikkuna, pelaajien luomisen kenttiä varten
             lblLoad.Content = "Create Player";
         }
@@ -146,11 +150,19 @@ namespace pang
 
         private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            Model.Pelaajat valittu = (Model.Pelaajat)lsvPelaajat.SelectedItem;
-            spData.DataContext = valittu;
-            Ukko.NykyinenPelaaja = valittu.PlayerName;
+            if (poistotehty == 0)
+            {
+                Model.Pelaajat valittu = (Model.Pelaajat)lsvPelaajat.SelectedItem;
+                Ukko.NykyinenPelaaja = valittu.PlayerName;
+                indeksi = pvm.Pelaajat.IndexOf(valittu);    // valitun nimen indeksi collectionissa
+            }
+            else
+            {
+                indeksi = 0;
+            }
+            //spData.DataContext = valittu;
         }
- 
+
 
         private void btnDeletePlayer_Click(object sender, RoutedEventArgs e)
         {

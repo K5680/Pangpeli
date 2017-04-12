@@ -67,9 +67,7 @@ namespace pang
         public Pallo()
         {
             Angle = 40;
-            PalloY = -100;
-            LuoPallo();
-            PalloSaaLiikkua = true;
+            LuoPallo();           
         }
 
         public void LuoPallo()
@@ -93,6 +91,16 @@ namespace pang
             timer_pallo.Interval = TimeSpan.FromMilliseconds(50);       // Set the Interval
             timer_pallo.Tick += new EventHandler(timerpallo_Tick);      // Set the callback to invoke every tick time
             timer_pallo.Start();
+
+            // annetaan liikkua heti, jos luodaan kesken pelin, alussa ei
+            if (MainWindow.LevelText)
+            {
+                PalloSaaLiikkua = false;
+            }
+            else
+            {
+                PalloSaaLiikkua = true;
+            }
         }
 
         // Pallon puolitus ammukseen osuessa

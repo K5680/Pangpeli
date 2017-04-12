@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Resources;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -18,7 +19,7 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 using static pang.Pallo;
 //using System.Drawing;
-                                                                                                //      TODO    TODO    TODO    TODO
+//      TODO    TODO    TODO    TODO
 namespace pang                                                                                  // * highscore -lista / pelaajan lisäys / pelaajan lataus / pelaajan poisto
 {                                                                                               // * pallojen lentorata paremmaksi
     /// <summary>                                                                               // * level päättyy, kun pallot ammuttu -> seuraava level
@@ -29,7 +30,14 @@ namespace pang                                                                  
 
 
         public static MainWindow instance { get; private set; } // tämän instanssin kautta voidaan kutsua MainWindow-luokan metodeita
-        public static MainWindow Main; //  tarvitaanko?
+        
+        public static int Level = 1;            // levelin numero
+        public static bool LevelText = true;    // piirretään levelin numero ruutuun alussa
+           
+        private DateTime startDate;     // ajastus level-teksteille (ym)
+        private int secondDuration;
+        private Timer timer;
+
 
         public string NykyinenPelaaja { get; set; } // pelaajan nimi yläpalkkiin ym.
 
@@ -71,27 +79,28 @@ namespace pang                                                                  
                                            // AddCanvasChild(heebo2.pelaaja); // ja liitetään canvasiin
 
             // luodaan pallo-instanssit, aluksi vain 2 kpl
-            for (int i = 0; i < 2; i++) 
+            for (int i = 0; i < 2; i++)
             {
                 palloLista[i] = new Pallo();
                 palloLista[i].Numero = i + 1;
 
                 if (i < 2) AddCanvasChild(palloLista[i].ball); // lisätään pallo-oliot sceneen (canvasiin), aluksi 2kpl
+                palloLista[i].PalloY = 100;
 
                 switch (i)  // ensimmäisille palloille annetaan sijainti-arvot, ja suunnat
                 {
                     case 0:
                         palloLista[i].PalloX = 10; // ensimmäinen pallo vasempaan reunaan
-                        palloLista[i].palloMenossa = pallonSuunta.Oikea;
+                        palloLista[i].palloMenossa = pallonSuunta.Oikea;                       
                         break;
                     case 1:
                         palloLista[i].PalloX = this.Width - 140; // toinen pallo oikeaan reunaan ruudunleveyden mukaan
-                        palloLista[i].palloMenossa = pallonSuunta.Vasen;
+                        palloLista[i].palloMenossa = pallonSuunta.Vasen;                       
                         break;
                     default:
                         break;
                 }
-                pallojaLuotu = i+1;
+                pallojaLuotu = i + 1;
             }
 
             //määritellään ikkunalle tapahtumankäsittelijä näppäimistön kuuntelua varten
@@ -102,14 +111,56 @@ namespace pang                                                                  
             timer_Törmäys.Interval = TimeSpan.FromMilliseconds(50);       // Set the Interval
             timer_Törmäys.Tick += new EventHandler(timertörmäys_Tick);      // Set the callback to invoke every tick time
             timer_Törmäys.Start();
+
+            AlustaKello();
         }
 
+        private void AlustaKello()
+        {
+            // sekuntiajastin käyttöön (alustus)
+            startDate = DateTime.Now;
+            secondDuration = 0;
+            timer = new Timer(TimerCallback, null, 0, 1000);    // sekunnin intervalli
+        }
+
+        // sekuntikello, alun level-teksti ja pallot liikkumatta
+        private void TimerCallback(object state)
+        {
+            var now = DateTime.Now;
+            if (now > startDate + TimeSpan.FromSeconds(1))
+            {
+                secondDuration += 1;
+                System.Diagnostics.Debug.WriteLine(secondDuration); // debuggia
+
+                if (secondDuration > 1)
+                {
+                    for (int i = 0; i < pallojaLuotu; i++)
+                    {
+                        palloLista[i].PalloSaaLiikkua = true;
+                    }                        
+                }
+                if (secondDuration > 3)
+                {
+                    LevelText = false;
+                }
+            }
+        }
 
         // törmäyksen tunnistus ym. timerilla
         private void timertörmäys_Tick(object sender, EventArgs e)
-        {
+        {          
+            // Ruudun yläreunan tekstit
             txtPelaajanElämät.Text = heebo.Elämät.ToString();  // päivitetään ruutuun elämät
             txtPelaajanPisteet.Text = heebo.Pisteet.ToString(); // ja pisteet
+            if (LevelText)
+            {
+                txtInfo.Text = "Level " + Level;     // level -teksti alussa ruudussa
+                txtInfo.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                txtInfo.Visibility =  Visibility.Hidden;
+            }
 
             // TÖRMÄYKSEN TUNNISTUS     Ukon ja pallojen / Ammusten ja pallojen välillä
             for (int i = 0; i < pallojaLuotu; i++)    // käydään läpi kaikki pallo-instanssit
@@ -147,7 +198,7 @@ namespace pang                                                                  
                                         heebo.Pisteet += 500;
                                         System.Diagnostics.Debug.WriteLine("poistetaan pallo NRO :  " + i); // debuggia
                                         palloLista[i].PalloX = -100;
-                                        palloLista[i].PalloSaaLiikkua = false;  // pallo siirretään hävitessä varulta pois canvasilta
+                                        palloLista[i].PalloSaaLiikkua = false;  // pallon liike seis (jos sattuu jäämään elämään)
                                     }
                                     else    // jos ei vielä häviä, niin jaetaan kahteen
                                     {
@@ -155,9 +206,8 @@ namespace pang                                                                  
                                         heebo.Pisteet += 100;
                                     }                                
                             }
-
                             ampuu.AmmuksenNopeus = 0;     // Pysäytys
-                            //ampuu.AmmusY = 1000;          // ja siirto, varulta
+                            ampuu.AmmusX = -100;          // ja siirto, varulta
                             scene.Children.Remove(ampuu.bullet);                      // poistetaan bullet canvasilta (scene)
                             poistetaanAmmus = Ukko.ammukset.IndexOf(ampuu);           // otetaan muuttujaan talteen, minkä indexin 
                         }
