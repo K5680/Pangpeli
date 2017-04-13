@@ -87,13 +87,11 @@ namespace pang
                 else // jos nappi on "Delete"
                 {
                     System.Diagnostics.Debug.WriteLine("indeksi 1: " + indeksi);
-
-                    poistotehty = 1;
+                    poistotehty = 1;    // ListViewSelectionChanged on NULL, koska valittu item poistetaan, sen takia estetään sen lukeminen poiston ajaksi
                     pvm.PoistaPelaajat(indeksi);
                     pvm.Pelaajat.RemoveAt(indeksi);
                     lsvPelaajat.SelectedItem = 0;
                     poistotehty = 0;
-
                 }
 
             }

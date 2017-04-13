@@ -1,5 +1,7 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Resources;
 using System.Text;
@@ -18,7 +20,7 @@ using System.Windows.Resources;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using static pang.Pallo;
-//using System.Drawing;
+
 //      TODO    TODO    TODO    TODO
 namespace pang                                                                                  // * highscore -lista / pelaajan lisäys / pelaajan lataus / pelaajan poisto
 {                                                                                               // * pallojen lentorata paremmaksi
@@ -37,10 +39,7 @@ namespace pang                                                                  
         private DateTime startDate;     // ajastus level-teksteille (ym)
         private int secondDuration;
         private Timer timer;
-
-
-        public string NykyinenPelaaja { get; set; } // pelaajan nimi yläpalkkiin ym.
-
+       
         public static double ruudunLeveys;
         public string txt;
         private static string latauskansio = "pack://application:,,,/Pang;component/Images/";  // määritellään kansio, josta kuvat ladataan
@@ -139,7 +138,7 @@ namespace pang                                                                  
                         palloLista[i].PalloSaaLiikkua = true;
                     }                        
                 }
-                if (secondDuration > 3)
+                if (secondDuration > 2)
                 {
                     LevelText = false;
                 }
@@ -335,7 +334,6 @@ namespace pang                                                                  
         
 
 
-
 #region EVENTS
         // näppäinkomennot                          // HUOM ei ota vastaan kuin yhden näppäimen kerrallaan, ongelma kaksinpelissä!
         private void OnButtonKeyDown(object sender, KeyEventArgs e)
@@ -363,6 +361,12 @@ namespace pang                                                                  
                 heebo.Ammu();
             }
 
+            if (e.Key == Key.H)
+            {
+
+                TallennaPisteet();
+            }
+
 
             // kakkospelaaja
             if (e.Key == Key.A)
@@ -387,6 +391,87 @@ namespace pang                                                                  
         }
         #endregion
 
+ 
+
+        public void BubbleSort(int[] intArray)
+        {
+            Console.WriteLine("==========UnSorted Array Input===============");
+
+            for (int i = 0; i < intArray.Length; i++)
+            {
+                Console.WriteLine(intArray[i]);
+            }
+
+            for (int i = intArray.Length - 1; i > 0; i--)
+            {
+                for (int j = 0; j <= i - 1; j++)
+                {
+                    if (intArray[j] > intArray[j + 1])
+                    {
+                        int highValue = intArray[j];
+
+                        intArray[j] = intArray[j + 1];
+                        intArray[j + 1] = highValue;
+                    }
+                }
+            }
+
+            Console.WriteLine("==========Sorted Array Using BubbleSort===============");
+
+            for (int i = 0; i < intArray.Length; i++)
+            {
+                Console.WriteLine(intArray[i]);
+            }
+         }
+
+
+
+        // tallentaa nykyisen pelaajan pisteet Highscoreen
+        public void TallennaPisteet()   
+        {
+            // pelin kansio + Players-kansio, jossa Highscores.bin
+            string polku = System.IO.Path.GetDirectoryName(System.Windows.Forms.Application.ExecutablePath) + @"\players";
+
+            try
+            {
+                // jollei players-kansiota ole, luodaan se
+                if (!Directory.Exists(polku)) Directory.CreateDirectory(polku);
+
+                // jollei Players.bin:iä ole, luodaan se, ja laitetaan tiedostoon nykyisen pelaajan tulos
+                if (!File.Exists(polku + @"\Highscores.bin"))
+                {
+                    string[] lines = { Ukko.NykyinenPelaaja, heebo.Pisteet.ToString() };
+                    File.WriteAllLines(polku + @"\Highscores.bin", lines);
+
+                    foreach (string line in lines)
+                    {
+                        System.Diagnostics.Debug.WriteLine("  line " + line); // debuggia
+                    }                                                            
+                }       
+                else
+                {               // jos tiedosto on jo olemassa, luetaan sieltä pelaajat ja lisätään uusi tulos
+                    try
+                    {
+                        string[] text = System.IO.File.ReadAllLines(polku + @"\Highscores.bin");
+                        string[][] bubble;
+
+                        foreach (string line in text)
+                        {
+                            System.Diagnostics.Debug.WriteLine("  line " + line); // debuggia
+                        }
+                    }
+                    catch (FileNotFoundException)   // jos tiedostoa ei kuitenkaan löydy, näytetään poikkeus
+                    {
+                        Console.WriteLine("File not found (FileNotFoundException)");
+                    }
+                }
+            }       
+            catch (Exception e)     // jos levytoiminnot ei onnistu, näytetään poikkeus
+            {
+                MessageBox.Show("Disk read error: " + e.ToString() + "\n" + polku + "\\players\\Highscores.bin");
+            }
+
+        }
     }
 }
 

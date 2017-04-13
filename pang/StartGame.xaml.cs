@@ -39,68 +39,10 @@ namespace pang
         private void btnHighScores_Click(object sender, RoutedEventArgs e)
         {
             // tässä näytetään lista parhaista pelaajista   TODO
-     
-            
-            /*       Bubble Sort
-
-            public void BubbleSort(int[] intArray)
-
-            {
-
-            Console.WriteLine("==========UnSorted Array Input===============");
-
-            for (int i = 0; i < intArray.Length; i++)
-
-            {
-
-                Console.WriteLine(intArray[i]);
-
-            }
 
 
+        }
 
-            for (int i = intArray.Length - 1; i > 0; i--)
-
-            {
-
-                for (int j = 0; j <= i - 1; j++)
-
-                {
-
-                    if (intArray[j] > intArray[j + 1])
-
-                    {
-
-                        int highValue = intArray[j];
-
-
-
-                        intArray[j] = intArray[j + 1];
-
-                        intArray[j + 1] = highValue;
-
-                    }
-
-                }
-
-            }
-
-
-
-            Console.WriteLine("==========Sorted Array Using BubbleSort===============");
-
-            for (int i = 0; i < intArray.Length; i++)
-
-            {
-
-                Console.WriteLine(intArray[i]);
-
-            }
-
-        }       */
-
-
-    }
 
         private void textBox_TextChanged(object sender, TextChangedEventArgs e)
         {
@@ -108,3 +50,4 @@ namespace pang
         }
     }
 }
+
