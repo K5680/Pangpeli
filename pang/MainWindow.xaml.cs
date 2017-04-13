@@ -453,7 +453,29 @@ namespace pang                                                                  
                     try
                     {
                         string[] text = System.IO.File.ReadAllLines(polku + @"\Highscores.bin");
-                        string[][] bubble;
+                        string[,] bubble;
+                        bubble = new string[10,1];
+
+                        int tt = 0;
+
+                        foreach (string line in text)
+                        {
+                            if (tt % 2 == 0)    //  pariton / parillinen
+                            {
+                                bubble[tt, 0] = line;   // nimi tähän soluun
+                            }
+                            else
+                            {
+                                bubble[tt, 1] = line;   // pisteet toiseen
+                                tt++;
+                            }
+                            
+                        }
+
+                        bubble[tt, 0] = Ukko.NykyinenPelaaja;   // lisätään uusi tulos
+                        bubble[tt, 1] = heebo.Pisteet.ToString();
+
+                        //                                                                              APPEND  ?   TODO
 
                         foreach (string line in text)
                         {
