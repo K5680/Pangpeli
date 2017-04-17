@@ -1,38 +1,23 @@
 ﻿
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Resources;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Resources;
-using System.Windows.Shapes;
 using System.Windows.Threading;
 using static pang.Pallo;
 
-//      TODO    TODO    TODO    TODO
-namespace pang                                                                                  // * highscore -lista / pelaajan lisäys / pelaajan lataus / pelaajan poisto
-{                                                                                               // * pallojen lentorata paremmaksi
+namespace pang                                                                                  
+{                                                                                               
     /// <summary>                                                                               // * level päättyy, kun pallot ammuttu -> seuraava level
-    /// Interaction logic for MainWindow.xaml                                                   // * pisteet
+    /// Interaction logic for MainWindow.xaml                                                   
     /// </summary>                                                                              // * bonukset
     public partial class MainWindow : Window
     {
 
-
         public static MainWindow instance { get; private set; } // tämän instanssin kautta voidaan kutsua MainWindow-luokan metodeita
-        
+                   
         public static int Level = 1;            // levelin numero
         public static bool LevelText = true;    // piirretään levelin numero ruutuun alussa
            
@@ -77,31 +62,8 @@ namespace pang                                                                  
                                            // heebo2.LuoUkko();    // luodaan pelaaja nro 2 
                                            // AddCanvasChild(heebo2.pelaaja); // ja liitetään canvasiin
 
-            // luodaan pallo-instanssit, aluksi vain 2 kpl
-            for (int i = 0; i < 2; i++)
-            {
-                palloLista[i] = new Pallo();
-                palloLista[i].Numero = i + 1;
-
-                if (i < 2) AddCanvasChild(palloLista[i].ball); // lisätään pallo-oliot sceneen (canvasiin), aluksi 2kpl
-                palloLista[i].PalloY = 100;
-
-                switch (i)  // ensimmäisille palloille annetaan sijainti-arvot, ja suunnat
-                {
-                    case 0:
-                        palloLista[i].PalloX = 10; // ensimmäinen pallo vasempaan reunaan
-                        palloLista[i].palloMenossa = pallonSuunta.Oikea;                       
-                        break;
-                    case 1:
-                        palloLista[i].PalloX = this.Width - 140; // toinen pallo oikeaan reunaan ruudunleveyden mukaan
-                        palloLista[i].palloMenossa = pallonSuunta.Vasen;                       
-                        break;
-                    default:
-                        break;
-                }
-                pallojaLuotu = i + 1;
-            }
-
+            LuoPallot();
+            
             //määritellään ikkunalle tapahtumankäsittelijä näppäimistön kuuntelua varten
             this.KeyDown += new KeyEventHandler(OnButtonKeyDown);
 
@@ -128,8 +90,7 @@ namespace pang                                                                  
             var now = DateTime.Now;
             if (now > startDate + TimeSpan.FromSeconds(1))
             {
-                secondDuration += 1;
-             //   System.Diagnostics.Debug.WriteLine(secondDuration); // debuggia
+                secondDuration += 1;                
 
                 if (secondDuration > 1)
                 {
@@ -145,9 +106,43 @@ namespace pang                                                                  
             }
         }
 
+
+        public void LuoPallot()
+        {
+            // luodaan pallo-instanssit, aluksi vain 2 kpl
+            for (int i = 0; i < 2; i++)
+            {
+                palloLista[i] = new Pallo();
+                palloLista[i].Numero = i + 1;
+
+                if (i < 2) AddCanvasChild(palloLista[i].ball); // lisätään pallo-oliot sceneen (canvasiin), aluksi 2kpl
+                palloLista[i].PalloY = 100;
+
+                switch (i)  // ensimmäisille palloille annetaan sijainti-arvot, ja suunnat
+                {
+                    case 0:
+                        palloLista[i].PalloX = 10; // ensimmäinen pallo vasempaan reunaan
+                        palloLista[i].palloMenossa = pallonSuunta.Oikea;
+                        break;
+                    case 1:
+                        palloLista[i].PalloX = this.Width - 140; // toinen pallo oikeaan reunaan ruudunleveyden mukaan
+                        palloLista[i].palloMenossa = pallonSuunta.Vasen;
+                        break;
+                    default:
+                        break;
+                }
+                pallojaLuotu = i + 1;
+            }
+        }
+
+
         // törmäyksen tunnistus ym. timerilla
         private void timertörmäys_Tick(object sender, EventArgs e)
-        {          
+        {
+
+            System.Diagnostics.Debug.WriteLine("ajastimen sekunnit " + secondDuration); // debuggia
+
+
             // Ruudun yläreunan tekstit
             txtPelaajanElämät.Text = heebo.Elämät.ToString();  // päivitetään ruutuun elämät
             txtPelaajanPisteet.Text = heebo.Pisteet.ToString(); // ja pisteet
@@ -161,17 +156,24 @@ namespace pang                                                                  
                 txtInfo.Visibility =  Visibility.Hidden;
             }
 
+
+            // Pelin loppumisen teksti
+            if (heebo.Elämät == 0)
+            {
+                LevelText = true;
+                txtInfo.Text = "GaMe OvER";
+                txtInfo.Visibility = Visibility.Visible;                
+            }
+
+            int pallojaRuudulla = 0;    // lasketaan montako palloa vielä on canvasilla
+
             // TÖRMÄYKSEN TUNNISTUS     Ukon ja pallojen / Ammusten ja pallojen välillä
             for (int i = 0; i < pallojaLuotu; i++)    // käydään läpi kaikki pallo-instanssit
             {
                 // törmäyksen tunnistus Rect:illä, luodaan pallon ympärille rect
                 var x2 = Canvas.GetLeft(palloLista[i].ball);
                 var y2 = Canvas.GetTop(palloLista[i].ball);
-
-//                if (scene.Children.Contains(palloLista[i].ball)) // ei tehdä törmäystunnistusta jos pallo ei ole canvasilla (jostain syystä näkymättömiä palloja jää?)
-//                {
-                    Rect r2 = new Rect(x2, y2, (palloLista[i].ball.ActualWidth), (palloLista[i].ball.ActualHeight));
-//                }
+                Rect r2 = new Rect(x2, y2, (palloLista[i].ball.ActualWidth), (palloLista[i].ball.ActualHeight));
 
                 // Käydään läpi kaikki ammukset, osuvatko kyseiseen palloon + yliruudun. Mutta vasta kun ammuksia on luotu.
                 if (Ukko.ammukset.Count > 0)
@@ -180,14 +182,12 @@ namespace pang                                                                  
                     {   // osuuko ammus-rect pallo-rect:iin       tai  ammuksen Y on yli ruudun
                         if (ampuu.ammusPuskuri.IntersectsWith(r2) || ampuu.AmmusY < 0)  // Laitetaan samaan silmukkaan ammuksen poisto jos se on yli ruudun
                         {
-                            if (ampuu.AmmusY < 0)   //debuggia varten pelkästään
+                            if (ampuu.AmmusY < 0)   
                             {
-                                System.Diagnostics.Debug.WriteLine("- 1. Ammus yli ruudun! Ammuksen nro: " + ampuu.AmmusNro + " index: " + Ukko.ammukset.IndexOf(ampuu)); // debuggia
+                                poistetaanAmmus = Ukko.ammukset.IndexOf(ampuu);           // otetaan muuttujaan talteen, minkä indexin ammus poistetaan kun poissa ruudusta
                             }
                             else
-                            {   // Ammus osuu palloon 
-                                System.Diagnostics.Debug.WriteLine("osuu palloon: " + i + " /" + pallojaLuotu); // debuggia
-
+                            {   // Ammus osuu palloon                                                            
                                     // Ammus osui palloon, pallo poksahtaa kahteen osaan...
                                     palloLista[i].Puolitus();
                                     if (palloLista[i].ball.Width < 10) // ... ja pienin pallo häviää kokonaan.
@@ -195,7 +195,7 @@ namespace pang                                                                  
                                         scene.Children.Remove(palloLista[i].ball);  // poistetaan ball canvasilta (scene)
                                         Soita("pallo_poksahtaa4");
                                         heebo.Pisteet += 500;
-                                        System.Diagnostics.Debug.WriteLine("poistetaan pallo NRO :  " + i); // debuggia
+                                        //System.Diagnostics.Debug.WriteLine("poistetaan pallo NRO :  " + i); // debuggia
                                         palloLista[i].PalloX = -100;
                                         palloLista[i].PalloSaaLiikkua = false;  // pallon liike seis (jos sattuu jäämään elämään)
                                     }
@@ -208,7 +208,7 @@ namespace pang                                                                  
                             ampuu.AmmuksenNopeus = 0;     // Pysäytys
                             ampuu.AmmusX = -100;          // ja siirto, varulta
                             scene.Children.Remove(ampuu.bullet);                      // poistetaan bullet canvasilta (scene)
-                            poistetaanAmmus = Ukko.ammukset.IndexOf(ampuu);           // otetaan muuttujaan talteen, minkä indexin 
+                            poistetaanAmmus = Ukko.ammukset.IndexOf(ampuu);           // otetaan muuttujaan talteen, minkä indexin ammus poistetaan
                         }
                     }
 
@@ -216,16 +216,25 @@ namespace pang                                                                  
                     if (poistetaanAmmus != -1) PoistaAmmusJokaIlmassa(poistetaanAmmus);
                 }
 
-
+                
                 // Osuuko ukko palloon
                 if (scene.Children.Contains(palloLista[i].ball)) // ei tehdä törmäystunnistusta jos pallo ei ole canvasilla (jostain syystä näkymättömiä palloja jää?)
                 {
+                    pallojaRuudulla++;  // Lasketaan montako palloa on canvasilla
                     if (heebo.ukkoPuskuri.IntersectsWith(r2))
-                    {
-                        System.Diagnostics.Debug.WriteLine("Ukko OSUU palloon nro:" + i + "   " + heebo.ukkoPuskuri); // debuggia
+                    {                     
                         heebo.Osuuko = true; // jos osuu niin ukon "Osuuko"-bool on true (ja lähtee elämä)
                     }
                 }
+            }
+
+            // jos kaikki pallot ammuttu -> nextille levelille
+            if (pallojaRuudulla == 0)   
+            {
+                AlustaKello();
+                Level++;
+                LevelText = true;
+                LuoPallot();
             }
         }
 
@@ -362,8 +371,7 @@ namespace pang                                                                  
 
             if (e.Key == Key.H)
             {
-
-                TallennaPisteet();
+                //enkka.TallennaPisteet(heebo.Pisteet);   // testikoodia vain
             }
 
 
@@ -393,160 +401,6 @@ namespace pang                                                                  
 
 
 
- 
-        // bubblesortilla ennätyslistan sorttaus
-        public void BubbleSort(int[,] intArray, string[,] stringArray, string hakemistoPolku)
-        {
-            for (int i = intArray.Length/2 - 1; i > 0; i--)
-            {
-                for (int j = 0; j <= i - 1; j++)
-                {
-                    if (intArray[j,0] > intArray[(j + 1),0])
-                    {
-                        int highValue = intArray[j,0];
-                        int highValue2 = intArray[j, 1];
-
-                        intArray[j,0] = intArray[(j + 1),0];
-                        intArray[j, 1] = intArray[(j + 1), 1];
-                        intArray[(j + 1),0] = highValue;
-                        intArray[(j + 1), 1] = highValue2;
-                    }
-                }
-            }
-            
-            System.Diagnostics.Debug.WriteLine("sorted:----------------------  "); // debuggia
-            string[,] aputaulu;
-            aputaulu = new string[11, 2];
-
-            // kopioidaan tuloslista oikeassa järjestyksessä
-            for (int i = 1; i <intArray.Length/2; i++)
-            {
-                //System.Diagnostics.Debug.WriteLine("pisteet + " + intArray[i, 0] + " / "+intArray[i,1]+ "indeksnro");
-                aputaulu[i, 0] = intArray[i, 0].ToString();     // koostetaan tulostaulu int- ja string -tauluista -> tässä talteen pisteet
-                //System.Diagnostics.Debug.WriteLine("** pisteet: " + aputaulu[i, 0] + "indeksi i " + i);
-
-                // Etsitään indeksiä vastaava nimi string -taulukosta
-                for (int k = intArray.Length / 2-1; k > -1 ; k--)
-                {
-                    try
-                    {
-                        int jk;
-                        if (Int32.TryParse(stringArray[k, 1], out jk))
-                        {
-                            if (jk == intArray[i, 1])
-                            { 
-                             
-                                aputaulu[i, 1] = stringArray[k, 0];     // koostetaan tulostaulu int- ja string -tauluista  -> nimi talteen
-                               System.Diagnostics.Debug.WriteLine("  ** nimi: " + aputaulu[i, 1] + "indeksi k " + k);
-                            }
-                        }
-                    }
-                    catch (FormatException e)
-                    {
-                        MessageBox.Show(e.Message);
-                    }
-                }
-            }
-                
-            try {
-                // LOPULLISEN LISTAN TULOSTUS -> LEVYLLE
-                System.IO.StreamWriter outputFile = new System.IO.StreamWriter(hakemistoPolku + @"\Highscores.bin");          
-                for (int im = 10; im > 0; im--)
-                {
-                    System.Diagnostics.Debug.WriteLine("indeksi: " + im + "tulos:  " +  aputaulu[im, 0] + "   " + aputaulu[im, 1]);
-                    outputFile.WriteLine(aputaulu[im, 1]);
-                    outputFile.WriteLine(aputaulu[im, 0]);
-                }
-                outputFile.Close();
-            }       
-            catch (Exception e)     // jos levytoiminnot ei onnistu, näytetään poikkeus
-            {
-                MessageBox.Show("Disk write error: " + e.ToString() + "\n" + hakemistoPolku + "\\players\\Highscores.bin");
-            }
-}
-
-
-
-        // tallentaa nykyisen pelaajan pisteet Highscoreen
-        public void TallennaPisteet()   
-        {
-            // pelin kansio + Players-kansio, jossa Highscores.bin
-            string polku = System.IO.Path.GetDirectoryName(System.Windows.Forms.Application.ExecutablePath) + @"\players";
-
-            try
-            {
-                // jollei players-kansiota ole, luodaan se
-                if (!Directory.Exists(polku)) Directory.CreateDirectory(polku);
-
-                // jollei Players.bin:iä ole, luodaan se, laitetaan jotain tuloksia
-                if (!File.Exists(polku + @"\Highscores.bin"))
-                {
-                    string[] lines = { "AAA", "100", "BBB", "200", "CCC", "300", "DDD", "400", "EEE", "500", "FFF", "600", "GGG", "700", "HHH", "800", "III", "900", "JJJ", "1000" };
-                    File.WriteAllLines(polku + @"\Highscores.bin", lines);
-
-                    foreach (string line in lines)
-                    {
-//                        System.Diagnostics.Debug.WriteLine("  line " + line); // debuggia
-                    }                                                            
-                }
-
-                try
-                    {
-                        string[] text = System.IO.File.ReadAllLines(polku + @"\Highscores.bin");    // ladataan ennätykset levyltä
-                        string[,] nronimi;           // Taulukot ennätyslistaa varten    (1)   Nro & Nimi -taulukko -string tyyppinen
-                        int[,] nropisteet;           // Taulukot ennätyslistaa varten    (2)   Nro & Pisteet -taulukko  -int tyyppinen
-                        nronimi = new string[11, 2];
-                        nropisteet = new int[11, 2];
-
-                        int tt = 0;
-                        int indeksinro = 0;
-                        foreach (string line in text)
-                        {
-                            if (tt % 2 == 0)    //  pariton / parillinen
-                            {
-                                nronimi[indeksinro, 0] = line;              // nimi tähän soluun
-                                nronimi[indeksinro, 1] = indeksinro.ToString();     // indeksinumero tähän soluun
-                                nropisteet[indeksinro, 1] = indeksinro;  // indeksinumero tähän soluun
-                                indeksinro++;
-//                                System.Diagnostics.Debug.WriteLine(line + " line"); // debuggia
-                            }
-                            else
-                            {
-                                nropisteet[indeksinro-1, 0] = Int32.Parse(line);  // pisteet tähän soluun
-
-//                                System.Diagnostics.Debug.WriteLine(line + " line2"); // debuggia
-                            }
-                            tt++;
-                        }
-
-                        nronimi[indeksinro, 0] = Ukko.NykyinenPelaaja;   // lisätään uusi tulos
-                        nronimi[indeksinro, 1] = indeksinro.ToString();     // indeksinumero tähän soluun
-                        nropisteet[indeksinro, 1] = indeksinro;  // indeksinumero tähän soluun
-                        nropisteet[indeksinro, 0] = heebo.Pisteet;
-
-
-                    for (int im = 10; im > -1; im--)
-                    {
-                        System.Diagnostics.Debug.WriteLine("Ennen bubblesorttia: " + im + "tulos:  " + nronimi[im, 0] + "   " + nropisteet[im, 0] + " indeksi:  " +im);
-                     
-                    }
-
-                    // lajitellaan ja tallennetaan 10 parasta
-                    BubbleSort(nropisteet, nronimi, polku);
-
-                    }
-                    catch (FileNotFoundException)   // jos tiedostoa ei kuitenkaan löydy, näytetään poikkeus
-                    {
-                        Console.WriteLine("File not found (FileNotFoundException)");
-                    }
-                
-            }       
-            catch (Exception e)     // jos levytoiminnot ei onnistu, näytetään poikkeus
-            {
-                MessageBox.Show("Disk read error: " + e.ToString() + "\n" + polku + "\\players\\Highscores.bin");
-            }
-
-        }
     }
 }
 

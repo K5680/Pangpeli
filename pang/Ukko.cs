@@ -1,21 +1,9 @@
-﻿using pang.Properties;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Media;
-using System.Resources;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Resources;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 
@@ -74,6 +62,8 @@ namespace pang
         public bool SaakoAmpua;
         public bool Osuuko { get; set; }
 
+        Highscore enkka = new Highscore();  // highscore-lista
+
         public Ukko()
         {
             ammuksiaMax = 5;
@@ -82,7 +72,7 @@ namespace pang
             Osuuko = false;
             Askel = 10;
             UkonNopeus = 50; // millisekunnit
-            Elämät = 3;
+            Elämät = 15;
             pelaaja = new System.Windows.Shapes.Rectangle();    // pelaajan hahmon pohjaksi luodaan rectangle
             LuoUkko();
         }
@@ -158,12 +148,21 @@ namespace pang
                 LiikutaUkkoa(0);   // ukon liikutus ja paikan päivitys
 
                 if (sijaintiy > MainWindow.instance.Height) // Kun ukko on tippunut ruudun alapuolelle...
-                {
-                    Elämät -= 1;        // vähennetään elämä
-                    Osuuko = false; 
-                    sijaintix = 350;    // nollataan sijainti
-                    sijaintiy = 350;
-                    LiikutaUkkoa(0);    // ukko piirtyy uudestaan ruutuun
+                {                   
+                    // jos peli ei vielä loppunut, nollataan
+                    if (Elämät > 1)
+                    {
+                        Elämät -= 1;        // vähennetään elämä
+                        Osuuko = false;
+                        sijaintix = 350;    // nollataan sijainti
+                        sijaintiy = 350;
+                        LiikutaUkkoa(0);    // ukko piirtyy uudestaan ruutuun                        
+                    }
+                    else if (Elämät > 0)    // Jos peli loppui asetetaan lopuksi elämät nollaan ja tallennetaan highscore
+                    {
+                        Elämät -= 1;                        // vähennetään elämä     
+                        enkka.TallennaPisteet(Pisteet);     // tallennetaan highscore
+                    }
                 }
             }
         }
