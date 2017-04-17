@@ -31,9 +31,12 @@ namespace pang
                 pallox = value;
             }
         }
+
+        public double Angle { get; set; }
+        public int Numero { get; set; }
         public double PalloY { get; set; }
-        private double pallonKorkeus = 220;
         public int Kaari = 140;
+        private double pallonKorkeus = 220;
         
         public double PallonKorkeus
         {   get
@@ -46,25 +49,29 @@ namespace pang
             }
         }
 
-        public double Angle { get; set; }
-        public int Numero { get; set; }
         private double kiihtyvyys = 0.1f;
 
         public bool PalloSaaLiikkua { get; set; }
 
         public Ellipse ball;
 
-/*        private static Random rnd = new Random(); // arvotaan sijainti, ei ehkä jää lopulliseen peliin
-        public static int GetRandom()
-        {
-            return rnd.Next(50,500);
-        }*/
 
         public Pallo()
         {
             Angle = 40;
-            LuoPallo();           
+            LuoPallo();
+
+            // annetaan liikkua heti, jos luodaan kesken pelin, alussa ei
+            if (MainWindow.LevelText)
+            {
+                PalloSaaLiikkua = false;
+            }
+            else
+            {
+                PalloSaaLiikkua = true;
+            }
         }
+
 
         public void LuoPallo()
         {
@@ -80,24 +87,14 @@ namespace pang
             ImageBrush tekstuuri = new ImageBrush();                // kuva ladataan resursseista
             tekstuuri.ImageSource = new BitmapImage(new Uri(MainWindow.Latauskansio + "pallo.png", UriKind.Absolute));
             ball.Fill = tekstuuri;
-            //MainWindow.instance.scene.Children.Add(ball);  //tehdään pääkoodissa
 
             // pallon ajastin
             DispatcherTimer timer_pallo = new DispatcherTimer(DispatcherPriority.Send);
             timer_pallo.Interval = TimeSpan.FromMilliseconds(50);       // Set the Interval
             timer_pallo.Tick += new EventHandler(timerpallo_Tick);      // Set the callback to invoke every tick time
             timer_pallo.Start();
-
-            // annetaan liikkua heti, jos luodaan kesken pelin, alussa ei
-            if (MainWindow.LevelText)
-            {
-                PalloSaaLiikkua = false;
-            }
-            else
-            {
-                PalloSaaLiikkua = true;
-            }
         }
+
 
         // Pallon puolitus ammukseen osuessa
         public void Puolitus()
@@ -125,8 +122,6 @@ namespace pang
                     kiihtyvyys = 0.1f + ((Convert.ToDouble(pallonKorkeus)) / 8000);    // pallonkorkeuden kautta pallon koko vaikuttaa nopeuteen;
                 }
 
-                // System.Diagnostics.Debug.WriteLine("angle:" + Angle);
-
                 // pallon liikutus sinikäyrällä ylös ja alas
                 Angle = Angle + kiihtyvyys;
                 if (Angle > 46.3) { Angle = 40; }           // näillä asteilla (40 - 46.3) liikkuminen näyttää sulavalta
@@ -145,35 +140,9 @@ namespace pang
                 }
             }
           
-            // pallo_x++;
+            // Pallon liikkeen päivitys "sceneen"
             Canvas.SetLeft(ball, PalloX);
             Canvas.SetTop(ball, PalloY);            
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-          /*  // törmäyksen tunnistus etäisyyden mukaan, kumpi parempi?  Käytössä nyt rect-tunnistus.
-            double xet = Canvas.GetLeft(pallo); //pallon x
-            double yet = Canvas.GetTop(pallo); // pallon y
-            double D = Math.Sqrt((xet - heebo.SijaintiX) * (xet - heebo.SijaintiX) + (yet - 350) * (yet - 350));
-
-            if (D < (ball.Height))
-            {
-                var a = Console.ReadLine();
-                System.Diagnostics.Debug.WriteLine("Pallon etäisyysmittarisysteemillä osuu... " + D + " " + yet); // debuggia
-            }
-        */
-
-    
-
 }

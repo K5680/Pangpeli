@@ -44,8 +44,9 @@ namespace pang
         Pallo[] palloLista = new Pallo[30]; // luodaan tarvittava määrä pallo-olioita
         public int pallojaLuotu;
 
-        //  public Rectangle re = new Rectangle(); // Ukon törmäyspuskurin testaukseen
-        //  public Rectangle rep = new Rectangle(); // Pallon törmäyspuskurin testaukseen
+        BonusPallo[] bonusPalloLista = new BonusPallo[10]; // luodaan tarvittava määrä bonuspalloja
+        public int bonusPallojaLuotu;
+
 
         public MainWindow()
         {
@@ -57,10 +58,8 @@ namespace pang
 
             txtPelaajanNimi.Text = Ukko.NykyinenPelaaja;    // alussa valittu pelaajanimi ruutuun
 
-            heebo.LuoUkko();    // luodaan pelaaja
-            AddCanvasChild(heebo.pelaaja); // ja liitetään canvasiin
-                                           // heebo2.LuoUkko();    // luodaan pelaaja nro 2 
-                                           // AddCanvasChild(heebo2.pelaaja); // ja liitetään canvasiin
+            heebo.LuoUkko();                // luodaan pelaaja
+            AddCanvasChild(heebo.pelaaja);  // ja liitetään canvasiin
 
             LuoPallot();
             
@@ -76,6 +75,7 @@ namespace pang
             AlustaKello();
         }
 
+
         private void AlustaKello()
         {
             // sekuntiajastin käyttöön (alustus)
@@ -83,6 +83,7 @@ namespace pang
             secondDuration = 0;
             timer = new Timer(TimerCallback, null, 0, 1000);    // sekunnin intervalli
         }
+
 
         // sekuntikello, alun level-teksti ja pallot liikkumatta
         private void TimerCallback(object state)
@@ -108,7 +109,8 @@ namespace pang
 
 
         public void LuoPallot()
-        {
+        {          
+
             // luodaan pallo-instanssit, aluksi vain 2 kpl
             for (int i = 0; i < 2; i++)
             {
@@ -140,7 +142,18 @@ namespace pang
         private void timertörmäys_Tick(object sender, EventArgs e)
         {
 
-            System.Diagnostics.Debug.WriteLine("ajastimen sekunnit " + secondDuration); // debuggia
+            // Bonuspallojen luonti ajoittain
+            if (secondDuration > 1 && secondDuration % 10 == 0)
+            {
+                // tarvitaan muuttuja, jotta ei luoda kuin yksi kerrallaan
+                bonusPalloLista[0] = new BonusPallo();
+                bonusPalloLista[0].Numero = 0;
+                AddCanvasChild(bonusPalloLista[0].ball);
+                bonusPalloLista[0].PalloX = 100;
+                bonusPalloLista[0].PalloY = 100;
+                bonusPalloLista[0].PalloSaaLiikkua = true;
+            }
+
 
 
             // Ruudun yläreunan tekstit
@@ -343,19 +356,17 @@ namespace pang
 
 
 #region EVENTS
-        // näppäinkomennot                          // HUOM ei ota vastaan kuin yhden näppäimen kerrallaan, ongelma kaksinpelissä!
+        // näppäinkomennot                          // HUOM ei ota vastaan kuin yhden näppäimen kerrallaan
         private void OnButtonKeyDown(object sender, KeyEventArgs e)
         {
-            
+
             // player ONE
-            if (e.Key == Key.Right || e.Key == Key.Right && e.Key == Key.Space)
+            if (e.Key == Key.Right)
             {
-                this.Title = "Go right";
                 heebo.LiikutaUkkoa(heebo.Askel);
             }
             else if (e.Key == Key.Left)
             {
-                this.Title = "Go left";
                 heebo.LiikutaUkkoa(-(heebo.Askel));
             }
 
@@ -367,23 +378,6 @@ namespace pang
             if (e.Key == Key.Space)
             {                
                 heebo.Ammu();
-            }
-
-            if (e.Key == Key.H)
-            {
-                //enkka.TallennaPisteet(heebo.Pisteet);   // testikoodia vain
-            }
-
-
-            // kakkospelaaja
-            if (e.Key == Key.A)
-            {
-                heebo2.LiikutaUkkoa(-(heebo2.Askel));
-            }
-
-            if (e.Key == Key.D)
-            {
-                heebo2.LiikutaUkkoa((heebo2.Askel));
             }
         }
         
@@ -398,8 +392,6 @@ namespace pang
             ruudunLeveys = scene.ActualWidth;
         }
         #endregion
-
-
 
     }
 }
