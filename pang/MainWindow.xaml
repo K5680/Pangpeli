@@ -5,68 +5,75 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:pang"
         mc:Ignorable="d"
-        Title="MainWindow" Height="600" Width="800"
+        Title="MainWindow" Height="600" Width="800"        
+        WindowStartupLocation="CenterScreen"
         >
 
     <Grid x:Name="gridi">
         <Canvas x:Name="scene">
             <Canvas.Background>
-                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                    <GradientStop Color="#FF0AF0C6" Offset="0"/>
-                    <GradientStop Color="#FF7C4118" Offset="1"/>
-                    <GradientStop Color="#FE68958D" Offset="0.669"/>
-                    <GradientStop Color="#FE78502E" Offset="0.765"/>
-                </LinearGradientBrush>
-            </Canvas.Background>
-
-            <Canvas.Triggers>
-                <EventTrigger RoutedEvent="FrameworkElement.Loaded">
-                    <BeginStoryboard >
-                        <Storyboard Storyboard.TargetName="scene" Storyboard.TargetProperty="(Canvas.Left)">
-                            <DoubleAnimation From="0" To="514" Duration="0:0:20" AccelerationRatio=".2" DecelerationRatio=".8" RepeatBehavior="23:59:59" AutoReverse="True"/>
-                        </Storyboard>
-                    </BeginStoryboard>
-                </EventTrigger>
-            </Canvas.Triggers>
-            <TextBlock x:Name="txtX" Height="42" Canvas.Left="267" TextWrapping="Wrap" Text=" " Canvas.Top="367" Width="240"/>
-            <MediaElement Height="20" Margin="10,10,108,0" LoadedBehavior="Manual" Name="mediaElementti" VerticalAlignment="Top" Source="Images/" />
-            <MediaElement Height="20" Margin="10,10,108,0" LoadedBehavior="Manual" Name="mediaElementti2" VerticalAlignment="Top" Source="Images/" />
-            <MediaElement Height="20" Margin="10,10,108,0" LoadedBehavior="Manual" Name="mediaElementti3" VerticalAlignment="Top" Source="Images/" />
-            <MediaElement Height="20" Margin="10,10,108,0" LoadedBehavior="Manual" Name="mediaElementti4" VerticalAlignment="Top" Source="Images/" />
-
-            <Rectangle HorizontalAlignment="Left" Height="46" Stroke="Black" VerticalAlignment="Top" Width="792">
-                <Rectangle.Fill>
                     <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                        <GradientStop Color="#FF993663" Offset="1"/>
-                        <GradientStop Color="#FF73FF80"/>
+                        <GradientStop Color="#FF0AF0C6" Offset="0"/>
+                        <GradientStop Color="#FF7C4118" Offset="1"/>
+                        <GradientStop Color="#FE68958D" Offset="0.669"/>
+                        <GradientStop Color="#FE78502E" Offset="0.765"/>
                     </LinearGradientBrush>
-                </Rectangle.Fill>
-            </Rectangle>
+                </Canvas.Background>
 
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="120" />
-                    <ColumnDefinition Width="200" />
-                    <ColumnDefinition Width="70" />
-                    <ColumnDefinition Width="150" />
-                    <ColumnDefinition Width="50" />
-                    <ColumnDefinition Width="100" />
-                    <ColumnDefinition Width="50" />
-                    <ColumnDefinition Width="20" />
-                </Grid.ColumnDefinitions>
+                <Canvas.Triggers>
+                    <EventTrigger RoutedEvent="FrameworkElement.Loaded">
+                        <BeginStoryboard >
+                            <Storyboard Storyboard.TargetName="scene" Storyboard.TargetProperty="(Canvas.Left)">
+                                <DoubleAnimation From="0" To="514" Duration="0:0:20" AccelerationRatio=".2" DecelerationRatio=".8" RepeatBehavior="23:59:59" AutoReverse="True"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                </Canvas.Triggers>
+                <TextBlock x:Name="txtX" Height="42" Canvas.Left="267" TextWrapping="Wrap" Text=" " Canvas.Top="367" Width="240"/>
+                <MediaElement Height="20" Margin="10,10,108,0" LoadedBehavior="Manual" Name="mediaElementti" VerticalAlignment="Top" Source="Images/" />
+                <MediaElement Height="20" Margin="10,10,108,0" LoadedBehavior="Manual" Name="mediaElementti2" VerticalAlignment="Top" Source="Images/" />
+                <MediaElement Height="20" Margin="10,10,108,0" LoadedBehavior="Manual" Name="mediaElementti3" VerticalAlignment="Top" Source="Images/" />
+                <MediaElement Height="20" Margin="10,10,108,0" LoadedBehavior="Manual" Name="mediaElementti4" VerticalAlignment="Top" Source="Images/" />
 
-                <Label x:Name="label" Grid.Column="0" ToolTip="Pangpeli © 2017 VV" Content="Pangpeli" Height="46" Width="150" FontSize="26" Foreground="White" Grid.ColumnSpan="2" Margin="0,0,170,0"/>
-                <TextBlock x:Name="copyTxt" Grid.Column="1" Height="20" TextWrapping="NoWrap" Foreground="#444444" Text="© 2017   Vesa Vertainen"  Width="Auto" FontSize="16" Margin="0,13"/>
-                <TextBlock x:Name="playerTxt" Grid.Column="2" Height="20" TextWrapping="Wrap" Text="Player:"  Width="144" FontSize="16" />
-                <TextBlock x:Name="txtPelaajanNimi" Grid.Column="3" Height="20" TextWrapping="Wrap" Text="{Binding}" Width="144" FontSize="16" Margin="3,13"/>
-                <TextBlock x:Name="pisteetTxt" Grid.Column="4" Height="20" TextWrapping="Wrap" Text="Score:" Width="144" FontSize="16" Margin="3,13"/>
-                <TextBlock x:Name="txtPelaajanPisteet" Grid.Column="5" Height="20" TextWrapping="Wrap" Text="{Binding}" Width="144" FontSize="16" Margin="3,13"/>
-                <TextBlock x:Name="elämätTxt" Grid.Column="6" Height="20" TextWrapping="Wrap" Text="Lives:" Width="144" FontSize="16" Margin="3,13"/>
-                <TextBlock x:Name="txtPelaajanElämät" Grid.Column="7" Height="20" TextWrapping="Wrap" Text="{Binding Elämät}" Width="144" FontSize="16" Margin="0,13,-24,13"/>
+                <Rectangle HorizontalAlignment="Left" Height="46" Stroke="Black" VerticalAlignment="Top" Width="792">
+                    <Rectangle.Fill>
+                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                            <GradientStop Color="#FF993663" Offset="1"/>
+                            <GradientStop Color="#FF73FF80"/>
+                        </LinearGradientBrush>
+                    </Rectangle.Fill>
+                </Rectangle>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="120" />
+                        <ColumnDefinition Width="200" />
+                        <ColumnDefinition Width="70" />
+                        <ColumnDefinition Width="150" />
+                        <ColumnDefinition Width="50" />
+                        <ColumnDefinition Width="100" />
+                        <ColumnDefinition Width="50" />
+                        <ColumnDefinition Width="20" />
+                    </Grid.ColumnDefinitions>
+                
+                    <Label x:Name="label" Grid.Column="0" ToolTip="Pangpeli © 2017 VV" Content="Pangpeli" Height="46" Width="150" FontSize="26" Foreground="White" Grid.ColumnSpan="2" Margin="0,0,170,0"/>
+                    <TextBlock x:Name="copyTxt" Grid.Column="1" Height="20" TextWrapping="NoWrap" Foreground="#444444" Text="© 2017   Vesa Vertainen"  Width="Auto" FontSize="16" Margin="0,13"/>
+                    <TextBlock x:Name="playerTxt" Grid.Column="2" Height="20" TextWrapping="Wrap" Text="Player:"  Width="144" FontSize="16" />
+                    <TextBlock x:Name="txtPelaajanNimi" Grid.Column="3" Height="20" TextWrapping="Wrap" Text="{Binding}" Width="144" FontSize="16" Margin="3,13"/>
+                    <TextBlock x:Name="pisteetTxt" Grid.Column="4" Height="20" TextWrapping="Wrap" Text="Score:" Width="144" FontSize="16" Margin="3,13"/>
+                    <TextBlock x:Name="txtPelaajanPisteet" Grid.Column="5" Height="20" TextWrapping="Wrap" Text="{Binding}" Width="144" FontSize="16" Margin="3,13"/>
+                    <TextBlock x:Name="elämätTxt" Grid.Column="6" Height="20" TextWrapping="Wrap" Text="Lives:" Width="144" FontSize="16" Margin="3,13"/>
+                    <TextBlock x:Name="txtPelaajanElämät" Grid.Column="7" Height="20" TextWrapping="Wrap" Text="{Binding Elämät}" Width="144" FontSize="16" Margin="0,13,-24,13"/>
+
             </Grid>
+            
+            
             <StackPanel Width="800" Height="600">
-                <TextBlock x:Name="txtInfo" Foreground="Yellow" Text="{Binding}" FontWeight="ExtraBlack" FontSize="36" Grid.ColumnSpan="7" Height="80" Width="Auto" Margin="100" Visibility="{Binding}" HorizontalAlignment="Center"/>
-            </StackPanel>
+                    <TextBlock x:Name="txtInfo" Foreground="Yellow" Text="{Binding}" FontWeight="ExtraBlack" FontSize="36" Grid.ColumnSpan="7" Height="80" Width="Auto" Margin="100" Visibility="{Binding}" HorizontalAlignment="Center"/>
+                </StackPanel>
+            
         </Canvas>
+        
     </Grid>
+    
 </Window>

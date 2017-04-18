@@ -1,7 +1,6 @@
 ﻿
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
@@ -48,8 +47,6 @@ namespace pang
 
         Pallo[] palloLista = new Pallo[30]; // luodaan tarvittava määrä pallo-olioita
         public static int pallojaLuotu;
-        
-
         
         private double xb, yb;                      // Bonuspallon sijainti,
         public bool bonusPalloLuotu;                // bonuspallo olemassa vai ei,
@@ -161,7 +158,7 @@ namespace pang
         private void timertörmäys_Tick(object sender, EventArgs e)
         {
 
-            System.Diagnostics.Debug.WriteLine("ukonaloitusKello                  "+ukonAloitusKello); // debuggia
+            System.Diagnostics.Debug.WriteLine("ukonaloitusKello                  " + ukonAloitusKello); // debuggia
 
             // Ruudun yläreunan tekstit
             txtPelaajanElämät.Text = heebo.Elämät.ToString();  // päivitetään ruutuun elämät
@@ -257,8 +254,10 @@ namespace pang
                     }
                     pallojaRuudulla++;  // Lasketaan montako palloa on canvasilla
                 }
-                
-                  System.Diagnostics.Debug.WriteLine("pallojaRuudulla  "+pallojaRuudulla); // debuggia
+                else
+                {
+                    System.Diagnostics.Debug.WriteLine("pallojaRuudulla  " + pallojaRuudulla); // debuggia
+                }
                 
             }
             
