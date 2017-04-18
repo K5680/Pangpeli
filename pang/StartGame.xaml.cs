@@ -31,7 +31,7 @@ namespace pang
         {
             InitializeComponent();
             this.DataContext = this;
-            CustomWidth = 300;  // ikkunan leveyden määrittely
+            CustomWidth = 300;  // ikkunan leveyden määrittely            
         }
 
         private void btnQuit_Click(object sender, RoutedEventArgs e)
@@ -43,7 +43,7 @@ namespace pang
         {
             // Käynnistetään itse peli
             CustomWidth = 300;  // ikkunan leveyden palautus
-            MainWindow mainWindow = new MainWindow();
+            MainWindow mainWindow = new MainWindow();            
             mainWindow.Show();
         }
 

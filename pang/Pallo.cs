@@ -36,7 +36,7 @@ namespace pang
         public int Numero { get; set; }
         public double PalloY { get; set; }
         public int Kaari = 140;
-        private double pallonKorkeus = 220;
+        private double pallonKorkeus = 240;
         
         public double PallonKorkeus
         {   get
@@ -77,12 +77,12 @@ namespace pang
         {
             ball = new Ellipse();
             
-            ball.Stroke = System.Windows.Media.Brushes.Red;
-            ball.Fill = System.Windows.Media.Brushes.SkyBlue;
+            ball.Stroke = Brushes.Red;
+            ball.Fill = Brushes.SkyBlue;
             ball.HorizontalAlignment = HorizontalAlignment.Left;
             ball.VerticalAlignment = VerticalAlignment.Center;
-            ball.Width = 110;
-            ball.Height = 110;
+            ball.Width = 130;
+            ball.Height = 130;
 
             ImageBrush tekstuuri = new ImageBrush();                // kuva ladataan resursseista
             tekstuuri.ImageSource = new BitmapImage(new Uri(MainWindow.Latauskansio + "pallo.png", UriKind.Absolute));
@@ -101,7 +101,7 @@ namespace pang
         {
             ball.Height = ball.Height / 2;
             ball.Width = ball.Width / 2;
-            pallonKorkeus = pallonKorkeus + 50;     // pienemmät pallot pomppii matalemmalla
+            pallonKorkeus = pallonKorkeus + 45;     // pienemmät pallot pomppii matalemmalla
             Kaari = Kaari - 20;
             Angle = 40;                             // nollataan lähtökulma (sinikäyrään)
         }
@@ -143,6 +143,11 @@ namespace pang
             // Pallon liikkeen päivitys "sceneen"
             Canvas.SetLeft(ball, PalloX);
             Canvas.SetTop(ball, PalloY);            
+        }
+
+        ~Pallo()
+        {
+            System.Diagnostics.Debug.WriteLine(" PALLO DESTRUCTOR !! "); // debuggia
         }
     }
 }

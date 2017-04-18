@@ -59,6 +59,7 @@ namespace pang
         public double UkonNopeus { get; set; }
         public int Elämät { get; set; }
         public DispatcherTimer timer_ukko; // ukon ajastin
+        private DispatcherTimer timer_tiheys;       // ammus-ajastin
         public bool SaakoLiikkua;
         public bool SaakoAmpua;
         public bool Osuuko { get; set; }
@@ -128,7 +129,7 @@ namespace pang
             timer_ukko.Start();
 
             // Ampumistiheyden ajastin
-            DispatcherTimer timer_tiheys = new DispatcherTimer(DispatcherPriority.Send);
+            timer_tiheys = new DispatcherTimer(DispatcherPriority.Send);
             timer_tiheys.Interval = TimeSpan.FromMilliseconds(ammusTiheys);    // asetetaan intervalli, jolla voi ampua
             timer_tiheys.Tick += new EventHandler(timertiheys_Tick);      // Set the callback to invoke every tick time
             timer_tiheys.Start();
@@ -156,6 +157,11 @@ namespace pang
                         Osuuko = false;
                         sijaintix = 350;    // nollataan sijainti
                         sijaintiy = 350;
+
+                        ammusTiheys = 700;  // nollataan bonukset
+                        ammuksiaMax = 2;
+                        bonusTaso = 0;
+
                         LiikutaUkkoa(0);    // ukko piirtyy uudestaan ruutuun                        
                     }
                     else if (Elämät > 0)    // Jos peli loppui asetetaan lopuksi elämät nollaan ja tallennetaan highscore
@@ -193,11 +199,13 @@ namespace pang
                     ammusIlmassaNro += 1;
                     if (ammusIlmassaNro == 10) ammusIlmassaNro = 0; // ammus-instanssin numeroa kierrätetään 1-10
 
-                    System.Diagnostics.Debug.WriteLine("  AMMUTAAN, COUNT " + ammukset.Count); // debuggia
+                    //System.Diagnostics.Debug.WriteLine("  AMMUTAAN, COUNT " + ammukset.Count); // debuggia
                     MainWindow.instance.Soita("ampu");    // soita ampu-soundi
+
+                    SaakoAmpua = false; // saa ampua vasta kun timer antaa luvan
                 }
 
-                SaakoAmpua = false; // saa ampua vasta kun timer antaa luvan
+                
             }
         }
 
@@ -207,6 +215,7 @@ namespace pang
         private void timertiheys_Tick(object sender, EventArgs e)
         {
             SaakoAmpua = true;
+            timer_tiheys.Interval = TimeSpan.FromMilliseconds(ammusTiheys);    // asetetaan ampumisintervalli
         }
 
     }
