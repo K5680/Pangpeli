@@ -10,9 +10,9 @@ using static pang.Pallo;
 
 namespace pang                                                                                  
 {
-    /// <summary>                                                                               // * level päättyy, kun pallot ammuttu -> seuraava level
+    /// <summary>                                                                               
     /// Interaction logic for MainWindow.xaml                                                   
-    /// </summary>                                                                              // * bonukset
+    /// </summary>                                                                            
     public partial class MainWindow : Window
     {
 
@@ -38,16 +38,17 @@ namespace pang
         List<Key> NapitAlhaallaLista = new List<Key>();     // KESKEN, usean näppäimen painallus tällä kuntoon?
 
         // ukon lisääminen sceneen
-        Ukko heebo = new Ukko(); // luodaan Ukko-luokan instanssi, eli pelaaja
-        Ukko heebo2 = new Ukko(); // Kaksinpeliin toinen pelaaja
+        Ukko heebo = new Ukko();        // Luodaan Ukko-luokan instanssi, eli pelaaja       
+
+        private int ukonAloitusKello;   // Uudelleenaloituksessa ukkoon ei osu pallot pariin sekuntiin
 
         Pallo[] palloLista = new Pallo[30]; // luodaan tarvittava määrä pallo-olioita
         public int pallojaLuotu;
-
+        
         private double xb, yb;                      // Bonuspallon sijainti,
         public bool bonusPalloLuotu;                // bonuspallo olemassa vai ei,
         BonusPallo bonusPallo = new BonusPallo();   // luodaan valmiiksi bonuspallo.
-        private int bonusTaso = 0;                  // Bonukset lähtee nollasta.
+
 
         public MainWindow()
         {
@@ -162,6 +163,7 @@ namespace pang
                 txtInfo.Text = "GaMe OvER";
                 txtInfo.Visibility = Visibility.Visible;
                 Level = 1;
+                AlustaKello();
             }
 
             Bonukset();
@@ -220,11 +222,17 @@ namespace pang
                 // Osuuko ukko palloon
                 if (scene.Children.Contains(palloLista[i].ball)) // ei tehdä törmäystunnistusta jos pallo ei ole canvasilla (jostain syystä näkymättömiä palloja jää?)
                 {
-                    pallojaRuudulla++;  // Lasketaan montako palloa on canvasilla
-                    if (heebo.ukkoPuskuri.IntersectsWith(r2))
-                    {                     
-                        heebo.Osuuko = true; // jos osuu niin ukon "Osuuko"-bool on true (ja lähtee elämä)
+                    if (secondDuration > ukonAloitusKello + 2) // Ukko on kuolematon pari sekuntia edellisestä "kuolemasta"
+                    {
+                        if (heebo.ukkoPuskuri.IntersectsWith(r2))
+                        {
+                            heebo.Osuuko = true;    // jos osuu niin ukon "Osuuko"-bool on true (ja lähtee elämä)
+                            heebo.bonusTaso = 0;    // bonustaso nollautuu
+                            ukonAloitusKello = secondDuration;  // Tehdään ukosta kuolematon tästä hetkestä muutama sekunti eteenpäin
+                        }
                     }
+
+                    pallojaRuudulla++;  // Lasketaan montako palloa on canvasilla
                 }
             }
 
@@ -235,6 +243,7 @@ namespace pang
                 Level++;
                 LevelText = true;
                 LuoPallot();
+                heebo.SijaintiX = 350;    // nollataan sijainti
             }
         }
 
@@ -254,13 +263,15 @@ namespace pang
                 AddCanvasChild(bonusPallo.ball);    // Piirretään bonus canvasiin.
             }
 
+            System.Diagnostics.Debug.WriteLine(heebo.bonusTaso);
+
             // Ukko <-> BonusPallo Törmäyksen tunnistus
             if (bonusPalloLuotu)
             {
                 xb = Canvas.GetLeft(bonusPallo.ball);
                 yb = Canvas.GetTop(bonusPallo.ball);
 
-                System.Diagnostics.Debug.WriteLine(bonusPallo.ball.ActualHeight + " <- height    width -> " + bonusPallo.ball.ActualWidth); // debuggia
+                //System.Diagnostics.Debug.WriteLine(bonusPallo.ball.ActualHeight + " <- height    width -> " + bonusPallo.ball.ActualWidth); // debuggia
 
                 Rect rb = new Rect(xb + 7, yb + 7, (bonusPallo.ball.Width - 15), (bonusPallo.ball.Height - 15));  // Rect bonuksen ympärille, jotta voidaan tunnistaa törmäys ukkoon
 
@@ -270,29 +281,33 @@ namespace pang
                     bonusPallo.PalloY = 600; // varulta pois ruudulta myös sijaintinsa puolesta
                     bonusPalloLuotu = false;
                     Soita("bonus");
-                    bonusTaso++;
+                    heebo.bonusTaso++;
 
-                    switch (bonusTaso)
+                    switch (heebo.bonusTaso)
                     {
                         case 0:
                             break;
                         case 1:
-                            heebo.ammuksiaMax = 5;  // ammusten maksimimäärää ruudulla lisätään
+                            heebo.ammuksiaMax = 8;      // ammusten maksimimäärää ruudulla lisätään
+                            heebo.ammusTiheys = 550;
                             break;
                         case 2:
-                            heebo.ammusTiheys = 700;
+                            heebo.ammusTiheys = 400;    // ampumisnopeus kasvaa
                             break;
                         case 3:
-                            heebo.ammuksiaMax = 6;
+                            heebo.ammuksiaMax = 10;
                             break;
                         case 4:
-                            heebo.ammuksiaMax = 7;
+                            heebo.ammusTiheys = 300;                            
                             break;
                         case 5:
-                            heebo.ammusTiheys = 600;
+                            heebo.ammuksiaMax = 12;
+                            break;
+                        case 6:
+                            heebo.ammusTiheys = 200;
                             break;
                         default:
-                            heebo.ammuksiaMax++;                        // ammusten maksimimäärää ruudulla lisätään
+                            heebo.ammuksiaMax++;        // ammusten maksimimäärää ruudulla lisätään
                             break;
                     }
                 }
@@ -431,7 +446,7 @@ namespace pang
 
             if (e.Key == Key.Space)
             {                
-                heebo.Ammu(bonusTaso);
+                heebo.Ammu();
             }
         }
         

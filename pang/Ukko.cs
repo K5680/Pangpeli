@@ -20,14 +20,15 @@ namespace pang
         private double sijaintix;
         private double sijaintiy = 350;
 
-        public int ammuksiaMax = 3;            // ammusten maksimimäärä ruudulla
-        public int ammusTiheys = 800;      // kuinka nopeasti voi ampua uuden
+        public int ammuksiaMax = 2;            // ammusten maksimimäärä ruudulla
+        public int ammusTiheys = 700;      // kuinka nopeasti voi ampua uuden
 
         public int Pisteet { get; set; }
 
         public static List<Ammus> ammukset = new List<Ammus>();    // ammus-lista   
         private int ammusIlmassaNro = 0;                           // pitää yllä tietoa ammusten numeroista
         public double ammusKohta = 57;
+        public int bonusTaso = 0;                  // Bonukset lähtee nollasta.
 
         public double SijaintiY
         {
@@ -71,8 +72,8 @@ namespace pang
             Osuuko = false;
             Askel = 10;
             UkonNopeus = 50; // millisekunnit
-            Elämät = 15;
-            pelaaja = new System.Windows.Shapes.Rectangle();    // pelaajan hahmon pohjaksi luodaan rectangle
+            Elämät = 10;
+            pelaaja = new Rectangle();    // pelaajan hahmon pohjaksi luodaan rectangle
             LuoUkko();
         }
 
@@ -167,7 +168,7 @@ namespace pang
         }
 
 
-        public void Ammu(int bonustaso)
+        public void Ammu()
         {
                    
             // ammukset...
@@ -176,7 +177,7 @@ namespace pang
 
                 if (ammukset.Count < ammuksiaMax+1) // ammutaan ammuksia, maksimissaan 10 ilmassa    
                 {
-                    if (bonustaso > 6)  // tietyllä bonustasolla ammuksia alkaa lentää leveämmältä alalta
+                    if (bonusTaso > 6)  // tietyllä bonustasolla ammuksia alkaa lentää leveämmältä alalta
                     {
                         if (ammusIlmassaNro % 2 == 0)
                         {
@@ -195,6 +196,8 @@ namespace pang
                     System.Diagnostics.Debug.WriteLine("  AMMUTAAN, COUNT " + ammukset.Count); // debuggia
                     MainWindow.instance.Soita("ampu");    // soita ampu-soundi
                 }
+
+                SaakoAmpua = false; // saa ampua vasta kun timer antaa luvan
             }
         }
 

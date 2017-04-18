@@ -76,7 +76,7 @@ namespace pang
         public virtual void LuoPallo()
         {
             ball = new Ellipse();
-
+            
             ball.Stroke = System.Windows.Media.Brushes.Red;
             ball.Fill = System.Windows.Media.Brushes.SkyBlue;
             ball.HorizontalAlignment = HorizontalAlignment.Left;
