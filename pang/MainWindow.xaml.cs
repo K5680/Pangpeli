@@ -33,10 +33,9 @@ namespace pang
         {
             get { return latauskansio; }
         }
-
+    
         private int poistetaanAmmus = -1;   // Muuttuja sisältää tiedon, että pitääkö ruudusta ja listasta poistaa "Ammus". -1 = ei poisteta mitään, muuten index-arvo.
-
-        List<Key> NapitAlhaallaLista = new List<Key>();     // KESKEN, usean näppäimen painallus tällä kuntoon?
+       
 
         // ukon lisääminen sceneen
         Ukko heebo = new Ukko();        // Luodaan Ukko-luokan instanssi, eli pelaaja       
@@ -46,6 +45,10 @@ namespace pang
         private int pallojaRuudulla;    // Muuttuja sisältää tiedon, montako palloa ruudulla on.
 
         Pallo[] palloLista = new Pallo[30]; // luodaan tarvittava määrä pallo-olioita
+        public List<int> poistetutPallot = new List<int>();
+
+        private int loytyi;
+
         public static int pallojaLuotu;
         
         private double xb, yb;                      // Bonuspallon sijainti,
@@ -158,7 +161,8 @@ namespace pang
         private void timertörmäys_Tick(object sender, EventArgs e)
         {
 
-            System.Diagnostics.Debug.WriteLine("ukonaloitusKello                  " + ukonAloitusKello); // debuggia
+            //System.Diagnostics.Debug.WriteLine("ukonaloitusKello                  " + ukonAloitusKello); // debuggia
+            //System.Diagnostics.Debug.WriteLine("count poistetut "+poistetutPallot.Count); // debuggia
 
             // Ruudun yläreunan tekstit
             txtPelaajanElämät.Text = heebo.Elämät.ToString();  // päivitetään ruutuun elämät
@@ -194,7 +198,7 @@ namespace pang
                     // törmäyksen tunnistus Rect:illä, luodaan pallon ympärille rect
                     var x2 = Canvas.GetLeft(palloLista[i].ball);
                     var y2 = Canvas.GetTop(palloLista[i].ball);
-                    Rect r2 = new Rect(x2, y2, (palloLista[i].ball.ActualWidth), (palloLista[i].ball.ActualHeight));
+                    Rect r2 = new Rect(x2, y2, (palloLista[i].ball.Width), (palloLista[i].ball.Height));
 
                     // Käydään läpi kaikki ammukset, osuvatko kyseiseen palloon + yliruudun. Mutta vasta kun ammuksia on luotu.
                     if (Ukko.ammukset.Count > 0)
@@ -216,12 +220,28 @@ namespace pang
                                         if (palloLista[i].ball.Width < 15) // ... ja pienin pallo häviää kokonaan.
                                         {
                                             scene.Children.Remove(palloLista[i].ball);  // poistetaan ball canvasilta (scene)
-                                            palloLista[i].ball.Fill = System.Windows.Media.Brushes.IndianRed;
+                                             
+                                            // Tarkistetaan, onko kyseinen pallo jo poistettujen listalla, jos ei niin lisätään
+                                            foreach (int line in poistetutPallot)
+                                            {
+                                                loytyi = 0;     // miten voi toimia jos tämä on tässä                ???
+                                                if (line == i)
+                                                {
+                                                    loytyi = 1;
+                                                }
+                                            }
+                                            if (loytyi == 0)
+                                            {
+                                                poistetutPallot.Add(i);    // lisätään poistettujen listaan pallon numero, ellei kyseinen pallo jo ole
+                                                System.Diagnostics.Debug.WriteLine("added "+i); // debuggia
+                                            }   
+
+                                            System.Diagnostics.Debug.WriteLine(i); // debuggia
                                             Soita("pallo_poksahtaa4");
                                             heebo.Pisteet += 500;
                                             palloLista[i].PalloY = -200;
                                             palloLista[i].PalloSaaLiikkua = false;  // pallon liike seis (jos sattuu jäämään elämään)
-                                        }
+                                    }
                                         else    // jos ei vielä häviä, niin jaetaan kahteen
                                         {
                                             JaaPallo(i, palloLista[i].ball.Width);
@@ -241,8 +261,8 @@ namespace pang
                     }
 
                 // Osuuko ukko palloon
-                if (scene.Children.Contains(palloLista[i].ball)) // ei tehdä törmäystunnistusta jos pallo ei ole canvasilla (jostain syystä näkymättömiä palloja jää?)
-                {
+                //if (scene.Children.Contains(palloLista[i].ball)) // ei tehdä törmäystunnistusta jos pallo ei ole canvasilla (jostain syystä näkymättömiä palloja jää?)
+                //{
                     if (secondDuration > ukonAloitusKello + 2) // Ukko on kuolematon pari sekuntia edellisestä "kuolemasta"
                     {
                         if (heebo.ukkoPuskuri.IntersectsWith(r2))
@@ -252,23 +272,46 @@ namespace pang
                             ukonAloitusKello = secondDuration;  // Tehdään ukosta kuolematon tästä hetkestä muutama sekunti eteenpäin
                         }
                     }
+
+                    
                     pallojaRuudulla++;  // Lasketaan montako palloa on canvasilla
-                }
-                else
-                {
-                    System.Diagnostics.Debug.WriteLine("pallojaRuudulla  " + pallojaRuudulla); // debuggia
-                }
+                    
+                //}
+                //else
+                //{
+                //}
                 
             }
             
-                // jos kaikki pallot ammuttu -> nextille levelille
-                if (pallojaRuudulla == 0)
+            // lasketaan luotujen ja poistettujen pallojen suhde -> nollassa vaihdetaan ruutu
+            int palloBalanssi = pallojaRuudulla - poistetutPallot.Count;
+            System.Diagnostics.Debug.WriteLine("erotus:  " + palloBalanssi + "ruudull:" + pallojaRuudulla + "  poistetut:"+poistetutPallot.Count); // debuggia
+
+            // Nollaus pelin alussa
+            if (pallojaRuudulla == 0 && Level == 0)
+            {
+                Level++;
+                LevelText = true;
+                LuoPallot();
+                AlustaKello();
+                heebo.SijaintiX = 350;    // nollataan sijainti
+                ukonAloitusKello = secondDuration;
+            }
+
+            // jos kaikki pallot ammuttu -> nextille levelille
+            if (poistetutPallot.Count == 16)
                 {
+                    pallojaLuotu = 0;
+                    AlustaKello();
                     Level++;
                     LevelText = true;
+
                     LuoPallot();
-                    AlustaKello();
+                    
                     heebo.SijaintiX = 350;    // nollataan sijainti
+                    ukonAloitusKello = secondDuration;
+                    poistetutPallot.Clear();
+                    
                 }
             
         }

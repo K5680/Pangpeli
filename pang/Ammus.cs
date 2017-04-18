@@ -54,7 +54,7 @@ namespace pang
                 timer_ammus.Start();
 
                 // ammuksen lähtöpiste y-suunnassa
-                AmmusY = 350;
+                AmmusY = 380;
                 Canvas.SetTop(bullet, -100);
                 MainWindow.instance.AddCanvasChild(bullet);  // lisätään bullet canvasiin (scene -nimeltään)
             }

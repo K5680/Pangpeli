@@ -20,8 +20,8 @@ namespace pang
         private double sijaintix;
         private double sijaintiy = 350;
 
-        public int ammuksiaMax = 2;            // ammusten maksimimäärä ruudulla
-        public int ammusTiheys = 700;      // kuinka nopeasti voi ampua uuden
+        public int ammuksiaMax = 500; //2            // ammusten maksimimäärä ruudulla
+        public int ammusTiheys = 10; //700     // kuinka nopeasti voi ampua uuden
 
         public int Pisteet { get; set; }
 
@@ -195,7 +195,7 @@ namespace pang
                         }
                     }
 
-                    ammukset.Add(new Ammus{ AmmusY = 370, AmmusX = sijaintix + ammusKohta, AmmuksenNopeus = 10, SaaAmpua = true, AmmusNro = ammusIlmassaNro});
+                    ammukset.Add(new Ammus{ AmmusY = 380, AmmusX = sijaintix + ammusKohta, AmmuksenNopeus = 10, SaaAmpua = true, AmmusNro = ammusIlmassaNro});
                     ammusIlmassaNro += 1;
                     if (ammusIlmassaNro == 10) ammusIlmassaNro = 0; // ammus-instanssin numeroa kierrätetään 1-10
 

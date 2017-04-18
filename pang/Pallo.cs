@@ -27,7 +27,7 @@ namespace pang
             set
             {   // varmistetaan, ettei palloa aseteta ruudun ulkopuolelle
                 if (pallox < 0) pallox = 0;
-                if (pallox > MainWindow.instance.Width) pallox = 100; //MainWindow.instance.Width-140;
+                if (pallox > MainWindow.instance.Width) pallox = MainWindow.instance.Width-140;
                 pallox = value;
             }
         }
