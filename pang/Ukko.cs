@@ -94,7 +94,7 @@ namespace pang
             ukkoPuskuri.Y = Canvas.GetTop(pelaaja) + 35;
             ukkoPuskuri.Height = pelaaja.ActualHeight;
 
-            var apu = pelaaja.ActualWidth;  // pelaajaa luodessa actualWidth on 0, joka ei käy. Siksi tämä vertailu... Onko muuta keinoa?
+            var apu = pelaaja.ActualWidth;  // pelaajaa luodessa actualWidth on 0, joka ei käy. Siksi tämä vertailu... 
             if (apu > 0)
             {
                 ukkoPuskuri.Width = apu-55;

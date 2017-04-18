@@ -44,8 +44,8 @@ namespace pang
         Pallo[] palloLista = new Pallo[30]; // luodaan tarvittava määrä pallo-olioita
         public int pallojaLuotu;
 
-        BonusPallo[] bonusPalloLista = new BonusPallo[10]; // luodaan tarvittava määrä bonuspalloja
-        public int bonusPallojaLuotu;
+        //BonusPallo[] bonusPalloLista = new BonusPallo[10]; // luodaan tarvittava määrä bonuspalloja
+        public int bonusPalloLuotu;
 
 
         public MainWindow()
@@ -141,20 +141,20 @@ namespace pang
         // törmäyksen tunnistus ym. timerilla
         private void timertörmäys_Tick(object sender, EventArgs e)
         {
-
             // Bonuspallojen luonti ajoittain
             if (secondDuration > 1 && secondDuration % 10 == 0)
             {
-                // tarvitaan muuttuja, jotta ei luoda kuin yksi kerrallaan
-                bonusPalloLista[0] = new BonusPallo();
-                bonusPalloLista[0].Numero = 0;
-                AddCanvasChild(bonusPalloLista[0].ball);
-                bonusPalloLista[0].PalloX = 100;
-                bonusPalloLista[0].PalloY = 100;
-                bonusPalloLista[0].PalloSaaLiikkua = true;
+                if (bonusPalloLuotu == 0)
+                { 
+                    BonusPallo bonusPallo = new BonusPallo();
+                    bonusPallo.Numero = 0;
+                    AddCanvasChild(bonusPallo.ball);
+                    bonusPallo.PalloX = 100;
+                    bonusPallo.PalloY = 100;
+                    bonusPallo.PalloSaaLiikkua = true;
+                    bonusPalloLuotu = 1;
+                }
             }
-
-
 
             // Ruudun yläreunan tekstit
             txtPelaajanElämät.Text = heebo.Elämät.ToString();  // päivitetään ruutuun elämät

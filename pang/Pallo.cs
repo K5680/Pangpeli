@@ -73,7 +73,7 @@ namespace pang
         }
 
 
-        public void LuoPallo()
+        public virtual void LuoPallo()
         {
             ball = new Ellipse();
 
@@ -108,7 +108,7 @@ namespace pang
 
 
         // pallon liikkeen päivitys taimerilla
-        private void timerpallo_Tick(object sender, EventArgs e)
+        public virtual void timerpallo_Tick(object sender, EventArgs e)
         {
             if (PalloSaaLiikkua)    // Pallon liikkumislupa, tarvitaanko lopulta?
             {

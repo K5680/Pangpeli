@@ -61,11 +61,12 @@ namespace pang.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static string string1 {
+        internal static System.Drawing.Bitmap bonuspallo {
             get {
-                return ResourceManager.GetString("string1", resourceCulture);
+                object obj = ResourceManager.GetObject("bonuspallo", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
     }
