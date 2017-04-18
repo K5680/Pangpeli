@@ -17,17 +17,17 @@ namespace pang
         {
         }
 
-
+        // override-metodi pallosta
         public override void LuoPallo()
         {
             ball = new Ellipse();
 
-            ball.Stroke = System.Windows.Media.Brushes.Red;
-            ball.Fill = System.Windows.Media.Brushes.SkyBlue;
+            ball.Stroke = Brushes.Blue;          
             ball.HorizontalAlignment = HorizontalAlignment.Left;
             ball.VerticalAlignment = VerticalAlignment.Center;
-            ball.Width = 110;
-            ball.Height = 110;
+            
+            ball.Height = 60;
+            ball.Width = 60;
 
             ImageBrush tekstuuri = new ImageBrush();                // kuva ladataan resursseista
             tekstuuri.ImageSource = new BitmapImage(new Uri(MainWindow.Latauskansio + "bonuspallo.png", UriKind.Absolute));

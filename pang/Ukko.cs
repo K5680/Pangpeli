@@ -19,15 +19,15 @@ namespace pang
         public Rect ukkoPuskuri = new Rect(); // laatikko, joka toimii alueena, jolta törmäys tunnistetaan
         private double sijaintix;
         private double sijaintiy = 350;
-        private int ammuksiaMax;             // ammusten maksimimäärä ruudulla
-        
-        private int ammusTiheys = 700;
+
+        public int ammuksiaMax = 3;            // ammusten maksimimäärä ruudulla
+        public int ammusTiheys = 800;      // kuinka nopeasti voi ampua uuden
 
         public int Pisteet { get; set; }
 
         public static List<Ammus> ammukset = new List<Ammus>();    // ammus-lista   
         private int ammusIlmassaNro = 0;                           // pitää yllä tietoa ammusten numeroista
-        
+        public double ammusKohta = 57;
 
         public double SijaintiY
         {
@@ -66,7 +66,6 @@ namespace pang
 
         public Ukko()
         {
-            ammuksiaMax = 5;
             sijaintix = 350;
             Pisteet = 0;
             Osuuko = false;
@@ -168,7 +167,7 @@ namespace pang
         }
 
 
-        public void Ammu()
+        public void Ammu(int bonustaso)
         {
                    
             // ammukset...
@@ -176,46 +175,30 @@ namespace pang
             {
 
                 if (ammukset.Count < ammuksiaMax+1) // ammutaan ammuksia, maksimissaan 10 ilmassa    
-                {  
-                    ammukset.Add(new Ammus{ AmmusY = 370, AmmusX = sijaintix + 57, AmmuksenNopeus = 10, SaaAmpua = true, AmmusNro = ammusIlmassaNro});
+                {
+                    if (bonustaso > 6)  // tietyllä bonustasolla ammuksia alkaa lentää leveämmältä alalta
+                    {
+                        if (ammusIlmassaNro % 2 == 0)
+                        {
+                            ammusKohta = 35;
+                        }
+                        else
+                        {
+                            ammusKohta = 57;
+                        }
+                    }
+
+                    ammukset.Add(new Ammus{ AmmusY = 370, AmmusX = sijaintix + ammusKohta, AmmuksenNopeus = 10, SaaAmpua = true, AmmusNro = ammusIlmassaNro});
                     ammusIlmassaNro += 1;
                     if (ammusIlmassaNro == 10) ammusIlmassaNro = 0; // ammus-instanssin numeroa kierrätetään 1-10
 
                     System.Diagnostics.Debug.WriteLine("  AMMUTAAN, COUNT " + ammukset.Count); // debuggia
                     MainWindow.instance.Soita("ampu");    // soita ampu-soundi
                 }
-
-/*                System.Diagnostics.Debug.WriteLine("ammukset.Count  " + ammukset.Count); // debuggia              
-                foreach (Ammus ammus in ammukset)
-                {
-                        System.Diagnostics.Debug.WriteLine("lista: " + ammus.AmmusNro); // debuggia
-                }
-                SaakoAmpua = false; // rajataan ampumistiheyttä  */
             }
         }
 
-/*        // tällä metodilla saadaan ammus poistettua kentästä Ammus-luokasta kutsumalla
-        public void PoistaAmmusIlmasta(int n)
-        {
-            try
-            {
-                System.Diagnostics.Debug.WriteLine(" --------------- "); // debuggia
-                System.Diagnostics.Debug.WriteLine("ammukset.Count " + ammukset.Count); // debuggia
-                System.Diagnostics.Debug.WriteLine("removeAt n " + n); // debuggia               
-                System.Diagnostics.Debug.WriteLine("poistuva ammusnro " + n); // debuggia           
-                System.Diagnostics.Debug.WriteLine(" --------------- "); // debuggia
 
-                // POISTON TARKKAILU TEHTÄVÄ TÄNNE              !!          POIS AMMUS-LUOKASTA
-
-                ammukset.RemoveAt(0);    // poistetaan listasta alin
-
-            }
-            catch (Exception ex) 
-            {
-                MessageBox.Show("Ongelma ammus-instanssien poistamisessa..."+ex);
-            }
-            
-        }*/
 
         // nollataan ajastimella ampumistiheys
         private void timertiheys_Tick(object sender, EventArgs e)
