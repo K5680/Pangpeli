@@ -11,10 +11,13 @@ using static pang.Pallo;
 namespace pang                                                                                  
 {
     /// <summary>                                                                               
-    /// Interaction logic for MainWindow.xaml                                                   
+    /// #                                                 
+    /// #   Pangpeli the game. 2017 (C) Vesa Vertainen.
+    /// #
     /// </summary>                                                                            
     public partial class MainWindow : Window
     {
+        
 
         public static MainWindow instance { get; private set; } // tämän instanssin kautta voidaan kutsua MainWindow-luokan metodeita
 
@@ -35,25 +38,21 @@ namespace pang
         }
     
         private int poistetaanAmmus = -1;   // Muuttuja sisältää tiedon, että pitääkö ruudusta ja listasta poistaa "Ammus". -1 = ei poisteta mitään, muuten index-arvo.
-       
 
-        // ukon lisääminen sceneen
+        DispatcherTimer timer_Törmäys = new DispatcherTimer(DispatcherPriority.Send);   // törmäyksen tunnistuksen ajastus
+        private int ukonAloitusKello;   // Uudelleenaloituksessa ukkoon ei osu pallot pariin sekuntiin
         Ukko heebo = new Ukko();        // Luodaan Ukko-luokan instanssi, eli pelaaja       
 
-        private int ukonAloitusKello;   // Uudelleenaloituksessa ukkoon ei osu pallot pariin sekuntiin
-
         private int pallojaRuudulla;    // Muuttuja sisältää tiedon, montako palloa ruudulla on.
-
         Pallo[] palloLista = new Pallo[30]; // luodaan tarvittava määrä pallo-olioita
-        public List<int> poistetutPallot = new List<int>();
-
-        private int loytyi;
-
-        public static int pallojaLuotu;
+        public List<int> poistetutPallot = new List<int>(); // tehdään lista, jossa tieto siitä, mitkä palloinstanssit on jo poistettu
+        private int loytyi;             // poistettujen ja luotujen pallojen vertailuun käytettävä muuttuja
+        public static int pallojaLuotu; // luotujen pallojen määrä talteen
         
         private double xb, yb;                      // Bonuspallon sijainti,
         public bool bonusPalloLuotu;                // bonuspallo olemassa vai ei,
         BonusPallo bonusPallo = new BonusPallo();   // luodaan valmiiksi bonuspallo.
+
 
 
         public MainWindow()
@@ -72,8 +71,7 @@ namespace pang
             //määritellään ikkunalle tapahtumankäsittelijä näppäimistön kuuntelua varten
             this.KeyDown += new KeyEventHandler(OnButtonKeyDown);
 
-            // törmäyksen tunnistuksen ajastus
-            DispatcherTimer timer_Törmäys = new DispatcherTimer(DispatcherPriority.Send);
+            // törmäyksen tunnistuksen ajastus            
             timer_Törmäys.Interval = TimeSpan.FromMilliseconds(50);       // Set the Interval
             timer_Törmäys.Tick += new EventHandler(timertörmäys_Tick);      // Set the callback to invoke every tick time
             timer_Törmäys.Start();
@@ -143,7 +141,7 @@ namespace pang
                             palloLista[i].palloMenossa = pallonSuunta.Oikea;
                             break;
                         case 1:
-                            palloLista[i].PalloX = this.Width - 140; // toinen pallo oikeaan reunaan ruudunleveyden mukaan
+                            palloLista[i].PalloX = this.Width - 155; // toinen pallo oikeaan reunaan ruudunleveyden mukaan
                             palloLista[i].palloMenossa = pallonSuunta.Vasen;
                             break;
                         default:
@@ -159,9 +157,7 @@ namespace pang
         
         // Törmäyksen tunnistus ym. tapahtumat Timerilla
         private void timertörmäys_Tick(object sender, EventArgs e)
-        {
-
-            //System.Diagnostics.Debug.WriteLine("ukonaloitusKello                  " + ukonAloitusKello); // debuggia
+        {                       
             //System.Diagnostics.Debug.WriteLine("count poistetut "+poistetutPallot.Count); // debuggia
 
             // Ruudun yläreunan tekstit
@@ -183,7 +179,7 @@ namespace pang
                     LevelText = true;
                     txtInfo.Text = "GaMe OvER";
                     txtInfo.Visibility = Visibility.Visible;
-                    Level = 1;
+                    Level = 0;
                     ukonAloitusKello = secondDuration;
                     AlustaKello();
                 }
@@ -220,11 +216,12 @@ namespace pang
                                         if (palloLista[i].ball.Width < 15) // ... ja pienin pallo häviää kokonaan.
                                         {
                                             scene.Children.Remove(palloLista[i].ball);  // poistetaan ball canvasilta (scene)
-                                             
-                                            // Tarkistetaan, onko kyseinen pallo jo poistettujen listalla, jos ei niin lisätään
+
+                                            // Tarkistetaan, onko kyseinen pallo jo poistettujen listalla, jos ei niin lisätään                                           
+                                            loytyi = 0;
                                             foreach (int line in poistetutPallot)
                                             {
-                                                loytyi = 0;     // miten voi toimia jos tämä on tässä                ???
+                                                
                                                 if (line == i)
                                                 {
                                                     loytyi = 1;
@@ -233,10 +230,9 @@ namespace pang
                                             if (loytyi == 0)
                                             {
                                                 poistetutPallot.Add(i);    // lisätään poistettujen listaan pallon numero, ellei kyseinen pallo jo ole
-                                                System.Diagnostics.Debug.WriteLine("added "+i); // debuggia
+                                                //System.Diagnostics.Debug.WriteLine("added "+i); // debuggia
                                             }   
 
-                                            System.Diagnostics.Debug.WriteLine(i); // debuggia
                                             Soita("pallo_poksahtaa4");
                                             heebo.Pisteet += 500;
                                             palloLista[i].PalloY = -200;
@@ -260,9 +256,7 @@ namespace pang
                         if (poistetaanAmmus != -1) PoistaAmmusJokaIlmassa(poistetaanAmmus);
                     }
 
-                // Osuuko ukko palloon
-                //if (scene.Children.Contains(palloLista[i].ball)) // ei tehdä törmäystunnistusta jos pallo ei ole canvasilla (jostain syystä näkymättömiä palloja jää?)
-                //{
+                    // Osuuko ukko palloon
                     if (secondDuration > ukonAloitusKello + 2) // Ukko on kuolematon pari sekuntia edellisestä "kuolemasta"
                     {
                         if (heebo.ukkoPuskuri.IntersectsWith(r2))
@@ -273,19 +267,13 @@ namespace pang
                         }
                     }
 
-                    
-                    pallojaRuudulla++;  // Lasketaan montako palloa on canvasilla
-                    
-                //}
-                //else
-                //{
-                //}
-                
+                    pallojaRuudulla++;  // Lasketaan montako palloa on canvasilla       
             }
-            
-            // lasketaan luotujen ja poistettujen pallojen suhde -> nollassa vaihdetaan ruutu
+
+
             int palloBalanssi = pallojaRuudulla - poistetutPallot.Count;
             System.Diagnostics.Debug.WriteLine("erotus:  " + palloBalanssi + "ruudull:" + pallojaRuudulla + "  poistetut:"+poistetutPallot.Count); // debuggia
+
 
             // Nollaus pelin alussa
             if (pallojaRuudulla == 0 && Level == 0)
@@ -311,9 +299,7 @@ namespace pang
                     heebo.SijaintiX = 350;    // nollataan sijainti
                     ukonAloitusKello = secondDuration;
                     poistetutPallot.Clear();
-                    
-                }
-            
+                }            
         }
 
 
@@ -360,22 +346,19 @@ namespace pang
                             break;
                         case 1:
                             heebo.ammuksiaMax = 8;      // ammusten maksimimäärää ruudulla lisätään
-                            heebo.ammusTiheys = 500;
+                            heebo.ammusTiheys = 400;
                             break;
                         case 2:
-                            heebo.ammusTiheys = 300;    // ampumisnopeus kasvaa
+                            heebo.ammusTiheys = 200;    // ampumisnopeus kasvaa
                             break;
-                        case 3:
-                            heebo.ammuksiaMax = 10;
+                        case 3:                       
+                            heebo.ammuksiaMax = 15;
                             break;
                         case 4:
-                            heebo.ammusTiheys = 200;                            
+                            heebo.ammusTiheys = 100;                            
                             break;
                         case 5:
-                            heebo.ammuksiaMax = 12;
-                            break;
-                        case 6:
-                            heebo.ammusTiheys = 100;
+                            heebo.Elämät++;             // extra life
                             break;
                         default:
                             heebo.ammuksiaMax++;        // ammusten maksimimäärää ruudulla lisätään
@@ -514,12 +497,10 @@ namespace pang
 
             if (Keyboard.IsKeyDown(Key.Escape)) // esc lopettaa
             {                
-                this.Close();
-                Application.Current.Shutdown();
+                this.Close();                
             }
         }
 
-        
         private void Window_SizeChanged(object sender, SizeChangedEventArgs e)    // lasketaan ruudunleveys sen muuttuessa
         {
             ruudunLeveys = scene.ActualWidth;
@@ -530,7 +511,6 @@ namespace pang
         void MainWindow_Loaded(object sender, RoutedEventArgs e)    
         {
             ruudunLeveys = scene.ActualWidth;
-
             AlustaKello();
             LevelText = true;
             Level = 0;            
@@ -550,38 +530,3 @@ namespace pang
 }
 
 
-
-
-
-/*      Ukon törmäyspuskurin testaukseen
-re.Fill = System.Windows.Media.Brushes.SkyBlue;
-re.Width = 100;
-re.Height = 100;
-
-Canvas.SetTop(re, 100);
-Canvas.SetLeft(re, 100);
-AddCanvasChild(re);
-/*      Pallon törmäyspuskurin testaukseen 
-rep.Fill = System.Windows.Media.Brushes.SkyBlue;
-rep.Width = 100;
-rep.Height = 100;
-
-Canvas.SetTop(rep, 100);
-Canvas.SetLeft(rep, 100);
-AddCanvasChild(rep);
-*/
-
-/* Ukon törmäyspuskurin testaukseen
-  re.Width = heebo.ukkoPuskuri.Width;
-  re.Height = heebo.ukkoPuskuri.Height;
-
-  Canvas.SetLeft(re, heebo.ukkoPuskuri.X);
-  Canvas.SetTop(re, heebo.ukkoPuskuri.Y);
-
-  /* Pallon törmäyspuskurin testaukseen
-  rep.Width = palloLista[1].ball.ActualWidth;
-  rep.Height = palloLista[1].ball.ActualHeight;
-
-  Canvas.SetLeft(rep, palloLista[1].PalloX);
-  Canvas.SetTop(rep, palloLista[1].PalloY);
-  */

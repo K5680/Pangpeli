@@ -113,6 +113,7 @@ namespace pang
             btnOK.Visibility = Visibility.Hidden;
             scrLista.Visibility = Visibility.Hidden;
 
+            txtMessage.Text = "Create a new player.";
             CustomWidth = 600;          // levennetään ikkuna, pelaajien luomisen kenttiä varten
             lblLoad.Content = "Create Player";
         }
@@ -125,6 +126,7 @@ namespace pang
             lsvPelaajat.Visibility = Visibility.Visible;
             btnOK.Visibility = Visibility.Visible;
             scrLista.Visibility = Visibility.Visible;
+            txtMessage.Text = "Please, load a player.";
 
             CustomWidth = 600;          // levennetään ikkuna, pelaajien luomisen kenttiä varten
             lblLoad.Content = "Load Player";
@@ -161,10 +163,22 @@ namespace pang
             lsvPelaajat.Visibility = Visibility.Visible;
             btnOK.Visibility = Visibility.Visible;
             scrLista.Visibility = Visibility.Visible;
-            
+
+            txtMessage.Text = "Choose a player to delete.";
             CustomWidth = 600;          // levennetään ikkuna, pelaajien luomisen kenttiä varten
             lblLoad.Content = "Delete Player";
             btnOK.Content = "Delete";
+        }
+
+
+        // tällä koodilla enter nappi lisää pelaajan
+        private void txtPlayerName_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key == System.Windows.Input.Key.Enter)
+            {
+                e.Handled = true;
+                btnAddNew_Click_1(sender, e);
+            }
         }
     }
 }

@@ -34,8 +34,8 @@
             <!-- Vaihtuva otsikko  Load/Create ...-->
             <Label x:Name="lblLoad" FontSize="24" Content="{Binding CustomLabel, Mode=TwoWay}" Margin="0" HorizontalAlignment="Center" Width="200"/>
         </DockPanel>
-        
-    <Grid x:Name="myGrid">
+
+        <Grid x:Name="myGrid">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="280" />
                 <ColumnDefinition Width="200" />
@@ -53,20 +53,15 @@
                 <Button x:Name="btnExitPlayer" FontSize="20" Content="Quit" Height="40" Width="220" Margin="10" Click="btnExitPlayer_Click"/>
                 <TextBox x:Name="txtCopyright" Height="20" TextWrapping="Wrap" Text="2017 © Vesa Vertainen" Width="220" Margin="10"/>
             </StackPanel>
-        
-            <DockPanel Grid.ColumnSpan="3" Background="DarkOliveGreen"  Height="15" VerticalAlignment="Bottom" Margin="0">
-                <TextBlock x:Name="txtMessage" Text="{Binding}" VerticalAlignment="Bottom" HorizontalAlignment="Center" Width="150"/>
+
+            <DockPanel Grid.ColumnSpan="3" Background="DarkOliveGreen"  Height="20" VerticalAlignment="Bottom" Margin="0">
+                <TextBlock x:Name="txtMessage" FontSize="16" Foreground="White" Margin="95,0,0,0" Text="{Binding}" VerticalAlignment="Bottom" HorizontalAlignment="Center" Width="200"/>
             </DockPanel>
-            
-   
+
+
             <!-- New Player -osio -->
             <StackPanel Grid.Column="1" Grid.Row="0" Margin="0,40">
-                <TextBox x:Name="txtPlayerName" Text="my player" Width="200" MouseLeftButtonDown="txtPlayerName_MouseLeftButtonDown" Visibility="{Binding}">
-                    <TextBox.InputBindings>
-                        <KeyBinding Key="Return" Command="{Binding btnAddNew_Click_1 }" /> <!-- ei toimi enterillä suoraan add-nappiin  -->
-                    </TextBox.InputBindings>
-                </TextBox>
-
+                <TextBox x:Name="txtPlayerName" Text="my player" Width="200" MouseLeftButtonDown="txtPlayerName_MouseLeftButtonDown" Visibility="{Binding}" KeyUp="txtPlayerName_KeyUp"/>
                 <Button x:Name="btnAddNew" Width="100" Content="Add Player" Margin="5" Click="btnAddNew_Click_1" Visibility="{Binding}"/>
             </StackPanel>
 
@@ -90,24 +85,7 @@
             <StackPanel Grid.Column="1" VerticalAlignment="Bottom">
                 <Button x:Name="btnOK" Width="100" Content="{Binding}" Margin="30" Click="btnOK_Click" Visibility="{Binding}"/>
             </StackPanel>
-
-            <!-- Highscores?-->
-            <StackPanel x:Name="spData" Grid.Column="2">
-                <StackPanel>
-                    <!--    <TextBlock Text="{Binding FullInfo}" FontFamily="Berlin Sans FB"  FontSize="16"/>
-                        
-                            Tarvitaanko tätä osiota?
-                        
-                        <TextBox Text="{Binding PlayerName}" />
-                        <TextBox Text="{Binding PlayerPoints}" /> -->
-                </StackPanel>
-            </StackPanel>
-
-
-
         </Grid>
-
-        
     </Canvas>
 </Window>
 

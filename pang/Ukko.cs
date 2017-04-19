@@ -20,8 +20,8 @@ namespace pang
         private double sijaintix;
         private double sijaintiy = 350;
 
-        public int ammuksiaMax = 500; //2            // ammusten maksimimäärä ruudulla
-        public int ammusTiheys = 10; //700     // kuinka nopeasti voi ampua uuden
+        public int ammuksiaMax = 2;            // ammusten maksimimäärä ruudulla
+        public int ammusTiheys = 700;          // kuinka nopeasti voi ampua uuden
 
         public int Pisteet { get; set; }
 
@@ -176,14 +176,12 @@ namespace pang
 
         public void Ammu()
         {
-                   
             // ammukset...
             if (SaakoLiikkua && !Osuuko && SaakoAmpua)    // jos on liikkumislupa, ampumislupa, eikä ole pallo osunut ukkoon, niin voidaan ampua
             {
-
                 if (ammukset.Count < ammuksiaMax+1) // ammutaan ammuksia, maksimissaan 10 ilmassa    
                 {
-                    if (bonusTaso > 6)  // tietyllä bonustasolla ammuksia alkaa lentää leveämmältä alalta
+                    if (bonusTaso > 4)  // tietyllä bonustasolla ammuksia alkaa lentää leveämmältä alalta
                     {
                         if (ammusIlmassaNro % 2 == 0)
                         {
@@ -203,12 +201,9 @@ namespace pang
                     MainWindow.instance.Soita("ampu");    // soita ampu-soundi
 
                     SaakoAmpua = false; // saa ampua vasta kun timer antaa luvan
-                }
-
-                
+                }                
             }
         }
-
 
 
         // nollataan ajastimella ampumistiheys
