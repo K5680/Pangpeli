@@ -441,7 +441,7 @@ namespace pang
             {
                 Soita("pallo_poksahtaa3");
             }
-
+            
             var i = pallojaLuotu; // lasketaan montako palloa on jo luotu ja asetetaan se seuraavan pallon numeroksi
 
                 //System.Diagnostics.Debug.WriteLine("JaaPallo. Luotu: " + i + "   Jaettava:" + n); // debuggia
