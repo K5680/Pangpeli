@@ -13,7 +13,7 @@ namespace pang
     /// <summary>                                                                               
     /// #                                                 
     /// #   Pangpeli the game. 2017 (C) Vesa Vertainen.
-    /// #
+    /// #   19.4.2017
     /// </summary>                                                   
     /// 
     public partial class MainWindow : Window
