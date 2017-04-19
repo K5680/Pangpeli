@@ -14,6 +14,7 @@ namespace pang
     /// #                                                 
     /// #   Pangpeli the game. 2017 (C) Vesa Vertainen.
     /// #   19.4.2017
+    /// #
     /// </summary>                                                   
     /// 
     public partial class MainWindow : Window
@@ -137,11 +138,11 @@ namespace pang
                     {
                         case 0:
                             palloLista[i].PalloX = 10; // ensimmäinen pallo vasempaan reunaan
-                            palloLista[i].palloMenossa = pallonSuunta.Oikea;
+                            palloLista[i].PalloMenossa = PallonSuunta.Oikea;
                             break;
                         case 1:
                             palloLista[i].PalloX = this.Width - 155; // toinen pallo oikeaan reunaan ruudunleveyden mukaan
-                            palloLista[i].palloMenossa = pallonSuunta.Vasen;
+                            palloLista[i].PalloMenossa = PallonSuunta.Vasen;
                             break;
                         default:
                             break;
@@ -448,14 +449,14 @@ namespace pang
                 // luodaan 1 palloinstanssi lisää, kun toinen on puolitettu pienemmäksi
                 palloLista[i] = new Pallo();
                 palloLista[i].Numero = i + 1;             
-
-                switch (palloLista[n].palloMenossa)  // metodiin tuodun pallon numeron perusteella katsotaan sen suunta
+            
+                switch (palloLista[n].PalloMenossa)  // metodiin tuodun pallon numeron perusteella katsotaan sen suunta
                 {
-                    case pallonSuunta.Oikea:          
-                    palloLista[i].palloMenossa = pallonSuunta.Vasen;    // mutta eri suunta.
+                    case PallonSuunta.Oikea:          
+                    palloLista[i].PalloMenossa = PallonSuunta.Vasen;    // mutta eri suunta.
                     break;
-                case pallonSuunta.Vasen:
-                    palloLista[i].palloMenossa = pallonSuunta.Oikea;
+                case PallonSuunta.Vasen:
+                    palloLista[i].PalloMenossa = PallonSuunta.Oikea;
                         break;
                     default:
                         break;

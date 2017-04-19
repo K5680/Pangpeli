@@ -10,13 +10,13 @@ namespace pang
 {
     class Pallo
     {
-        public enum pallonSuunta
+        public enum PallonSuunta
         {
             Vasen,
             Oikea
         }
 
-        public pallonSuunta palloMenossa { get; set; }
+        public PallonSuunta PalloMenossa { get; set; }
 
         private double pallox;
         public double PalloX {
@@ -66,7 +66,6 @@ namespace pang
 
         public bool PalloSaaLiikkua { get; set; }
 
-        private Ellipse ball;
         public Ellipse Ball { get; set; }
 
         public Pallo()
@@ -141,15 +140,15 @@ namespace pang
                 PalloY = pallonKorkeus + Math.Cos(Angle) * kaari;
 
                 // pallon liikutus suunnan mukaan
-                if (palloMenossa == pallonSuunta.Oikea)
+                if (PalloMenossa == PallonSuunta.Oikea)
                 {
                     PalloX = PalloX + 5;    // pallon liikutus oikealla
-                    if (PalloX > MainWindow.ruudunLeveys - Ball.Width) palloMenossa = pallonSuunta.Vasen; // otetaan pallon leveys huomioon seinään törmätessä
+                    if (PalloX > MainWindow.ruudunLeveys - Ball.Width) PalloMenossa = PallonSuunta.Vasen; // otetaan pallon leveys huomioon seinään törmätessä
                 }
                 else
                 {
                     PalloX = PalloX - 5; // pallon liikutus vasemmalle
-                    if (PalloX < 0) palloMenossa = pallonSuunta.Oikea;
+                    if (PalloX < 0) PalloMenossa = PallonSuunta.Oikea;
                 }
             }
           
