@@ -47,6 +47,7 @@ namespace pang
 
             MainWindow mainWindow = new MainWindow();            
             mainWindow.Show();
+            this.Close();
         }
 
 

@@ -20,18 +20,18 @@ namespace pang
         // override-metodi pallosta
         public override void LuoPallo()
         {
-            ball = new Ellipse();
+            Ball = new Ellipse();
 
-            ball.Stroke = Brushes.Blue;          
-            ball.HorizontalAlignment = HorizontalAlignment.Left;
-            ball.VerticalAlignment = VerticalAlignment.Center;
+            Ball.Stroke = Brushes.Blue;          
+            Ball.HorizontalAlignment = HorizontalAlignment.Left;
+            Ball.VerticalAlignment = VerticalAlignment.Center;
             
-            ball.Height = 60;
-            ball.Width = 60;
+            Ball.Height = 60;
+            Ball.Width = 60;
 
             ImageBrush tekstuuri = new ImageBrush();                // kuva ladataan resursseista
             tekstuuri.ImageSource = new BitmapImage(new Uri(MainWindow.Latauskansio + "bonuspallo.png", UriKind.Absolute));
-            ball.Fill = tekstuuri;
+            Ball.Fill = tekstuuri;
 
             // pallon ajastin
             DispatcherTimer timer_pallo = new DispatcherTimer(DispatcherPriority.Send);

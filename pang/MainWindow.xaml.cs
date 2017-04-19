@@ -17,8 +17,8 @@ namespace pang
     /// </summary>                                                   
     /// 
     public partial class MainWindow : Window
-    {
-        public static int Level = 1;            // levelin numero
+    { 
+        public static int Level { get; set; }            // levelin numero
         public static bool LevelText = true;    // piirretään levelin numero ruutuun alussa
 
         private static DateTime startDate;     // ajastus level-teksteille / ukon "immuniteetti" ym.
@@ -55,7 +55,8 @@ namespace pang
 
 
         public MainWindow()
-        {
+        {           
+            Level = 0;
             InitializeComponent();
             instance = this;    // tämän kautta kutsutaan MainWindow-instanssin metodeita           
 
@@ -63,9 +64,8 @@ namespace pang
             this.SizeChanged += new SizeChangedEventHandler(Window_SizeChanged);    // luodaan eventhandleri ikkunan koon muutokselle (tarvitaanko lopullisessa?)
 
             txtPelaajanNimi.Text = Ukko.NykyinenPelaaja;    // alussa valittu pelaajanimi ruutuun
-
-            heebo.LuoUkko();                // luodaan pelaaja
-            AddCanvasChild(heebo.pelaaja);  // ja liitetään canvasiin
+            
+            AddCanvasChild(heebo.Pelaaja);  // ja liitetään canvasiin
 
             //määritellään ikkunalle tapahtumankäsittelijä näppäimistön kuuntelua varten
             this.KeyDown += new KeyEventHandler(OnButtonKeyDown);
@@ -147,8 +147,8 @@ namespace pang
                             break;
                     }
 
-                    Canvas.SetTop(palloLista[i].ball, -100); // siirretään aluksi pois näkyvistä (muuten vilahtaa alussa)
-                    AddCanvasChild(palloLista[i].ball); // lisätään pallo-oliot sceneen (canvasiin), aluksi 2kpl
+                    Canvas.SetTop(palloLista[i].Ball, -100); // siirretään aluksi pois näkyvistä (muuten vilahtaa alussa)
+                    AddCanvasChild(palloLista[i].Ball); // lisätään pallo-oliot sceneen (canvasiin), aluksi 2kpl
                     pallojaLuotu = i + 1;
                 }            
         }
@@ -158,7 +158,7 @@ namespace pang
         private void timertörmäys_Tick(object sender, EventArgs e)
         {                       
                 // Ruudun yläreunan tekstit
-                txtPelaajanElämät.Text = heebo.Elämät.ToString();  // päivitetään ruutuun elämät
+                txtPelaajanElämät.Text = heebo.ElämätCounter.ToString();  // päivitetään ruutuun elämät
                 txtPelaajanPisteet.Text = heebo.Pisteet.ToString(); // ja pisteet
 
                 if (LevelText && Level > 0)
@@ -170,9 +170,9 @@ namespace pang
                 {
                     txtInfo.Visibility = Visibility.Hidden;
                 }
-
+                
                 // Pelin loppuminen
-                if (heebo.Elämät == 0)
+                if (heebo.ElämätCounter == 0)
                 {
                     LevelText = true;
                     txtInfo.Text = "GaMe OvER";
@@ -190,9 +190,9 @@ namespace pang
                 for (int i = 0; i < pallojaLuotu; i++)    // käydään läpi kaikki pallo-instanssit
                 {
                     // törmäyksen tunnistus Rect:illä, luodaan pallon ympärille rect
-                    var x2 = Canvas.GetLeft(palloLista[i].ball);
-                    var y2 = Canvas.GetTop(palloLista[i].ball);
-                    Rect r2 = new Rect(x2, y2, (palloLista[i].ball.Width), (palloLista[i].ball.Height));
+                    var x2 = Canvas.GetLeft(palloLista[i].Ball);
+                    var y2 = Canvas.GetTop(palloLista[i].Ball);
+                    Rect r2 = new Rect(x2, y2, (palloLista[i].Ball.Width), (palloLista[i].Ball.Height));
 
                     // Käydään läpi kaikki ammukset, osuvatko kyseiseen palloon + yliruudun. Mutta vasta kun ammuksia on luotu.
                     if (Ukko.ammukset.Count > 0)
@@ -211,9 +211,9 @@ namespace pang
                                         // Ammus osui palloon, pallo poksahtaa kahteen osaan...
                                         palloLista[i].Puolitus();
 
-                                        if (palloLista[i].ball.Width < 15) // ... ja pienin pallo häviää kokonaan.
+                                        if (palloLista[i].Ball.Width < 15) // ... ja pienin pallo häviää kokonaan.
                                         {
-                                            scene.Children.Remove(palloLista[i].ball);  // poistetaan ball canvasilta (scene)
+                                            scene.Children.Remove(palloLista[i].Ball);  // poistetaan Ball canvasilta (scene)
 
                                             // Tarkistetaan, onko kyseinen pallo jo poistettujen listalla, jos ei niin lisätään                                           
                                             loytyi = 0;
@@ -237,7 +237,7 @@ namespace pang
                                     }
                                         else    // jos ei vielä häviä, niin jaetaan kahteen
                                         {
-                                            JaaPallo(i, palloLista[i].ball.Width);
+                                            JaaPallo(i, palloLista[i].Ball.Width);
                                             heebo.Pisteet += 100;
                                         }
                                     }
@@ -256,10 +256,10 @@ namespace pang
                     // Osuuko ukko palloon
                     if (secondDuration > ukonAloitusKello + 2) // Ukko on kuolematon pari sekuntia edellisestä "kuolemasta"
                     {
-                        if (heebo.ukkoPuskuri.IntersectsWith(r2))
+                        if (heebo.UkkoPuskuri.IntersectsWith(r2))
                         {
                             heebo.Osuuko = true;    // jos osuu niin ukon "Osuuko"-bool on true (ja lähtee elämä)
-                            heebo.bonusTaso = 0;    // bonustaso nollautuu
+                            heebo.BonusTaso = 0;    // BonusTaso nollautuu
                             ukonAloitusKello = secondDuration;  // Tehdään ukosta kuolematon tästä hetkestä muutama sekunti eteenpäin
                         }
                     }
@@ -313,8 +313,8 @@ namespace pang
                 bonusPallo.PalloSaaLiikkua = true;  // Annetaan pallolle lupa liikkua heti
                 bonusPalloLuotu = true;             // Törmäyksen tunnistusta varten                
                 
-                AddCanvasChild(bonusPallo.ball);    // Piirretään bonus canvasiin.
-                Canvas.SetTop(bonusPallo.ball, -100); // siirretään aluksi pois näkyvistä (muuten vilahtaa alussa)
+                AddCanvasChild(bonusPallo.Ball);    // Piirretään bonus canvasiin.
+                Canvas.SetTop(bonusPallo.Ball, -100); // siirretään aluksi pois näkyvistä (muuten vilahtaa alussa)
             }
 
             
@@ -322,45 +322,45 @@ namespace pang
             // Ukko <-> BonusPallo Törmäyksen tunnistus
             if (bonusPalloLuotu)
             {
-                xb = Canvas.GetLeft(bonusPallo.ball);
-                yb = Canvas.GetTop(bonusPallo.ball);
+                xb = Canvas.GetLeft(bonusPallo.Ball);
+                yb = Canvas.GetTop(bonusPallo.Ball);
 
-                //System.Diagnostics.Debug.WriteLine(bonusPallo.ball.ActualHeight + " <- height    width -> " + bonusPallo.ball.ActualWidth); // debuggia
+                //System.Diagnostics.Debug.WriteLine(bonusPallo.Ball.ActualHeight + " <- height    width -> " + bonusPallo.Ball.ActualWidth); // debuggia
 
-                Rect rb = new Rect(xb + 7, yb + 7, (bonusPallo.ball.Width - 15), (bonusPallo.ball.Height - 15));  // Rect bonuksen ympärille, jotta voidaan tunnistaa törmäys ukkoon
-
-                if (heebo.ukkoPuskuri.IntersectsWith(rb))
+                Rect rb = new Rect(xb + 7, yb + 7, (bonusPallo.Ball.Width - 15), (bonusPallo.Ball.Height - 15));  // Rect bonuksen ympärille, jotta voidaan tunnistaa törmäys ukkoon
+                
+                if (heebo.UkkoPuskuri.IntersectsWith(rb))
                 {
-                    scene.Children.Remove(bonusPallo.ball);
+                    scene.Children.Remove(bonusPallo.Ball);
                     bonusPallo.PalloY = 600; // varulta pois ruudulta myös sijaintinsa puolesta
                     bonusPalloLuotu = false;
                     Soita("bonus");
-                    heebo.bonusTaso++;
-
-                    switch (heebo.bonusTaso)
+                    heebo.BonusTaso++;
+                    
+                    switch (heebo.BonusTaso)
                     {
                         case 0:
                             break;
                         case 1:
-                            heebo.ammuksiaMax = 8;      // ammusten maksimimäärää ruudulla lisätään
-                            heebo.ammusTiheys = 400;
+                            heebo.AmmuksiaMax = 8;      // ammusten maksimimäärää ruudulla lisätään
+                            heebo.AmmusTiheys = 400;
                             break;
                         case 2:
-                            heebo.ammuksiaMax = 10;
-                            heebo.ammusTiheys = 200;    // ampumisnopeus kasvaa
+                            heebo.AmmuksiaMax = 10;
+                            heebo.AmmusTiheys = 200;    // ampumisnopeus kasvaa
                             break;
                         case 3:                       
-                            heebo.ammuksiaMax = 15;
+                            heebo.AmmuksiaMax = 15;
                             break;
                         case 4:
-                            heebo.ammuksiaMax = 20;
-                            heebo.ammusTiheys = 100;                            
+                            heebo.AmmuksiaMax = 20;
+                            heebo.AmmusTiheys = 100;                            
                             break;
                         case 5:
-                            heebo.Elämät++;             // extra life   + tässä kohtaa tupla-ammukset ukko-luokan kautta
+                            heebo.ElämätCounter++;             // extra life   + tässä kohtaa tupla-ammukset ukko-luokan kautta
                             break;
                         default:
-                            heebo.ammuksiaMax += 5;        // ammusten maksimimäärää ruudulla lisätään
+                            heebo.AmmuksiaMax += 5;        // ammusten maksimimäärää ruudulla lisätään
                             break;
                     }
                 }
@@ -369,7 +369,7 @@ namespace pang
             // Poistetaan bonuspallo ruudulta, ellei sitä ole napattu ajoissa
             if (secondDuration % 25 == 0 && bonusPalloLuotu)
             {
-                scene.Children.Remove(bonusPallo.ball);
+                scene.Children.Remove(bonusPallo.Ball);
                 bonusPallo.PalloY = 600; // varulta pois ruudulta myös sijaintinsa puolesta
                 bonusPalloLuotu = false;
             }
@@ -460,17 +460,17 @@ namespace pang
                     default:
                         break;
                 }
-
+            
                 palloLista[i].Kaari = palloLista[n].Kaari;  // sinikäyrän laskemiseen käytetty halkaisija
                 palloLista[i].PalloX = palloLista[n].PalloX;
                 palloLista[i].PalloY = palloLista[n].PalloY;
                 palloLista[i].PallonKorkeus = palloLista[n].PallonKorkeus;
 
-                palloLista[i].ball.Width = palloLista[n].ball.Width;    // uudelle pallolle sama koko kuin sille, joka poksahti
-                palloLista[i].ball.Height = palloLista[n].ball.Height;
+                palloLista[i].Ball.Width = palloLista[n].Ball.Width;    // uudelle pallolle sama koko kuin sille, joka poksahti
+                palloLista[i].Ball.Height = palloLista[n].Ball.Height;
 
-                Canvas.SetTop(palloLista[i].ball, -100); // aluksi pois näkyvistä, muuten vilahtaa tullessaan yläreunassa
-                AddCanvasChild(palloLista[i].ball); // lisätään pallo sceneen
+                Canvas.SetTop(palloLista[i].Ball, -100); // aluksi pois näkyvistä, muuten vilahtaa tullessaan yläreunassa
+                AddCanvasChild(palloLista[i].Ball); // lisätään pallo sceneen
                 pallojaLuotu += 1;  // lisätään pallojen määrää
          }
 

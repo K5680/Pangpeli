@@ -23,13 +23,13 @@ namespace pang.ViewModel
             set;
         }
 
-        
-    public void LataaPelaajat()
-            {
-                ObservableCollection<Pelaajat> pelaajat = new ObservableCollection<Pelaajat>();               
 
-                // nykyinen hakemisto talteen
-                Polku = Path.GetDirectoryName(System.Windows.Forms.Application.ExecutablePath);
+        public void LataaPelaajat()
+        {
+            ObservableCollection<Pelaajat> pelaajat = new ObservableCollection<Pelaajat>();               
+
+            // nykyinen hakemisto talteen
+            Polku = Path.GetDirectoryName(System.Windows.Forms.Application.ExecutablePath);
 
             try
             {

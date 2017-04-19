@@ -35,9 +35,22 @@ namespace pang
         public double Angle { get; set; }
         public int Numero { get; set; }
         public double PalloY { get; set; }
-        public int Kaari = 140;
-        private double pallonKorkeus = 240;
         
+        private double pallonKorkeus = 240;
+
+        private int kaari = 140;
+        public int Kaari
+        {
+            get
+            {
+                return kaari;
+            }
+            set
+            {
+                kaari = value;
+            }
+        }
+
         public double PallonKorkeus
         {   get
             {
@@ -53,8 +66,8 @@ namespace pang
 
         public bool PalloSaaLiikkua { get; set; }
 
-        public Ellipse ball;
-
+        private Ellipse ball;
+        public Ellipse Ball { get; set; }
 
         public Pallo()
         {
@@ -75,18 +88,18 @@ namespace pang
 
         public virtual void LuoPallo()
         {
-            ball = new Ellipse();
+            Ball = new Ellipse();
             
-            ball.Stroke = Brushes.Red;
-            ball.Fill = Brushes.SkyBlue;
-            ball.HorizontalAlignment = HorizontalAlignment.Left;
-            ball.VerticalAlignment = VerticalAlignment.Center;
-            ball.Width = 130;
-            ball.Height = 130;
+            Ball.Stroke = Brushes.Red;
+            Ball.Fill = Brushes.SkyBlue;
+            Ball.HorizontalAlignment = HorizontalAlignment.Left;
+            Ball.VerticalAlignment = VerticalAlignment.Center;
+            Ball.Width = 130;
+            Ball.Height = 130;
 
             ImageBrush tekstuuri = new ImageBrush();                // kuva ladataan resursseista
             tekstuuri.ImageSource = new BitmapImage(new Uri(MainWindow.Latauskansio + "pallo.png", UriKind.Absolute));
-            ball.Fill = tekstuuri;
+            Ball.Fill = tekstuuri;
 
             // pallon ajastin
             DispatcherTimer timer_pallo = new DispatcherTimer(DispatcherPriority.Send);
@@ -99,10 +112,10 @@ namespace pang
         // Pallon puolitus ammukseen osuessa
         public void Puolitus()
         {
-            ball.Height = ball.Height / 2;
-            ball.Width = ball.Width / 2;
+            Ball.Height = Ball.Height / 2;
+            Ball.Width = Ball.Width / 2;
             pallonKorkeus = pallonKorkeus + 45;     // pienemmät pallot pomppii matalemmalla
-            Kaari = Kaari - 20;
+            kaari = kaari - 20;
             Angle = 40;                             // nollataan lähtökulma (sinikäyrään)
         }
 
@@ -125,13 +138,13 @@ namespace pang
                 // pallon liikutus sinikäyrällä ylös ja alas
                 Angle = Angle + kiihtyvyys;
                 if (Angle > 46.3) { Angle = 40; }           // näillä asteilla (40 - 46.3) liikkuminen näyttää sulavalta
-                PalloY = pallonKorkeus + Math.Cos(Angle) * Kaari;
+                PalloY = pallonKorkeus + Math.Cos(Angle) * kaari;
 
                 // pallon liikutus suunnan mukaan
                 if (palloMenossa == pallonSuunta.Oikea)
                 {
                     PalloX = PalloX + 5;    // pallon liikutus oikealla
-                    if (PalloX > MainWindow.ruudunLeveys - ball.Width) palloMenossa = pallonSuunta.Vasen; // otetaan pallon leveys huomioon seinään törmätessä
+                    if (PalloX > MainWindow.ruudunLeveys - Ball.Width) palloMenossa = pallonSuunta.Vasen; // otetaan pallon leveys huomioon seinään törmätessä
                 }
                 else
                 {
@@ -141,8 +154,8 @@ namespace pang
             }
           
             // Pallon liikkeen päivitys "sceneen"
-            Canvas.SetLeft(ball, PalloX);
-            Canvas.SetTop(ball, PalloY);            
+            Canvas.SetLeft(Ball, PalloX);
+            Canvas.SetTop(Ball, PalloY);            
         }
 
         ~Pallo()
