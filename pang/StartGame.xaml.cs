@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.IO;
 using System.Windows;
 
 namespace pang
@@ -42,7 +43,8 @@ namespace pang
         private void btnStartGame_Click(object sender, RoutedEventArgs e)
         {
             // Käynnistetään itse peli
-            CustomWidth = 300;  // ikkunan leveyden palautus
+            CustomWidth = 300;  // ikkunan leveyden palautus            
+
             MainWindow mainWindow = new MainWindow();            
             mainWindow.Show();
         }
@@ -61,6 +63,9 @@ namespace pang
 
             try
             {
+                Highscore hig = new Highscore();
+                hig.LataaTiedot();  // tietojen alustus, luo tiedoston ja tallennuskansion jos niitä ei ole
+
                 lista = System.IO.File.ReadAllLines(polku + @"\Highscores.bin");    // ladataan ennätykset levyltä
 
                 foreach (string line in lista)

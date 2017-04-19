@@ -6,16 +6,16 @@ namespace pang
 {
     class Highscore
     {
+        public string polku = System.IO.Path.GetDirectoryName(System.Windows.Forms.Application.ExecutablePath) + @"\players";
+        public string[] text;
         // tallentaa nykyisen pelaajan pisteet Highscoreen
         public Highscore()
         {
         }
 
-        public void TallennaPisteet(int Pistemäärä)
-        { 
-            // pelin kansio + Players-kansio, jossa Highscores.bin
-            string polku = System.IO.Path.GetDirectoryName(System.Windows.Forms.Application.ExecutablePath) + @"\players";
 
+        public void LataaTiedot()
+        {
             try
             {
                 // jollei players-kansiota ole, luodaan se
@@ -26,17 +26,24 @@ namespace pang
                 {
                     string[] lines = { "AAA", "100", "BBB", "200", "CCC", "300", "DDD", "400", "EEE", "500", "FFF", "600", "GGG", "700", "HHH", "800", "III", "900", "JJJ", "1000" };
                     File.WriteAllLines(polku + @"\Highscores.bin", lines);
-
-                    foreach (string line in lines)
-                    {
-                        //                        System.Diagnostics.Debug.WriteLine("  line " + line); // debuggia
-                    }
                 }
 
-                try
-                {
-                    string[] text = System.IO.File.ReadAllLines(polku + @"\Highscores.bin");    // ladataan ennätykset levyltä
+                text = System.IO.File.ReadAllLines(polku + @"\Highscores.bin");    // ladataan ennätykset levyltä
+            }
+            catch (Exception e)     // jos levytoiminnot ei onnistu, näytetään poikkeus
+            {
+                MessageBox.Show("Disk read error: " + e.ToString() + "\n" + polku + "\\players\\Highscores.bin");
+            }
+            
+        }
 
+
+        public void TallennaPisteet(int Pistemäärä)
+        {
+            LataaTiedot();  // ladataan ensin aiemmat tiedot
+
+            try
+                {
                     string[,] nronimi;           // Taulukot ennätyslistaa varten    (1)   Nro & Nimi -taulukko -string tyyppinen
                     int[,] nropisteet;           // Taulukot ennätyslistaa varten    (2)   Nro & Pisteet -taulukko  -int tyyppinen
                     nronimi = new string[11, 2];
@@ -75,11 +82,6 @@ namespace pang
                     Console.WriteLine("File not found (FileNotFoundException)");
                 }
 
-            }
-            catch (Exception e)     // jos levytoiminnot ei onnistu, näytetään poikkeus
-            {
-                MessageBox.Show("Disk read error: " + e.ToString() + "\n" + polku + "\\players\\Highscores.bin");
-            }
 
         }
 

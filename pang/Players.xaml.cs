@@ -37,7 +37,9 @@ namespace pang
         public Players()
         {
             InitializeComponent();
-            
+
+            lblLoad.Content = "Load Player";
+
             pvm.LataaPelaajat(); // lataa pelaajat
             myGrid.DataContext = pvm.Pelaajat;
 

@@ -32,7 +32,7 @@
         
         <DockPanel Width="750" Height="40">
             <!-- Vaihtuva otsikko  Load/Create ...-->
-            <Label x:Name="lblLoad" FontSize="24" Content="{Binding CustomLabel, Mode=TwoWay}" Margin="0" HorizontalAlignment="Center" Width="200"/>
+            <Label x:Name="lblLoad" FontSize="24" Content="{Binding}" Margin="0" HorizontalAlignment="Center" Width="200"/>
         </DockPanel>
 
         <Grid x:Name="myGrid">

@@ -271,13 +271,15 @@ namespace pang
 
             // Nollaus pelin alussa
             if (pallojaRuudulla == 0 && Level == 0)
-            {
+            {                
                 Level++;
                 LevelText = true;
                 LuoPallot();
                 AlustaKello();
                 heebo.SijaintiX = 350;    // nollataan sijainti
                 ukonAloitusKello = secondDuration;
+
+                //System.Diagnostics.Debug.WriteLine("           Aloitus          "); // debuggia
             }
 
             // jos kaikki pallot ammuttu -> next level
