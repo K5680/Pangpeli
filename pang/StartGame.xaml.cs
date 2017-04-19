@@ -5,7 +5,7 @@ using System.Windows;
 namespace pang
 {
     /// <summary>
-    /// P?elin käynnistysruutu
+    /// Pelin käynnistysruutu
     /// </summary>
     public partial class StartGame : Window, INotifyPropertyChanged
     {

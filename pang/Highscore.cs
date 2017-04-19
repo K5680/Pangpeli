@@ -159,14 +159,3 @@ namespace pang
     }
 }
 
-
-
-
-
-/* debuggiin
-                    for (int im = 10; im > -1; im--)
-                    {
-                        System.Diagnostics.Debug.WriteLine("Ennen bubblesorttia: " + im + "tulos:  " + nronimi[im, 0] + "   " + nropisteet[im, 0] + " indeksi:  " + im);
-
-                    }
-*/
