@@ -379,7 +379,7 @@ namespace pang
         public void Soita(string ääni)
         {
             // meneekö kansiorakenne näin oikein valmiissa pelissä??            
-            string path2 = System.IO.Path.GetDirectoryName(System.Windows.Forms.Application.ExecutablePath);
+            string path2 = System.IO.Path.GetDirectoryName(System.Windows.Forms.Application.ExecutablePath);    //toimiiko exessä?
 
             switch (ääni)   // valitse soitettava ääni              // elementtejä on monta, jotta voi olla monta ääntä yhtäaikaa
             {
