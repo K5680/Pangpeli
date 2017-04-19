@@ -14,7 +14,8 @@ namespace pang
     /// #                                                 
     /// #   Pangpeli the game. 2017 (C) Vesa Vertainen.
     /// #
-    /// </summary>                                                                            
+    /// </summary>                                                   
+    /// 
     public partial class MainWindow : Window
     {
         public static int Level = 1;            // levelin numero
@@ -68,6 +69,8 @@ namespace pang
 
             //määritellään ikkunalle tapahtumankäsittelijä näppäimistön kuuntelua varten
             this.KeyDown += new KeyEventHandler(OnButtonKeyDown);
+
+            System.Diagnostics.Debug.WriteLine(System.IO.Path.GetDirectoryName(System.Windows.Forms.Application.ExecutablePath)); // debuggia
 
             AlustaKello();           
         }
@@ -277,9 +280,7 @@ namespace pang
                 LuoPallot();
                 AlustaKello();
                 heebo.SijaintiX = 350;    // nollataan sijainti
-                ukonAloitusKello = secondDuration;
-
-                //System.Diagnostics.Debug.WriteLine("           Aloitus          "); // debuggia
+                ukonAloitusKello = secondDuration;                
             }
 
             // jos kaikki pallot ammuttu -> next level
