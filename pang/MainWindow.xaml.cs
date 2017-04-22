@@ -176,11 +176,9 @@ namespace pang
                 if (heebo.ElämätCounter == 0)
                 {
                     LevelText = true;
-                    txtInfo.Text = "GaMe OvER";
+                    txtInfo.Text = "           Game Over \nPress enter to play Again";
                     txtInfo.Visibility = Visibility.Visible;
-                    Level = 0;
-                    //ukonAloitusKello = secondDuration;
-                    //AlustaKello();
+                    Level = 0;                    
                 }
 
                 Bonukset();
@@ -284,14 +282,16 @@ namespace pang
                 ukonAloitusKello = secondDuration;                
             }
 
-            // jos kaikki pallot ammuttu -> next level
-            if (poistetutPallot.Count == 16)
+            // jos kaikki pallot ammuttu -> next level   /   Tai uuden pelin aloitus
+            if (poistetutPallot.Count == 16 || Level == -1)
                 {
                     pallojaLuotu = 0;
                     AlustaKello();
+
+                    if (Level == -1) Level = 0; // Level -1 tarkoittaa, että aloitetaan uusi peli, sitten nollattava
+
                     Level++;
                     LevelText = true;
-
                     LuoPallot();
                     
                     heebo.SijaintiX = 350;    // nollataan sijainti
@@ -473,7 +473,8 @@ namespace pang
                 Canvas.SetTop(palloLista[i].Ball, -100); // aluksi pois näkyvistä, muuten vilahtaa tullessaan yläreunassa
                 AddCanvasChild(palloLista[i].Ball); // lisätään pallo sceneen
                 pallojaLuotu += 1;  // lisätään pallojen määrää
-         }
+            
+        }
 
 
         #region EVENTS
@@ -484,21 +485,48 @@ namespace pang
             {
                 heebo.Ammu();
                 if (Keyboard.IsKeyDown(Key.Right))
-                    heebo.LiikutaUkkoa(heebo.Askel);              
+                    heebo.LiikutaUkkoa(heebo.Askel);
                 else if (Keyboard.IsKeyDown(Key.Left))
                     heebo.LiikutaUkkoa(-heebo.Askel);
-            }else if (Keyboard.IsKeyDown(Key.Right))
+            } else if (Keyboard.IsKeyDown(Key.Right))
             {
                 heebo.LiikutaUkkoa(heebo.Askel);
-            }else if (Keyboard.IsKeyDown(Key.Left))
+            } else if (Keyboard.IsKeyDown(Key.Left))
             {
                 heebo.LiikutaUkkoa(-heebo.Askel);
             }
 
             if (Keyboard.IsKeyDown(Key.Escape)) // esc lopettaa
-            {                
-                this.Close();                
+            {
+                this.Close();
             }
+
+            if (Keyboard.IsKeyDown(Key.Enter)) // enter nappi aloittaa uuden pelin
+                {
+                    if (heebo.ElämätCounter == 0)   // Uuden pelin nollaukset
+                    {
+                        Level = -1; // Pelin aloitus uudestaan
+                        heebo.ElämätCounter = 10;   // nollataan elämät
+
+                        for (int i = 0; i < pallojaLuotu; i++)    // käydään läpi kaikki pallo-instanssit
+                        {
+                            // Tarkistetaan, onko kyseinen pallo jo poistettujen listalla, jos ei poistetaan                                           
+                            loytyi = 0;
+                            foreach (int line in poistetutPallot)
+                            {
+                                if (line == i)
+                                {
+                                    loytyi = 1;
+                                }
+                            }
+                            if (loytyi == 0)
+                            {
+                                scene.Children.Remove(palloLista[i].Ball);  // poistetaan Ball canvasilta (scene)
+                            }   
+                                
+                        }
+                    }
+                }
         }
 
         private void Window_SizeChanged(object sender, SizeChangedEventArgs e)    // lasketaan ruudunleveys sen muuttuessa
@@ -523,7 +551,7 @@ namespace pang
 
         #endregion
 
-
+        
     }
 }
 

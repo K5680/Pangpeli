@@ -69,7 +69,7 @@
             
             
             <StackPanel Width="800" Height="600">
-                    <TextBlock x:Name="txtInfo" Foreground="Yellow" Text="{Binding}" FontWeight="ExtraBlack" FontSize="36" Grid.ColumnSpan="7" Height="80" Width="Auto" Margin="100" Visibility="{Binding}" HorizontalAlignment="Center"/>
+                    <TextBlock x:Name="txtInfo" Foreground="Yellow" Text="{Binding}" FontWeight="ExtraBlack" FontSize="32" Grid.ColumnSpan="7" Height="100" Width="Auto" Margin="100" Visibility="{Binding}" HorizontalAlignment="Center"/>
                 </StackPanel>
             
         </Canvas>
