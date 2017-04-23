@@ -507,6 +507,7 @@ namespace pang
                     {
                         Level = -1; // Pelin aloitus uudestaan
                         heebo.ElämätCounter = 10;   // nollataan elämät
+                        heebo.Pisteet =  0;
 
                         for (int i = 0; i < pallojaLuotu; i++)    // käydään läpi kaikki pallo-instanssit
                         {

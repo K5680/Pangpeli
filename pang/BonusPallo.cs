@@ -9,9 +9,6 @@ namespace pang
 {
     class BonusPallo : Pallo
     {
-
-        public string Room { get; set; }
-
         // default constructor
         public BonusPallo()
         {
