@@ -6,8 +6,8 @@ namespace pang
 {
     class Highscore
     {
-        public string polku = System.IO.Path.GetDirectoryName(System.Windows.Forms.Application.ExecutablePath) + @"\players";
-        public string[] text;
+        private string polku = System.IO.Path.GetDirectoryName(System.Windows.Forms.Application.ExecutablePath) + @"\players";
+        private string[] text;
         // tallentaa nykyisen pelaajan pisteet Highscoreen
         public Highscore()
         {
@@ -112,10 +112,8 @@ namespace pang
 
             // kopioidaan tuloslista oikeassa järjestyksessä
             for (int i = 1; i < intArray.Length / 2; i++)
-            {
-                //System.Diagnostics.Debug.WriteLine("pisteet + " + intArray[i, 0] + " / "+intArray[i,1]+ "indeksnro");
-                aputaulu[i, 0] = intArray[i, 0].ToString();     // koostetaan tulostaulu int- ja string -tauluista -> tässä talteen pisteet
-                //System.Diagnostics.Debug.WriteLine("** pisteet: " + aputaulu[i, 0] + "indeksi i " + i);
+            {                
+                aputaulu[i, 0] = intArray[i, 0].ToString();     // koostetaan tulostaulu int- ja string -tauluista -> tässä talteen pisteet          
 
                 // Etsitään indeksiä vastaava nimi string -taulukosta
                 for (int k = intArray.Length / 2 - 1; k > -1; k--)

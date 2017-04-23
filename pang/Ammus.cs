@@ -9,15 +9,15 @@ namespace pang
     class Ammus
     {
 
-        public double AmmusX;
-        public double AmmusY;
-        public double AmmuksenNopeus;
-        public bool SaaAmpua;
-        public int AmmusNro;
+        public double AmmusX { get; set; }
+        public double AmmusY { get; set; }
+        public double AmmuksenNopeus { get; set; }
+        public bool SaaAmpua { get; set; }
+        public int AmmusNro { get; set; }
         //public double AmpumisTiheys;        // ukolla muuttuja?
 
-        public Ellipse bullet;
-        public Rect ammusPuskuri = new Rect(); // laatikko, joka toimii alueena, jolta törmäys tunnistetaan
+        public Ellipse Bullet = new Ellipse();
+        public Rect AmmusPuskuri = new Rect(); // laatikko, joka toimii alueena, jolta törmäys tunnistetaan
 
         public Ammus()
         {
@@ -27,15 +27,13 @@ namespace pang
         }
 
         public void LuoAmmus()
-        {
-            bullet = new Ellipse();
-            
-            bullet.Stroke = System.Windows.Media.Brushes.YellowGreen;
-            bullet.Fill = System.Windows.Media.Brushes.Yellow;
-            bullet.HorizontalAlignment = HorizontalAlignment.Left;
-            bullet.VerticalAlignment = VerticalAlignment.Center;
-            bullet.Width = 10;
-            bullet.Height = 10;
+        {                  
+            Bullet.Stroke = System.Windows.Media.Brushes.YellowGreen;
+            Bullet.Fill = System.Windows.Media.Brushes.Yellow;
+            Bullet.HorizontalAlignment = HorizontalAlignment.Left;
+            Bullet.VerticalAlignment = VerticalAlignment.Center;
+            Bullet.Width = 10;
+            Bullet.Height = 10;
         }
 
 
@@ -55,8 +53,8 @@ namespace pang
 
                 // ammuksen lähtöpiste y-suunnassa
                 AmmusY = 380;
-                Canvas.SetTop(bullet, -100);
-                MainWindow.instance.AddCanvasChild(bullet);  // lisätään bullet canvasiin (scene -nimeltään)
+                Canvas.SetTop(Bullet, -100);
+                MainWindow.instance.AddCanvasChild(Bullet);  // lisätään bullet canvasiin (scene -nimeltään)
             }
         }
 
@@ -64,14 +62,14 @@ namespace pang
         {
             if (AmmuksenNopeus > 0) AmmusY = AmmusY - AmmuksenNopeus;  // ruudun yli lennettyä nopeus nollataan
             // ammuksen liikutus
-            Canvas.SetLeft(bullet, AmmusX);
-            Canvas.SetTop(bullet, AmmusY);
+            Canvas.SetLeft(Bullet, AmmusX);
+            Canvas.SetTop(Bullet, AmmusY);
 
             // törmäyksen tunnistusta varten pidetään "rect"-ammuksen mukana
-            ammusPuskuri.X = Canvas.GetLeft(bullet) + 5;
-            ammusPuskuri.Y = Canvas.GetTop(bullet) + 5;
-            ammusPuskuri.Height = bullet.ActualHeight;
-            ammusPuskuri.Width = bullet.ActualWidth;
+            AmmusPuskuri.X = Canvas.GetLeft(Bullet) + 5;
+            AmmusPuskuri.Y = Canvas.GetTop(Bullet) + 5;
+            AmmusPuskuri.Height = Bullet.ActualHeight;
+            AmmusPuskuri.Width = Bullet.ActualWidth;
         }
        
     }

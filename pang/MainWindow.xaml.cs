@@ -27,8 +27,7 @@ namespace pang
         private static Timer timer;       
         private static bool timerActive = false;
 
-        public static double ruudunLeveys;
-        public string txt;
+        public static double RuudunLeveys;
         private static string latauskansio = "pack://application:,,,/Pang;component/Images/";  // määritellään kansio, josta kuvat ladataan
         public static string Latauskansio
         {
@@ -47,11 +46,10 @@ namespace pang
         Pallo[] palloLista = new Pallo[30]; // luodaan tarvittava määrä pallo-olioita
         private List<int> poistetutPallot = new List<int>(); // tehdään lista, jossa tieto siitä, mitkä palloinstanssit on jo poistettu
         private int loytyi;             // poistettujen ja luotujen pallojen vertailuun käytettävä muuttuja
-        public static int pallojaLuotu; // luotujen pallojen määrä talteen
-
+        private int pallojaLuotu; // luotujen pallojen määrä talteen
 
         private double xb, yb;                      // Bonuspallon sijainti,
-        public bool bonusPalloLuotu;                // bonuspallo olemassa vai ei,
+        private bool bonusPalloLuotu;                // bonuspallo olemassa vai ei,
         BonusPallo bonusPallo = new BonusPallo();   // luodaan valmiiksi bonuspallo.
 
         private List<Key> napitPainettuna = new List<Key>();    // Näppäin-eventit toimii hitaasti, pelaajan reagointi saadaan paremmaksi käyttämällä näppäimille listaa.
@@ -68,7 +66,7 @@ namespace pang
 
             txtPelaajanNimi.Text = Ukko.NykyinenPelaaja;    // alussa valittu pelaajanimi ruutuun
             
-            AddCanvasChild(heebo.Pelaaja);  // ja liitetään canvasiin
+            AddCanvasChild(heebo.PelaajanHahmo);  // ja liitetään canvasiin
 
             //määritellään ikkunalle tapahtumankäsittelijä näppäimistön kuuntelua varten
             this.KeyDown += new KeyEventHandler(OnButtonKeyDown);
@@ -165,7 +163,7 @@ namespace pang
 
                 // Ruudun yläreunan tekstit
                 txtPelaajanElämät.Text = heebo.ElämätCounter.ToString();  // päivitetään ruutuun elämät
-                txtPelaajanPisteet.Text = heebo.Pisteet.ToString(); // ja pisteet
+                txtPelaajanPisteet.Text = heebo.PisteLaskuri.ToString(); // ja PisteLaskuri
 
                 if (LevelText && Level > 0)
                 {
@@ -198,17 +196,17 @@ namespace pang
                     var y2 = Canvas.GetTop(palloLista[i].Ball);
                     Rect r2 = new Rect(x2, y2, (palloLista[i].Ball.Width), (palloLista[i].Ball.Height));
 
-                    // Käydään läpi kaikki ammukset, osuvatko kyseiseen palloon + yliruudun. Mutta vasta kun ammuksia on luotu.
-                    if (Ukko.ammukset.Count > 0)
+                    // Käydään läpi kaikki Ammukset, osuvatko kyseiseen palloon + yliruudun. Mutta vasta kun ammuksia on luotu.
+                    if (Ukko.Ammukset.Count > 0)
                     {
-                        foreach (Ammus ampuu in Ukko.ammukset)
+                        foreach (Ammus ampuu in Ukko.Ammukset)
                         {   // osuuko ammus-rect pallo-rect:iin       tai  ammuksen Y on yli ruudun
                             
-                                if (ampuu.ammusPuskuri.IntersectsWith(r2) || ampuu.AmmusY < 0)  // Laitetaan samaan silmukkaan ammuksen poisto jos se on yli ruudun
+                                if (ampuu.AmmusPuskuri.IntersectsWith(r2) || ampuu.AmmusY < 0)  // Laitetaan samaan silmukkaan ammuksen poisto jos se on yli ruudun
                                 {
                                     if (ampuu.AmmusY < 0)
                                     {
-                                        poistetaanAmmus = Ukko.ammukset.IndexOf(ampuu);           // otetaan muuttujaan talteen, minkä indexin ammus poistetaan kun poissa ruudusta
+                                        poistetaanAmmus = Ukko.Ammukset.IndexOf(ampuu);           // otetaan muuttujaan talteen, minkä indexin ammus poistetaan kun poissa ruudusta
                                     }
                                     else
                                     {   // Ammus osuu palloon                                                            
@@ -235,20 +233,20 @@ namespace pang
                                             }   
 
                                             Soita("pallo_poksahtaa4");
-                                            heebo.Pisteet += 500;
+                                            heebo.PisteLaskuri += 500;
                                             palloLista[i].PalloY = -200;
                                             palloLista[i].PalloSaaLiikkua = false;  // pallon liike seis (jos sattuu jäämään elämään)
                                     }
                                         else    // jos ei vielä häviä, niin jaetaan kahteen
                                         {
                                             JaaPallo(i, palloLista[i].Ball.Width);
-                                            heebo.Pisteet += 100;
+                                            heebo.PisteLaskuri += 100;
                                         }
                                     }
                                     ampuu.AmmuksenNopeus = 0;     // Pysäytys
                                     ampuu.AmmusY = -100;          // ja siirto, varulta
-                                    scene.Children.Remove(ampuu.bullet);                      // poistetaan bullet canvasilta (scene)
-                                    poistetaanAmmus = Ukko.ammukset.IndexOf(ampuu);           // otetaan muuttujaan talteen, minkä indexin ammus poistetaan
+                                    scene.Children.Remove(ampuu.Bullet);                      // poistetaan bullet canvasilta (scene)
+                                    poistetaanAmmus = Ukko.Ammukset.IndexOf(ampuu);           // otetaan muuttujaan talteen, minkä indexin ammus poistetaan
                                 }
                             
                         }
@@ -363,7 +361,7 @@ namespace pang
                             heebo.AmmusTiheys = 100;                            
                             break;
                         case 5:
-                            heebo.ElämätCounter++;             // extra life   + tässä kohtaa tupla-ammukset ukko-luokan kautta
+                            heebo.ElämätCounter++;             // extra life   + tässä kohtaa tupla-Ammukset ukko-luokan kautta
                             break;
                         default:
                             heebo.AmmuksiaMax += 5;        // ammusten maksimimäärää ruudulla lisätään
@@ -427,7 +425,7 @@ namespace pang
 
         public void PoistaAmmusJokaIlmassa(int n)
         {            
-            Ukko.ammukset.RemoveAt(n);    // poistetaan listasta se, joka osui palloon tai on yli ruudun
+            Ukko.Ammukset.RemoveAt(n);    // poistetaan listasta se, joka osui palloon tai on yli ruudun
             poistetaanAmmus = -1;
         }
 
@@ -526,7 +524,7 @@ namespace pang
                     {
                         Level = -1; // Pelin aloitus uudestaan
                         heebo.ElämätCounter = heebo.ElämiäAlussa+1;   // nollataan elämät
-                        heebo.Pisteet =  0;
+                        heebo.PisteLaskuri =  0;
 
                         for (int i = 0; i < pallojaLuotu; i++)    // käydään läpi kaikki pallo-instanssit
                         {
@@ -552,14 +550,14 @@ namespace pang
 
         private void Window_SizeChanged(object sender, SizeChangedEventArgs e)    // lasketaan ruudunleveys sen muuttuessa
         {
-            ruudunLeveys = scene.ActualWidth;
+            RuudunLeveys = scene.ActualWidth;
         }
 
         
         // kun ikkuna on avattu, otetaan muuttujaan ruudun leveyden tieto, ja alustetaan muuttujia
         void MainWindow_Loaded(object sender, RoutedEventArgs e)    
         {
-            ruudunLeveys = scene.ActualWidth;
+            RuudunLeveys = scene.ActualWidth;
             Level = 0;
         }
 

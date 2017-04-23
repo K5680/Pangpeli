@@ -13,10 +13,10 @@ namespace pang
      class Ukko
     {      
        
-        public static string NykyinenPelaaja;   // pitää tiedon alkuvalikosta valitusta pelaajasta
+        public static string NykyinenPelaaja { get; set; }   // pitää tiedon alkuvalikosta valitusta pelaajasta
 
-        public Rectangle Pelaaja { get; set; } // laatikko, jonka päälle pelaajahahmo rakentuu
-        
+        public Rectangle PelaajanHahmo { get; set; } // laatikko, jonka päälle pelaajahahmo rakentuu
+
         public Rect UkkoPuskuri = new Rect(); // laatikko, joka toimii alueena, jolta törmäys tunnistetaan
 
         private double sijaintix;
@@ -26,9 +26,9 @@ namespace pang
        
         public int AmmusTiheys { get; set; }                // kuinka nopeasti voi ampua uuden
 
-        public int Pisteet { get; set; }
+        public int PisteLaskuri { get; set; }
 
-        public static List<Ammus> ammukset = new List<Ammus>();    // ammus-lista   
+        public static List<Ammus> Ammukset = new List<Ammus>();    // ammus-lista   
         private int ammusIlmassaNro = 0;                           // pitää yllä tietoa ammusten numeroista
         private double ammusKohta = 57;
         
@@ -55,7 +55,7 @@ namespace pang
             }
             set
             {
-                if (value > -10 && value < MainWindow.ruudunLeveys-30) sijaintix = value; // ei anneta ukon x-arvon mennä yli reunojen
+                if (value > -10 && value < MainWindow.RuudunLeveys-30) sijaintix = value; // ei anneta ukon x-arvon mennä yli reunojen
             }
         }
         public double Askel{ get; set; }
@@ -77,13 +77,13 @@ namespace pang
             AmmusTiheys = 500;
             AmmuksiaMax = 5;
             sijaintix = 350;
-            Pisteet = 0;
+            PisteLaskuri = 0;
             Osuuko = false;
             Askel = 10;
             UkonNopeus = 50; // millisekunnit
             ElämiäAlussa = 10;
             ElämätCounter = ElämiäAlussa;
-            Pelaaja = new Rectangle();    // pelaajan hahmon pohjaksi luodaan rectangle
+            PelaajanHahmo = new Rectangle();    // pelaajan hahmon pohjaksi luodaan rectangle
             luoUkko();
         }
 
@@ -96,15 +96,15 @@ namespace pang
                 SaakoLiikkua = false;         // tällä rajataan timerin kautta, että liikutaan tietyllä nopeudella
             }
 
-            Canvas.SetTop(Pelaaja, SijaintiY);
-            Canvas.SetLeft(Pelaaja, SijaintiX);
+            Canvas.SetTop(PelaajanHahmo, SijaintiY);
+            Canvas.SetLeft(PelaajanHahmo, SijaintiX);
 
             // törmäyksen tunnistusta varten tehty rect liikkuu pelaajahahmon mukana
-            UkkoPuskuri.X = Canvas.GetLeft(Pelaaja) + 28;
-            UkkoPuskuri.Y = Canvas.GetTop(Pelaaja) + 35;
-            UkkoPuskuri.Height = Pelaaja.ActualHeight;
+            UkkoPuskuri.X = Canvas.GetLeft(PelaajanHahmo) + 28;
+            UkkoPuskuri.Y = Canvas.GetTop(PelaajanHahmo) + 35;
+            UkkoPuskuri.Height = PelaajanHahmo.ActualHeight;
 
-            var apu = Pelaaja.ActualWidth;  // pelaajaa luodessa actualWidth on 0, joka ei käy. Siksi tämä vertailu... 
+            var apu = PelaajanHahmo.ActualWidth;  // pelaajaa luodessa actualWidth on 0, joka ei käy. Siksi tämä vertailu... 
             if (apu > 0)
             {
                 UkkoPuskuri.Width = apu-55;
@@ -121,11 +121,11 @@ namespace pang
             // luodaan ukon hahmo
             ImageBrush kuva = new ImageBrush();     // ladataan kuva, joka liimataan liikuteltavan laatikon päälle
             kuva.ImageSource = new BitmapImage(new Uri(pang.MainWindow.Latauskansio + "ukko.png", UriKind.Absolute)); // 
-            Pelaaja.HorizontalAlignment = HorizontalAlignment.Left;
-            Pelaaja.VerticalAlignment = VerticalAlignment.Center;
-            Pelaaja.Width = 80;  // määritellään laatikon (Pelaajahahmon) koko
-            Pelaaja.Height = 120;
-            Pelaaja.Fill = kuva; // maalataan ukko-tekstuuri laatikon päälle
+            PelaajanHahmo.HorizontalAlignment = HorizontalAlignment.Left;
+            PelaajanHahmo.VerticalAlignment = VerticalAlignment.Center;
+            PelaajanHahmo.Width = 80;  // määritellään laatikon (PelaajanHahmohahmon) koko
+            PelaajanHahmo.Height = 120;
+            PelaajanHahmo.Fill = kuva; // maalataan ukko-tekstuuri laatikon päälle
             LiikutaUkkoa(0);    // piirtää ukon (laatikon) ruutuun kertaalleen, muuten se on pelin alkaessa nurkassa
             SaakoLiikkua = true;
             Askel = 15;
@@ -176,7 +176,7 @@ namespace pang
                     else if (ElämätCounter > 0)    // Jos peli loppui asetetaan lopuksi ElämätCounter nollaan ja tallennetaan highscore
                     {
                         ElämätCounter -= 1;                        // vähennetään elämä     
-                        enkka.TallennaPisteet(Pisteet);     // tallennetaan highscore
+                        enkka.TallennaPisteet(PisteLaskuri);     // tallennetaan highscore
                     }
                 }
             }
@@ -188,7 +188,7 @@ namespace pang
             // ammukset...
             if (SaakoLiikkua && !Osuuko && SaakoAmpua)    // jos on liikkumislupa, ampumislupa, eikä ole pallo osunut ukkoon, niin voidaan ampua
             {
-                if (ammukset.Count < AmmuksiaMax+1) // ammutaan ammuksia, maksimissaan 10 ilmassa    
+                if (Ammukset.Count < AmmuksiaMax+1) // ammutaan ammuksia, maksimissaan 10 ilmassa    
                 {
                     if (BonusTaso > 4)  // tietyllä BonusTasolla ammuksia alkaa lentää leveämmältä alalta
                     {
@@ -202,11 +202,10 @@ namespace pang
                         }
                     }
 
-                    ammukset.Add(new Ammus{ AmmusY = 380, AmmusX = sijaintix + ammusKohta, AmmuksenNopeus = 10, SaaAmpua = true, AmmusNro = ammusIlmassaNro});
+                    Ammukset.Add(new Ammus{ AmmusY = 380, AmmusX = sijaintix + ammusKohta, AmmuksenNopeus = 10, SaaAmpua = true, AmmusNro = ammusIlmassaNro});
                     ammusIlmassaNro += 1;
                     if (ammusIlmassaNro == 10) ammusIlmassaNro = 0; // ammus-instanssin numeroa kierrätetään 1-10
 
-                    //System.Diagnostics.Debug.WriteLine("  AMMUTAAN, COUNT " + ammukset.Count); // debuggia
                     MainWindow.instance.Soita("ampu");    // soita ampu-soundi
 
                     SaakoAmpua = false; // saa ampua vasta kun timer antaa luvan

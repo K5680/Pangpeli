@@ -143,7 +143,7 @@ namespace pang
                 if (PalloMenossa == PallonSuunta.Oikea)
                 {
                     PalloX = PalloX + 5;    // pallon liikutus oikealla
-                    if (PalloX > MainWindow.ruudunLeveys - Ball.Width) PalloMenossa = PallonSuunta.Vasen; // otetaan pallon leveys huomioon seinään törmätessä
+                    if (PalloX > MainWindow.RuudunLeveys - Ball.Width) PalloMenossa = PallonSuunta.Vasen; // otetaan pallon leveys huomioon seinään törmätessä
                 }
                 else
                 {

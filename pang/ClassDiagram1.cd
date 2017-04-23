@@ -1,14 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
   <Class Name="pang.Ukko">
-    <Position X="2.75" Y="0.5" Width="1.5" />
+    <Position X="3" Y="0.5" Width="2" />
     <TypeIdentifier>
-      <HashCode>gAAADIgAAQAAAARAQAQggQAAAIAIAOiAMQCAAAAAAEA=</HashCode>
+      <HashCode>gAAADEgAAQCAAAQAAAQggQAAAIAMAOiAOQCAAAAAAEA=</HashCode>
       <FileName>Ukko.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="pang.Pallo">
-    <Position X="0.5" Y="0.5" Width="1.5" />
+    <Position X="0.5" Y="0.5" Width="1.75" />
     <NestedTypes>
       <Enum Name="pang.Pallo.PallonSuunta" Collapsed="true">
         <TypeIdentifier>
@@ -22,29 +22,19 @@
     </TypeIdentifier>
   </Class>
   <Class Name="pang.Ammus">
-    <Position X="4.5" Y="0.5" Width="1.5" />
+    <Position X="5.75" Y="0.5" Width="1.75" />
     <TypeIdentifier>
-      <HashCode>gABIAAARAAAAAAAACAQAAAAABAAAAAAAABAAAAAAAAA=</HashCode>
+      <HashCode>gABAAAARAAAAAAAACAQAAAAABAAAAAAAAAAAAAAQCAA=</HashCode>
       <FileName>Ammus.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="pang.MainWindow">
-    <Position X="6.25" Y="0.5" Width="1.5" />
-    <Compartments>
-      <Compartment Name="Fields" Collapsed="true" />
-    </Compartments>
+    <Position X="8.25" Y="0.5" Width="4" />
     <TypeIdentifier>
-      <HashCode>1B4gACAAAAAAAAiAIYRAAAgQAAJAAwgBAQB4BUAAAKk=</HashCode>
+      <HashCode>0B4gACAAAAAAAAiAIYRAQAhSAAJAAQgBAQB4BUAAAKk=</HashCode>
       <FileName>MainWindow.xaml.cs</FileName>
     </TypeIdentifier>
-    <Lollipop Position="0.2" />
-  </Class>
-  <Class Name="pang.Highscore">
-    <Position X="8" Y="0.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>ACAAAAAAAAIAAAAAAgAAAAAAAAAAAAAIAAAAAAAABAA=</HashCode>
-      <FileName>Highscore.cs</FileName>
-    </TypeIdentifier>
+    <Lollipop Position="0.1" />
   </Class>
   <Class Name="pang.BonusPallo">
     <Position X="0.5" Y="6" Width="1.5" />
