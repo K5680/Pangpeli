@@ -19,7 +19,7 @@ namespace pang
     /// 
     public partial class MainWindow : Window
     { 
-        public static int Level { get; set; }            // levelin numero
+        public static int Level { get; set; }   // levelin numero
         public static bool LevelText = true;    // piirretään levelin numero ruutuun alussa
 
         private static DateTime startDate;     // ajastus level-teksteille / ukon "immuniteetti" ym.
@@ -45,14 +45,16 @@ namespace pang
 
         private int pallojaRuudulla;    // Muuttuja sisältää tiedon, montako palloa ruudulla on.
         Pallo[] palloLista = new Pallo[30]; // luodaan tarvittava määrä pallo-olioita
-        public List<int> poistetutPallot = new List<int>(); // tehdään lista, jossa tieto siitä, mitkä palloinstanssit on jo poistettu
+        private List<int> poistetutPallot = new List<int>(); // tehdään lista, jossa tieto siitä, mitkä palloinstanssit on jo poistettu
         private int loytyi;             // poistettujen ja luotujen pallojen vertailuun käytettävä muuttuja
         public static int pallojaLuotu; // luotujen pallojen määrä talteen
-        
+
+
         private double xb, yb;                      // Bonuspallon sijainti,
         public bool bonusPalloLuotu;                // bonuspallo olemassa vai ei,
         BonusPallo bonusPallo = new BonusPallo();   // luodaan valmiiksi bonuspallo.
 
+        private List<Key> napitPainettuna = new List<Key>();    // Näppäin-eventit toimii hitaasti, pelaajan reagointi saadaan paremmaksi käyttämällä näppäimille listaa.
 
 
         public MainWindow()
@@ -157,7 +159,10 @@ namespace pang
         
         // Törmäyksen tunnistus ym. tapahtumat Timerilla
         private void timertörmäys_Tick(object sender, EventArgs e)
-        {                       
+        {
+                // pelaajan liikkeet taulukon kautta
+                LiikutaPelaajaa();
+
                 // Ruudun yläreunan tekstit
                 txtPelaajanElämät.Text = heebo.ElämätCounter.ToString();  // päivitetään ruutuun elämät
                 txtPelaajanPisteet.Text = heebo.Pisteet.ToString(); // ja pisteet
@@ -362,6 +367,7 @@ namespace pang
                             break;
                         default:
                             heebo.AmmuksiaMax += 5;        // ammusten maksimimäärää ruudulla lisätään
+                            heebo.AmmusTiheys = 70;
                             break;
                     }
                 }
@@ -477,36 +483,49 @@ namespace pang
         }
 
 
+        // Näppäinkomennot reagoi liian hitaasti, joten taulukkoon tallentamalla ja lukemalla saadaa pelaajan reagointi huomattavasti paremmaksi
+        void LiikutaPelaajaa()
+        {
+            if (napitPainettuna.Contains(Key.Space)) heebo.Ammu();
+
+            if (napitPainettuna.Contains(Key.Right)) heebo.LiikutaUkkoa(heebo.Askel);
+
+            if (napitPainettuna.Contains(Key.Left)) heebo.LiikutaUkkoa(-heebo.Askel);
+
+
+
+            if (!Keyboard.IsKeyDown(Key.Right))      // poistetaan napin painallus listasta, jos nappi ei ole pohjassa
+            {
+                if (napitPainettuna.Contains(Key.Right)) napitPainettuna.Remove(Key.Right);
+            }
+            if (!Keyboard.IsKeyDown(Key.Left))      // poistetaan napin painallus listasta, jos nappi ei ole pohjassa
+            {
+                if (napitPainettuna.Contains(Key.Left)) napitPainettuna.Remove(Key.Left);
+            }
+            if (!Keyboard.IsKeyDown(Key.Space))      // poistetaan napin painallus listasta, jos nappi ei ole pohjassa
+            {
+                if (napitPainettuna.Contains(Key.Space)) napitPainettuna.Remove(Key.Space);
+            }
+        }
+
+
         #region EVENTS
-        // näppäinkomennot, ukon liikkuminen + ampuminen + esc
+        // Näppäinkomennot, ukon liikkuminen + ampuminen + esc + enterillä uusi peli
         private void OnButtonKeyDown(object sender, KeyEventArgs e)
         {
-            if (Keyboard.IsKeyDown(Key.Space))
-            {
-                heebo.Ammu();
-                if (Keyboard.IsKeyDown(Key.Right))
-                    heebo.LiikutaUkkoa(heebo.Askel);
-                else if (Keyboard.IsKeyDown(Key.Left))
-                    heebo.LiikutaUkkoa(-heebo.Askel);
-            } else if (Keyboard.IsKeyDown(Key.Right))
-            {
-                heebo.LiikutaUkkoa(heebo.Askel);
-            } else if (Keyboard.IsKeyDown(Key.Left))
-            {
-                heebo.LiikutaUkkoa(-heebo.Askel);
-            }
+            if (Keyboard.IsKeyDown(Key.Space)) if (!napitPainettuna.Contains(Key.Space)) napitPainettuna.Add(Key.Space);   // ampuminen
+            if (Keyboard.IsKeyDown(Key.Right)) if (!napitPainettuna.Contains(Key.Right)) napitPainettuna.Add(Key.Right);   // liike oikealle
+            if (Keyboard.IsKeyDown(Key.Left)) if (!napitPainettuna.Contains(Key.Left)) napitPainettuna.Add(Key.Left);      // liike vasemmalle
 
-            if (Keyboard.IsKeyDown(Key.Escape)) // esc lopettaa
-            {
-                this.Close();
-            }
+            if (Keyboard.IsKeyDown(Key.Escape)) this.Close();   // esc lopettaa
 
-            if (Keyboard.IsKeyDown(Key.Enter)) // enter nappi aloittaa uuden pelin
+            if (Keyboard.IsKeyDown(Key.Enter))                   // enter nappi aloittaa uuden pelin
+            
                 {
                     if (heebo.ElämätCounter == 0)   // Uuden pelin nollaukset
                     {
                         Level = -1; // Pelin aloitus uudestaan
-                        heebo.ElämätCounter = 10;   // nollataan elämät
+                        heebo.ElämätCounter = heebo.ElämiäAlussa+1;   // nollataan elämät
                         heebo.Pisteet =  0;
 
                         for (int i = 0; i < pallojaLuotu; i++)    // käydään läpi kaikki pallo-instanssit
@@ -530,6 +549,7 @@ namespace pang
                 }
         }
 
+
         private void Window_SizeChanged(object sender, SizeChangedEventArgs e)    // lasketaan ruudunleveys sen muuttuessa
         {
             ruudunLeveys = scene.ActualWidth;
@@ -542,6 +562,7 @@ namespace pang
             ruudunLeveys = scene.ActualWidth;
             Level = 0;
         }
+
 
         protected override void OnClosed(EventArgs e)
         {

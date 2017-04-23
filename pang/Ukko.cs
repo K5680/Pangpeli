@@ -62,6 +62,7 @@ namespace pang
            
         public double UkonNopeus { get; set; }
         public int ElämätCounter { get; set; }
+        public int ElämiäAlussa { get; set; }
         private DispatcherTimer timer_ukko; // ukon ajastin
         private DispatcherTimer timer_tiheys;       // ammus-ajastin
         public bool SaakoLiikkua { get; set; }
@@ -71,16 +72,17 @@ namespace pang
         Highscore enkka = new Highscore();  // highscore-lista
 
         public Ukko()
-        {            
+        {           
             BonusTaso = 0;
-            AmmusTiheys = 700;
-            AmmuksiaMax = 2;
+            AmmusTiheys = 500;
+            AmmuksiaMax = 5;
             sijaintix = 350;
             Pisteet = 0;
             Osuuko = false;
             Askel = 10;
             UkonNopeus = 50; // millisekunnit
-            ElämätCounter = 10;
+            ElämiäAlussa = 10;
+            ElämätCounter = ElämiäAlussa;
             Pelaaja = new Rectangle();    // pelaajan hahmon pohjaksi luodaan rectangle
             luoUkko();
         }
