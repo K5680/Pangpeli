@@ -38,7 +38,7 @@ namespace pang
 
         private int poistetaanAmmus = -1;   // Muuttuja sisältää tiedon, että pitääkö ruudusta ja listasta poistaa "Ammus". -1 = ei poisteta mitään, muuten index-arvo.
 
-        DispatcherTimer timer_Törmäys = new DispatcherTimer(DispatcherPriority.Send);   // törmäyksen tunnistuksen ajastus
+        DispatcherTimer timer_TapahtumienPäivittäjä = new DispatcherTimer(DispatcherPriority.Send);   // törmäyksen tunnistuksen ajastus
         private int ukonAloitusKello;   // Uudelleenaloituksessa ukkoon ei osu pallot pariin sekuntiin
         Ukko heebo = new Ukko();        // Luodaan Ukko-luokan instanssi, eli pelaaja       
 
@@ -66,14 +66,11 @@ namespace pang
 
             txtPelaajanNimi.Text = Ukko.NykyinenPelaaja;    // alussa valittu pelaajanimi ruutuun
             
-            AddCanvasChild(heebo.PelaajanHahmo);  // ja liitetään canvasiin
+            AddCanvasChild(heebo.PelaajanHahmo);  // Liitetään pelaajan hahmo canvasille
 
-            //määritellään ikkunalle tapahtumankäsittelijä näppäimistön kuuntelua varten
-            this.KeyDown += new KeyEventHandler(OnButtonKeyDown);
+            this.KeyDown += new KeyEventHandler(OnButtonKeyDown);      //määritellään ikkunalle tapahtumankäsittelijä näppäimistön kuuntelua varten
 
-            System.Diagnostics.Debug.WriteLine(System.IO.Path.GetDirectoryName(System.Windows.Forms.Application.ExecutablePath)); // debuggia
-
-            AlustaKello();           
+            AlustaKello();  // alustetaan kello ym. ajastimet
         }
 
 
@@ -94,9 +91,9 @@ namespace pang
             }
 
             // Törmäyksen tunnistuksen ym pelitoimintojen ajastus            
-            timer_Törmäys.Interval = TimeSpan.FromMilliseconds(50);       // Set the Interval
-            timer_Törmäys.Tick += new EventHandler(timertörmäys_Tick);      // Set the callback to invoke every tick time
-            timer_Törmäys.Start();
+            timer_TapahtumienPäivittäjä.Interval = TimeSpan.FromMilliseconds(50);       // Set the Interval
+            timer_TapahtumienPäivittäjä.Tick += new EventHandler(timerTapahtumienPäivittäjä_Tick);      // Set the callback to invoke every tick time
+            timer_TapahtumienPäivittäjä.Start();
         }
 
 
@@ -155,11 +152,11 @@ namespace pang
         }
 
         
-        // Törmäyksen tunnistus ym. tapahtumat Timerilla
-        private void timertörmäys_Tick(object sender, EventArgs e)
-        {
-                // pelaajan liikkeet taulukon kautta
-                LiikutaPelaajaa();
+
+        // Törmäyksen tunnistus ym. tapahtumat, joita päivitetään koko ajan
+        private void timerTapahtumienPäivittäjä_Tick(object sender, EventArgs e)
+        {                
+                LiikutaPelaajaa();  // pelaajan liikkeet taulukon kautta
 
                 // Ruudun yläreunan tekstit
                 txtPelaajanElämät.Text = heebo.ElämätCounter.ToString();  // päivitetään ruutuun elämät
@@ -184,7 +181,7 @@ namespace pang
                     Level = 0;                    
                 }
 
-                Bonukset();
+                Bonukset(); // bonuspallon ilmestyminen ruutuun
 
                 pallojaRuudulla = 0;    // lasketaan montako palloa on canvasilla tarkkailtavalla hetkellä
 
@@ -232,10 +229,10 @@ namespace pang
                                                 poistetutPallot.Add(i);    // lisätään poistettujen listaan pallon numero, ellei kyseinen pallo jo ole
                                             }   
 
-                                            Soita("pallo_poksahtaa4");
-                                            heebo.PisteLaskuri += 500;
-                                            palloLista[i].PalloY = -200;
-                                            palloLista[i].PalloSaaLiikkua = false;  // pallon liike seis (jos sattuu jäämään elämään)
+                                            Soita("pallo_poksahtaa4");              // soita kimein poksahdus
+                                            heebo.PisteLaskuri += 500;              // viimeisen pallon puhkaisusta 500 pistettä
+                                            palloLista[i].PalloY = -200;            // viedään pallo ulos canvasilta varmuuden vuoksi
+                                            palloLista[i].PalloSaaLiikkua = false;  // pallon liike seis
                                     }
                                         else    // jos ei vielä häviä, niin jaetaan kahteen
                                         {
@@ -257,7 +254,7 @@ namespace pang
                     }
 
                     // Osuuko ukko palloon
-                    if (secondDuration > ukonAloitusKello + 2) // Ukko on kuolematon pari sekuntia edellisestä "kuolemasta"
+                    if (secondDuration > ukonAloitusKello + 2) // Ukko on kuolematon pari sekuntia edellisestä tippumisesta
                     {
                         if (heebo.UkkoPuskuri.IntersectsWith(r2))
                         {
@@ -289,13 +286,13 @@ namespace pang
             // jos kaikki pallot ammuttu -> next level   /   Tai uuden pelin aloitus
             if (poistetutPallot.Count == 16 || Level == -1)
                 {
-                foreach (Ammus ampuu in Ukko.Ammukset)
-                {
-                    scene.Children.Remove(ampuu.Bullet);    // poistetaan bulletit canvasilta, jotta ei ammuta heti seuraavankin levelin palloja
-                    ampuu.AmmusY = 0;                       // siirretään myös sijaintinsa puolesta ulos
-                }
+                    foreach (Ammus ampuu in Ukko.Ammukset)
+                    {
+                        scene.Children.Remove(ampuu.Bullet);    // poistetaan lentävät bulletit canvasilta, jotta ei ammuta heti seuraavankin levelin palloja
+                        ampuu.AmmusY = 0;                       // siirretään myös sijaintinsa puolesta ulos
+                    }
 
-                pallojaLuotu = 0;
+                    pallojaLuotu = 0;
                     AlustaKello();
 
                     if (Level == -1) Level = 0; // Level -1 tarkoittaa, että aloitetaan uusi peli, sitten nollattava
@@ -340,15 +337,15 @@ namespace pang
 
                 Rect rb = new Rect(xb + 7, yb + 7, (bonusPallo.Ball.Width - 15), (bonusPallo.Ball.Height - 15));  // Rect bonuksen ympärille, jotta voidaan tunnistaa törmäys ukkoon
                 
-                if (heebo.UkkoPuskuri.IntersectsWith(rb))
+                if (heebo.UkkoPuskuri.IntersectsWith(rb))   // jos ukko osuu bonuspalloon
                 {
-                    scene.Children.Remove(bonusPallo.Ball);
-                    bonusPallo.PalloY = 600; // varulta pois ruudulta myös sijaintinsa puolesta
-                    bonusPalloLuotu = false;
+                    scene.Children.Remove(bonusPallo.Ball); // bonuspallo pois canvasilta
+                    bonusPallo.PalloY = 600;                // varulta pois ruudulta myös sijaintinsa puolesta
+                    bonusPalloLuotu = false;                // pallo ei ruudulla
                     Soita("bonus");
-                    heebo.BonusTaso++;
+                    heebo.BonusTaso++;                      // ukon bonustaso nousee
                     
-                    switch (heebo.BonusTaso)
+                    switch (heebo.BonusTaso)                // riippuen bonustasosta, asetetaan ampumisen ominaisuudet
                     {
                         case 0:
                             break;
