@@ -245,6 +245,7 @@ namespace pang
                                     }
                                     ampuu.AmmuksenNopeus = 0;     // Pysäytys
                                     ampuu.AmmusY = -100;          // ja siirto, varulta
+
                                     scene.Children.Remove(ampuu.Bullet);                      // poistetaan bullet canvasilta (scene)
                                     poistetaanAmmus = Ukko.Ammukset.IndexOf(ampuu);           // otetaan muuttujaan talteen, minkä indexin ammus poistetaan
                                 }
@@ -288,7 +289,13 @@ namespace pang
             // jos kaikki pallot ammuttu -> next level   /   Tai uuden pelin aloitus
             if (poistetutPallot.Count == 16 || Level == -1)
                 {
-                    pallojaLuotu = 0;
+                foreach (Ammus ampuu in Ukko.Ammukset)
+                {
+                    scene.Children.Remove(ampuu.Bullet);    // poistetaan bulletit canvasilta, jotta ei ammuta heti seuraavankin levelin palloja
+                    ampuu.AmmusY = 0;                       // siirretään myös sijaintinsa puolesta ulos
+                }
+
+                pallojaLuotu = 0;
                     AlustaKello();
 
                     if (Level == -1) Level = 0; // Level -1 tarkoittaa, että aloitetaan uusi peli, sitten nollattava
