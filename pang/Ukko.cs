@@ -79,8 +79,8 @@ namespace pang
             sijaintix = 350;
             PisteLaskuri = 0;
             Osuuko = false;
-            Askel = 10;
-            UkonNopeus = 50; // millisekunnit
+            Askel = 5;
+            UkonNopeus = 17; // millisekunnit
             ElämiäAlussa = 10;
             ElämätCounter = ElämiäAlussa;
             PelaajanHahmo = new Rectangle();    // pelaajan hahmon pohjaksi luodaan rectangle
@@ -127,8 +127,7 @@ namespace pang
             PelaajanHahmo.Height = 120;
             PelaajanHahmo.Fill = kuva; // maalataan ukko-tekstuuri laatikon päälle
             LiikutaUkkoa(0);    // piirtää ukon (laatikon) ruutuun kertaalleen, muuten se on pelin alkaessa nurkassa
-            SaakoLiikkua = true;
-            Askel = 15;
+            SaakoLiikkua = true;            
 
             // AJASTIMET PelaajaLLE
             // Liikkumisen ajastin
@@ -202,7 +201,7 @@ namespace pang
                         }
                     }
 
-                    Ammukset.Add(new Ammus{ AmmusY = 380, AmmusX = sijaintix + ammusKohta, AmmuksenNopeus = 10, SaaAmpua = true, AmmusNro = ammusIlmassaNro});
+                    Ammukset.Add(new Ammus{ AmmusY = 380, AmmusX = sijaintix + ammusKohta, AmmuksenNopeus = 5, SaaAmpua = true, AmmusNro = ammusIlmassaNro});
                     ammusIlmassaNro += 1;
                     if (ammusIlmassaNro == 10) ammusIlmassaNro = 0; // ammus-instanssin numeroa kierrätetään 1-10
 

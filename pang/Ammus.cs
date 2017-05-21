@@ -47,7 +47,7 @@ namespace pang
 
                 // ammuksen ajastin
                 DispatcherTimer timer_ammus = new DispatcherTimer(DispatcherPriority.Send);
-                timer_ammus.Interval = TimeSpan.FromMilliseconds(50);       // Set the Interval
+                timer_ammus.Interval = TimeSpan.FromMilliseconds(17);       // Set the Interval             LIIKE noin 60fps!
                 timer_ammus.Tick += new EventHandler(timerammus_Tick);      // Set the callback to invoke every tick time
                 timer_ammus.Start();
 

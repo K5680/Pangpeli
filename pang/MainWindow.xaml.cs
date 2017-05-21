@@ -13,7 +13,7 @@ namespace pang
     /// <summary>                                                                               
     /// #                                                 
     /// #   Pangpeli the game. 2017 (C) Vesa Vertainen.
-    /// #   19.4.2017
+    /// #   28.4.2017 / fps-fixattu versio
     /// #
     /// </summary>                                                   
     /// 
@@ -70,7 +70,7 @@ namespace pang
 
             this.KeyDown += new KeyEventHandler(OnButtonKeyDown);      //määritellään ikkunalle tapahtumankäsittelijä näppäimistön kuuntelua varten
 
-            AlustaKello();  // alustetaan kello ym. ajastimet
+            AlustaKello();  // alustetaan kello ym. ajastimet            
         }
 
 
@@ -91,7 +91,7 @@ namespace pang
             }
 
             // Törmäyksen tunnistuksen ym pelitoimintojen ajastus            
-            timer_TapahtumienPäivittäjä.Interval = TimeSpan.FromMilliseconds(50);       // Set the Interval
+            timer_TapahtumienPäivittäjä.Interval = TimeSpan.FromMilliseconds(17);       // PÄIVITYSNOPEUS noin 60fps !
             timer_TapahtumienPäivittäjä.Tick += new EventHandler(timerTapahtumienPäivittäjä_Tick);      // Set the callback to invoke every tick time
             timer_TapahtumienPäivittäjä.Start();
         }
@@ -194,7 +194,7 @@ namespace pang
                     Rect r2 = new Rect(x2, y2, (palloLista[i].Ball.Width), (palloLista[i].Ball.Height));
 
                     // Käydään läpi kaikki Ammukset, osuvatko kyseiseen palloon + yliruudun. Mutta vasta kun ammuksia on luotu.
-                    if (Ukko.Ammukset.Count > 0)
+                    if (Ukko.Ammukset.Count > 0 && secondDuration > 1)  // eikä tarkastella heti alkuun
                     {
                         foreach (Ammus ampuu in Ukko.Ammukset)
                         {   // osuuko ammus-rect pallo-rect:iin       tai  ammuksen Y on yli ruudun

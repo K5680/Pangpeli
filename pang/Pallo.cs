@@ -61,8 +61,14 @@ namespace pang
                 pallonKorkeus = value;
             }
         }
-
+            
+        
         private double kiihtyvyys = 0.1f;
+        // private double alastulonopeus = 0.1f;
+        public long liikeDispatcher { get; protected set; }
+        DispatcherTimer timer_pallo;
+        DispatcherTimer timer_palloX;
+
 
         public bool PalloSaaLiikkua { get; set; }
 
@@ -70,6 +76,7 @@ namespace pang
 
         public Pallo()
         {
+            liikeDispatcher = 1000/60;    // liikkeen päivitysnopeus
             Angle = 40;
             LuoPallo();
 
@@ -100,11 +107,17 @@ namespace pang
             tekstuuri.ImageSource = new BitmapImage(new Uri(MainWindow.Latauskansio + "pallo.png", UriKind.Absolute));
             Ball.Fill = tekstuuri;
 
-            // pallon ajastin
-            DispatcherTimer timer_pallo = new DispatcherTimer(DispatcherPriority.Send);
-            timer_pallo.Interval = TimeSpan.FromMilliseconds(50);       // Set the Interval
+            // pallon ajastin, Y-SUUNTA
+            timer_pallo = new DispatcherTimer(DispatcherPriority.Send);
+            timer_pallo.Interval = TimeSpan.FromMilliseconds(liikeDispatcher);       // Set the Interval
             timer_pallo.Tick += new EventHandler(timerpallo_Tick);      // Set the callback to invoke every tick time
             timer_pallo.Start();
+
+            // pallon ajastin, X-SUUNTA
+            timer_palloX = new DispatcherTimer(DispatcherPriority.Send);
+            timer_palloX.Interval = TimeSpan.FromMilliseconds(1000/60);       // Set the Interval, 60fps X-suunta
+            timer_palloX.Tick += new EventHandler(timerpalloX_Tick);      // Set the callback to invoke every tick time
+            timer_palloX.Start();            
         }
 
 
@@ -127,11 +140,11 @@ namespace pang
                 // alas tullessa kovempi vauhti kuin ylhäällä
                 if (Angle > 41.5 && Angle < 45.5)
                 {
-                    kiihtyvyys += 0.02f + ((Convert.ToDouble(pallonKorkeus)) / 8000);    // pallonkorkeuden kautta pallon koko vaikuttaa nopeuteen
+                    kiihtyvyys += 0.01f + ((Convert.ToDouble(pallonKorkeus)) / 180000);    // pallonkorkeuden kautta pallon koko vaikuttaa nopeuteen
                 }
                 else
                 {
-                    kiihtyvyys = 0.1f + ((Convert.ToDouble(pallonKorkeus)) / 8000);    // pallonkorkeuden kautta pallon koko vaikuttaa nopeuteen;
+                    kiihtyvyys = 0.05f + ((Convert.ToDouble(pallonKorkeus)) / 180000);    // pallonkorkeuden kautta pallon koko vaikuttaa nopeuteen;
                 }
 
                 // pallon liikutus sinikäyrällä ylös ja alas
@@ -139,23 +152,32 @@ namespace pang
                 if (Angle > 46.3) { Angle = 40; }           // näillä asteilla (40 - 46.3) liikkuminen näyttää sulavalta
                 PalloY = pallonKorkeus + Math.Cos(Angle) * kaari;
 
+            }
+            // Pallon liikkeen päivitys "sceneen"
+            Canvas.SetLeft(Ball, PalloX);
+            Canvas.SetTop(Ball, PalloY);                   
+        }
+
+
+        // pallon liikkeen päivitys taimerilla, X-SUUNTA
+        public virtual void timerpalloX_Tick(object sender, EventArgs e)
+        {
+            if (PalloSaaLiikkua)    // Pallon liikkumislupa, tarvitaanko lopulta?
+            {
                 // pallon liikutus suunnan mukaan
                 if (PalloMenossa == PallonSuunta.Oikea)
                 {
-                    PalloX = PalloX + 5;    // pallon liikutus oikealla
+                    PalloX = PalloX + 1.5;    // pallon liikutus oikealle
                     if (PalloX > MainWindow.RuudunLeveys - Ball.Width) PalloMenossa = PallonSuunta.Vasen; // otetaan pallon leveys huomioon seinään törmätessä
                 }
                 else
                 {
-                    PalloX = PalloX - 5; // pallon liikutus vasemmalle
+                    PalloX = PalloX - 1.5; // pallon liikutus vasemmalle
                     if (PalloX < 0) PalloMenossa = PallonSuunta.Oikea;
                 }
             }
-          
-            // Pallon liikkeen päivitys "sceneen"
-            Canvas.SetLeft(Ball, PalloX);
-            Canvas.SetTop(Ball, PalloY);            
         }
+
 
         ~Pallo()
         {

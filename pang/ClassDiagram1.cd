@@ -17,7 +17,7 @@
       </Enum>
     </NestedTypes>
     <TypeIdentifier>
-      <HashCode>AAgDAAAAAgAIAAAACAAAQAAAACIAAAABAEEAAAABAYA=</HashCode>
+      <HashCode>AAgTAAABAgIIAAAACAAAQAAAACIAAAABAEUAAAABAYA=</HashCode>
       <FileName>Pallo.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -31,7 +31,7 @@
   <Class Name="pang.MainWindow">
     <Position X="8.25" Y="0.5" Width="4" />
     <TypeIdentifier>
-      <HashCode>0B4gACAAAAAAAAiAIYRAQAhSAAJAAQgBAQB4BUAAAKk=</HashCode>
+      <HashCode>0B4gACAAAAAAAAiCIYRAQAhCAAJAAQgBAQB4AUAABKk=</HashCode>
       <FileName>MainWindow.xaml.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.1" />
